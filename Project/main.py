@@ -31,6 +31,8 @@ def Input_Event():
     for event in event_list:
         if event.type == SDL_QUIT: # 창 닫기 버튼
             Window_Running = False
+        else:
+            gaogaigar.handle_event(event)
 
 #========= 전역 변수 ==========
 Window_Running = True
@@ -42,6 +44,6 @@ while Window_Running:
     Input_Event()
     update_world()
     render_world()
-    delay(1 / 10)
+    delay(1 / 20)
 
 close_canvas()

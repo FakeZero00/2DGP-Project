@@ -1,40 +1,40 @@
 from pico2d import load_image
+from sdl2 import *
+from Project.State_Machine import StateMachine
 
-class StateMachine:
-    def __init__(self, start_state):
-        self.cur_state = start_state
 
-    def update(self):
-        self.cur_state.do()
+#INPUT 이벤트 함수
+def right_down(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_d
+def right_up(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_d
 
-    def draw(self):
-        self.cur_state.draw()
 
 # 상태 클래스들
 class Idle:
     def __init__(self, gaogaigar):
         self.gaogaigar = gaogaigar
 
-    def enter(self):
+    def enter(self, e):
         self.gaogaigar.frame = 0
 
-    def exit(self):
+    def exit(self, e):
         pass
 
     def do(self):
         pass
 
     def draw(self):
-        self.gaogaigar.image.clip_draw(400, 400, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
+        self.gaogaigar.image.clip_draw(0, 400, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
 
 class Run:
     def __init__(self, gaogaigar):
         self.gaogaigar = gaogaigar
 
-    def enter(self):
+    def enter(self, e):
         self.gaogaigar.frame = 0
 
-    def exit(self):
+    def exit(self, e):
         pass
 
     def do(self):
@@ -51,7 +51,11 @@ class Gaogaigar:
 
         self.IDLE = Idle(self)
         self.RUN = Run(self)
-        self.statemachine = StateMachine(self.RUN)
+        self.rules = {
+            self.IDLE: {right_down: self.RUN},
+            self.RUN: {right_up: self.IDLE}
+        }
+        self.statemachine = StateMachine(self.IDLE, self.rules)
 
     def update(self):
         self.statemachine.update()
@@ -59,3 +63,5 @@ class Gaogaigar:
     def draw(self):
         self.statemachine.draw()
 
+    def handle_event(self, event):
+        self.statemachine.handle_state_event(('INPUT', event))
