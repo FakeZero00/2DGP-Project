@@ -1,18 +1,7 @@
 from pico2d import *
+from Project.Gaogaigar import Gaogaigar
 
 open_canvas(1600, 900)
-
-class Gaogaigar:
-    def __init__(self):
-        self.image = load_image('../Sprite/Move_Sprite(temp_resize).png')
-        self.x, self.y = 800, 450
-        self.frame = 0
-
-    def update(self):
-        pass
-
-    def draw(self):
-        self.image.clip_draw(0, 400, 400, 400, self.x, self.y)
 
 #========= 월드 함수 ==========
 def reset_world():
