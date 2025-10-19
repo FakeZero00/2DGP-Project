@@ -3,7 +3,17 @@ from pico2d import *
 open_canvas(1600, 900)
 
 
+class Gaogaigar:
+    def __init__(self):
+        self.image = load_image('Sprite/Move_Sprite(temp_resize).png')
+        self.x, self.y = 800, 450
+        self.frame = 0
 
+        def update(self):
+            pass
+
+        def draw(self):
+            self.image.clip_draw(self.frame * 400, 0, 400, 400, self.x, self.y)
 
 #Input 이벤트 처리 함수
 def Input_Event():
@@ -20,5 +30,6 @@ Window_Running = True
 #========= 메인 루프 ==========
 while Window_Running:
     Input_Event()
+
 
 close_canvas()
