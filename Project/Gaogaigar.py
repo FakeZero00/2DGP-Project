@@ -29,7 +29,7 @@ class Idle:
         pass
 
     def draw(self):
-        self.gaogaigar.image.clip_draw(0, 400, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
+        self.gaogaigar.image.clip_draw(0, 0, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
 
 class Run:
     def __init__(self, gaogaigar):
@@ -46,7 +46,7 @@ class Run:
         self.gaogaigar.x += 50
 
     def draw(self):
-        self.gaogaigar.image.clip_draw(self.gaogaigar.frame * 400, 0, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
+        self.gaogaigar.image.clip_draw(self.gaogaigar.frame * 400, 400, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
 
 class Back:
     def __init__(self, gaogaigar):
@@ -62,7 +62,7 @@ class Back:
         self.gaogaigar.x -= 50
 
     def draw(self):
-        self.gaogaigar.image.clip_draw(self.gaogaigar.frame * 400, 400, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
+        self.gaogaigar.image.clip_draw(self.gaogaigar.frame * 400, 0, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
 
 # 가오가이거 클래스 본체
 class Gaogaigar:
