@@ -258,13 +258,13 @@ class Gaogaigar:
         self.PUNCH2 = Punch2(self)
         self.rules = {
             self.IDLE: {right_down: self.RUN, left_down: self.BACK, right_up: self.BACK, left_up: self.RUN, down_down: self.CROUCH,
-                        attack_down: self.PUNCH1, cmd_is('PUNCH2'): self.PUNCH2},
+                        cmd_is('PUNCH2'): self.PUNCH2, attack_down: self.PUNCH1},
             self.RUN: {right_up: self.IDLE, left_down: self.IDLE, right_down: self.IDLE, down_down: self.CROUCH_RIGHTDOWN, attack_down: self.PUNCH1},
             self.BACK: {left_up: self.IDLE, down_down: self.CROUCH_LEFTDOWN},
             self.CROUCH: {down_up: self.IDLE, right_down: self.CROUCH_RIGHTDOWN, left_down: self.CROUCH_LEFTDOWN},
             self.CROUCH_RIGHTDOWN: {down_up: self.RUN, right_up: self.CROUCH},
             self.CROUCH_LEFTDOWN: {down_up: self.BACK, left_up: self.CROUCH},
-            self.PUNCH1: {anim_end: self.IDLE},
+            self.PUNCH1: {anim_end: self.IDLE, cmd_is('PUNCH2'): self.PUNCH2},
             self.PUNCH2: {anim_end: self.IDLE}
         }
         self.statemachine = StateMachine(self.IDLE, self.rules)
