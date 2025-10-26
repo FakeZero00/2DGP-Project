@@ -1,57 +1,81 @@
-from pico2d import load_image
+from pico2d import load_image, get_time
 from sdl2 import *
+from typing import List, Tuple, Optional
 from Project.State_Machine import StateMachine
 
-command = ['IDLE']
+#커맨드 버퍼 클래스
+class CommandBuffer:
+    def __init__(self, BoundTime: float = 1.0):
+        self.BoundTime = BoundTime
+        self.buffer: List[Tuple[str, float]] = []
+
+    def add(self, token: str, t: Optional[float] = None):
+        if t is None:
+            t = get_time()
+        self.buffer.append((token, t))
+        self.pop_old(t)
+
+    def pop_old(self, now: float):
+        cutoff = now - self.BoundTime
+        self.buffer = [(tok, ts) for tok, ts in self.buffer if ts >= cutoff]
+
+    def tokens(self) -> List[str]:
+        return [tok for tok, _ in self.buffer]
+
+    def last_token(self):
+        return self.buffer[-1][0] if self.buffer else None
+
+command_buffer = CommandBuffer()
+command_buffer.add("IDLE")
 
 #INPUT 이벤트 함수
 def left_down(e):
     if(e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_a):
-        if (command[-1] == 'DOWN'):
-            command.append('LEFTDOWN')
+        if (command_buffer.last_token() == 'DOWN'):
+            command_buffer.add('LEFTDOWN')
         else:
-            command.append('LEFT')
+            command_buffer.add('LEFT')
         return True
 def left_up(e):
     if(e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_a):
-        if (command[-1] == 'LEFTDOWN'):
-            command.append('DOWN')
+        if (command_buffer.last_token() == 'LEFTDOWN'):
+            command_buffer.add('DOWN')
         else:
-            command.append('IDLE')
+            command_buffer.add('IDLE')
         return True
 
 def right_down(e):
     if(e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_d):
-        if (command[-1] == 'DOWN'):
-            command.append('RIGHTDOWN')
+        if (command_buffer.last_token() == 'DOWN'):
+            command_buffer.add('RIGHTDOWN')
         else:
-            command.append('RIGHT')
+            command_buffer.add('RIGHT')
         return True
 def right_up(e):
     if(e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_d):
-        if(command[-1] == 'RIGHTDOWN'):
-            command.append('DOWN')
+        if(command_buffer.last_token() == 'RIGHTDOWN'):
+            command_buffer.add('DOWN')
         else:
-            command.append('IDLE')
+            command_buffer.add('IDLE')
         return True
 
 def down_down(e):
     if(e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_s):
-        if (command[-1] == 'RIGHT'):
-            command.append('RIGHTDOWN')
-        elif (command[-1] == 'LEFT'):
-            command.append('LEFTDOWN')
+        if (command_buffer.last_token() == 'RIGHT'):
+            command_buffer.add('RIGHTDOWN')
+        elif (command_buffer.last_token() == 'LEFT'):
+            command_buffer.add('LEFTDOWN')
         else:
-            command.append('DOWN')
+            command_buffer.add('DOWN')
         return True
 def down_up(e):
     if(e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_s):
-        if(command[-1] == 'RIGHTDOWN'):
-            command.append('RIGHT')
-        elif(command[-1] == 'LEFTDOWN'):
-            command.append('LEFT')
+        if(command_buffer.last_token() == 'RIGHTDOWN'):
+            command_buffer.add('RIGHT')
+        elif(command_buffer.last_token() == 'LEFTDOWN'):
+            command_buffer.add('LEFT')
         else:
-            command.append('IDLE')
+            command_buffer.add('IDLE')
         return True
 
 # 상태 클래스들
@@ -163,7 +187,7 @@ class Punch1:
         pass
 
     def do(self):
-        pass
+        self.gaogaigar.frame = (self.gaogaigar.frame + 1) % 6
 
     def draw(self):
         self.gaogaigar.image.clip_draw(self.gaogaigar.frame * 400, 400 * 2, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
