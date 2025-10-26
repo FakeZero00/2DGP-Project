@@ -25,10 +25,39 @@ class CommandBuffer:
     def last_token(self):
         return self.buffer[-1][0] if self.buffer else None
 
-command_buffer = CommandBuffer()
-command_buffer.add("IDLE")
+    def clear_last_n(self, n):
+        for _ in range(min(n, len(self.buffer))):
+            self.buffer.pop()
 
-#INPUT 이벤트 함수
+command_buffer = CommandBuffer()
+
+#커맨드 검사기
+class CommandRecognizer:
+    def __init__(self, patterns):
+        # 미리 입력해둔 패턴들을 긴 패턴을 먼저 감지하기 위해 길이의 내림차순으로 정렬
+        self.patterns = sorted(patterns, key = lambda p: -len(p[0]))
+
+    def match(self, buffer):
+        tokens = buffer.tokens()
+        if not tokens:
+            return None
+        for pattern, action in self.patterns:
+            pattern_len = len(pattern)
+            if pattern_len <= len(tokens) and tuple(tokens[-pattern_len:]) == pattern:
+                buffer.clear_last_n(pattern_len)
+                return action, pattern_len
+        return None
+
+#커맨드 목록
+CommandList = [
+    (('DOWN', 'RIGHTDOWN', 'RIGHT', 'ATTACK'), 'PUNCH1')
+]
+Recognizer = CommandRecognizer(CommandList)
+
+#커맨드, INPUT 이벤트 함수
+def cmd_is(name):
+    return lambda e, n = name: (e[0] == 'CMD' and e[1] == n)
+
 def left_down(e):
     if(e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_a):
         if (command_buffer.last_token() == 'DOWN'):
