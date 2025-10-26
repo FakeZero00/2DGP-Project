@@ -1,9 +1,10 @@
 from pico2d import load_image, get_time
 from sdl2 import *
 from typing import List, Tuple, Optional
+from Project.CommandRecognizer import CommandRecognizer
 from Project.State_Machine import StateMachine
 
-#커맨드 버퍼 클래스
+#커맨드 버퍼 클래스, 인스턴스 생성
 class CommandBuffer:
     def __init__(self, BoundTime: float = 1.0):
         self.BoundTime = BoundTime
@@ -30,23 +31,6 @@ class CommandBuffer:
             self.buffer.pop()
 
 command_buffer = CommandBuffer()
-
-#커맨드 검사기
-class CommandRecognizer:
-    def __init__(self, patterns):
-        # 미리 입력해둔 패턴들을 긴 패턴을 먼저 감지하기 위해 길이의 내림차순으로 정렬
-        self.patterns = sorted(patterns, key = lambda p: -len(p[0]))
-
-    def match(self, buffer):
-        tokens = buffer.tokens()
-        if not tokens:
-            return None
-        for pattern, action in self.patterns:
-            pattern_len = len(pattern)
-            if pattern_len <= len(tokens) and tuple(tokens[-pattern_len:]) == pattern:
-                buffer.clear_last_n(pattern_len)
-                return action, pattern_len
-        return None
 
 #커맨드 목록
 CommandList = [
@@ -246,6 +230,12 @@ class Gaogaigar:
 
     def update(self):
         self.statemachine.update()
+        cmd_list = Recognizer.match(command_buffer)
+        if cmd_list:
+            action, used = cmd_list
+            command_buffer.clear_last_n(used) # 매칭된 커맨드만큼 버퍼에서 제거
+            self.statemachine.handle_state_event(('CMD', action))
+
 
     def draw(self):
         self.statemachine.draw()
