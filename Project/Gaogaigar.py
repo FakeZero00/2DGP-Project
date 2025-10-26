@@ -34,13 +34,21 @@ command_buffer = CommandBuffer()
 
 #커맨드 목록
 CommandList = [
-    (('DOWN', 'RIGHTDOWN', 'RIGHT', 'ATTACK'), 'PUNCH1')
+    (('DOWN', 'RIGHTDOWN', 'RIGHT', 'ATTACK'), 'PUNCH2'),
+    (('DOWN', 'RIGHTDOWN', 'RIGHT', 'IDLE', 'ATTACK'), 'PUNCH2')
 ]
 Recognizer = CommandRecognizer(CommandList)
 
-#커맨드, INPUT 이벤트 함수
+#커맨드, INPUT 등 이벤트 함수
 def cmd_is(name):
-    return lambda e, n = name: (e[0] == 'CMD' and e[1] == n)
+    if name == 'PUNCH2':
+        return punch2_start
+
+def punch2_start(e):
+    return e[0] == 'CMD' and e[1] == 'PUNCH2'
+
+def anim_end(e):
+    return e[0] == 'ANIM_END'
 
 def left_down(e):
     if(e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_a):
@@ -89,6 +97,14 @@ def down_up(e):
             command_buffer.add('LEFT')
         else:
             command_buffer.add('IDLE')
+        return True
+
+def attack_down(e):
+    if(e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_j):
+        command_buffer.add('ATTACK')
+        return True
+def attack_up(e):
+    if(e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_j):
         return True
 
 # 상태 클래스들
@@ -200,10 +216,30 @@ class Punch1:
         pass
 
     def do(self):
-        self.gaogaigar.frame = (self.gaogaigar.frame + 1) % 6
+        self.gaogaigar.frame += 1
+        if self.gaogaigar.frame > 7:
+            self.gaogaigar.statemachine.handle_state_event(('ANIM_END', 0))
 
     def draw(self):
-        self.gaogaigar.image.clip_draw(self.gaogaigar.frame * 400, 400 * 2, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
+        self.gaogaigar.image.clip_draw(min(self.gaogaigar.frame, 5) * 400, 400 * 2, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
+
+class Punch2: # Test
+    def __init__(self, gaogaigar):
+        self.gaogaigar = gaogaigar
+
+    def enter(self, e):
+        self.gaogaigar.frame = 0
+
+    def exit(self, e):
+        pass
+
+    def do(self):
+        self.gaogaigar.frame += 1
+        if self.gaogaigar.frame > 100:
+            self.gaogaigar.statemachine.handle_state_event(('ANIM_END', 0))
+
+    def draw(self):
+        self.gaogaigar.image.clip_draw(min(self.gaogaigar.frame, 5) * 400, 400 * 2, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
 
 # 가오가이거 클래스 본체
 class Gaogaigar:
@@ -218,13 +254,18 @@ class Gaogaigar:
         self.CROUCH = Crouch(self)
         self.CROUCH_RIGHTDOWN = Crouch_Rightdown(self)
         self.CROUCH_LEFTDOWN = Crouch_Leftdown(self)
+        self.PUNCH1 = Punch1(self)
+        self.PUNCH2 = Punch2(self)
         self.rules = {
-            self.IDLE: {right_down: self.RUN, left_down: self.BACK, right_up: self.BACK, left_up: self.RUN, down_down: self.CROUCH},
-            self.RUN: {right_up: self.IDLE, left_down: self.IDLE, right_down: self.IDLE, down_down: self.CROUCH_RIGHTDOWN},
+            self.IDLE: {right_down: self.RUN, left_down: self.BACK, right_up: self.BACK, left_up: self.RUN, down_down: self.CROUCH,
+                        attack_down: self.PUNCH1, cmd_is('PUNCH2'): self.PUNCH2},
+            self.RUN: {right_up: self.IDLE, left_down: self.IDLE, right_down: self.IDLE, down_down: self.CROUCH_RIGHTDOWN, attack_down: self.PUNCH1},
             self.BACK: {left_up: self.IDLE, down_down: self.CROUCH_LEFTDOWN},
             self.CROUCH: {down_up: self.IDLE, right_down: self.CROUCH_RIGHTDOWN, left_down: self.CROUCH_LEFTDOWN},
             self.CROUCH_RIGHTDOWN: {down_up: self.RUN, right_up: self.CROUCH},
-            self.CROUCH_LEFTDOWN: {down_up: self.BACK, left_up: self.CROUCH}
+            self.CROUCH_LEFTDOWN: {down_up: self.BACK, left_up: self.CROUCH},
+            self.PUNCH1: {anim_end: self.IDLE},
+            self.PUNCH2: {anim_end: self.IDLE}
         }
         self.statemachine = StateMachine(self.IDLE, self.rules)
 
@@ -234,6 +275,7 @@ class Gaogaigar:
         if cmd_list:
             action, used = cmd_list
             command_buffer.clear_last_n(used) # 매칭된 커맨드만큼 버퍼에서 제거
+            print(f'커맨드 인식: {action}')
             self.statemachine.handle_state_event(('CMD', action))
 
 
