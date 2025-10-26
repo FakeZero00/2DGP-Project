@@ -1,5 +1,5 @@
 from pico2d import *
-from Project.Gaogaigar import Gaogaigar
+from Project.Gaogaigar import Gaogaigar, command
 
 open_canvas(1600, 900)
 
@@ -44,6 +44,7 @@ while Window_Running:
     Input_Event()
     update_world()
     render_world()
+    print(command)
     delay(1 / 20)
 
 close_canvas()
