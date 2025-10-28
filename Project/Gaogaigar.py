@@ -40,6 +40,7 @@ CommandList = [
 Recognizer = CommandRecognizer(CommandList)
 
 #커맨드, INPUT 등 이벤트 함수
+input_booleans = {input_key : False for input_key in ['w', 'a', 's', 'd']}
 def cmd_is(name):
     if name == 'COMMAND_SKILL':
         return cmdskill_start
@@ -47,56 +48,68 @@ def cmd_is(name):
 def cmdskill_start(e):
     return e[0] == 'CMD' and e[1] == 'COMMAND_SKILL'
 
-def anim_end(e):
-    return e[0] == 'ANIM_END'
+def anim_end_to_run(e):
+    return e[0] == 'ANIM_END' and input_booleans['d'] == True
+def anim_end_to_back(e):
+    return e[0] == 'ANIM_END' and input_booleans['a'] == True
+def anim_end_to_crouch(e):
+    return e[0] == 'ANIM_END' and input_booleans['s'] == True
+def anim_end_to_idle(e):
+    return e[0] == 'ANIM_END' and input_booleans['a'] == False and input_booleans['d'] == False and input_booleans['s'] == False
 
 def left_down(e):
-    if(e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_a):
+    if(e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_a and input_booleans['a'] == False):
         if (command_buffer.last_token() == 'DOWN'):
             command_buffer.add('LEFTDOWN')
         else:
             command_buffer.add('LEFT')
+        input_booleans['a'] = True
         return True
 def left_up(e):
-    if(e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_a):
+    if(e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_a and input_booleans['a'] == True):
         if (command_buffer.last_token() == 'LEFTDOWN'):
             command_buffer.add('DOWN')
         else:
             command_buffer.add('IDLE')
+        input_booleans['a'] = False
         return True
 
 def right_down(e):
-    if(e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_d):
+    if(e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_d and input_booleans['d'] == False):
         if (command_buffer.last_token() == 'DOWN'):
             command_buffer.add('RIGHTDOWN')
         else:
             command_buffer.add('RIGHT')
+        input_booleans['d'] = True
         return True
 def right_up(e):
-    if(e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_d):
+    if(e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_d and input_booleans['d'] == True):
         if(command_buffer.last_token() == 'RIGHTDOWN'):
             command_buffer.add('DOWN')
         else:
             command_buffer.add('IDLE')
+        input_booleans['d'] = False
         return True
 
 def down_down(e):
-    if(e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_s):
+    if(e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_s and input_booleans['s'] == False):
         if (command_buffer.last_token() == 'RIGHT'):
             command_buffer.add('RIGHTDOWN')
         elif (command_buffer.last_token() == 'LEFT'):
             command_buffer.add('LEFTDOWN')
         else:
             command_buffer.add('DOWN')
+        input_booleans['s'] = True
         return True
 def down_up(e):
-    if(e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_s):
+    if(e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_s and input_booleans['s'] == True):
         if(command_buffer.last_token() == 'RIGHTDOWN'):
             command_buffer.add('RIGHT')
         elif(command_buffer.last_token() == 'LEFTDOWN'):
             command_buffer.add('LEFT')
         else:
             command_buffer.add('IDLE')
+        input_booleans['s'] = False
         return True
 
 def attack_down(e):
