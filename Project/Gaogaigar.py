@@ -34,18 +34,18 @@ command_buffer = CommandBuffer()
 
 #커맨드 목록
 CommandList = [
-    (('DOWN', 'RIGHTDOWN', 'RIGHT', 'ATTACK'), 'PUNCH2'),
-    (('DOWN', 'RIGHTDOWN', 'RIGHT', 'IDLE', 'ATTACK'), 'PUNCH2')
+    (('DOWN', 'RIGHTDOWN', 'RIGHT', 'ATTACK'), 'COMMAND_SKILL'),
+    (('DOWN', 'RIGHTDOWN', 'RIGHT', 'IDLE', 'ATTACK'), 'COMMAND_SKILL')
 ]
 Recognizer = CommandRecognizer(CommandList)
 
 #커맨드, INPUT 등 이벤트 함수
 def cmd_is(name):
-    if name == 'PUNCH2':
-        return punch2_start
+    if name == 'COMMAND_SKILL':
+        return cmdskill_start
 
-def punch2_start(e):
-    return e[0] == 'CMD' and e[1] == 'PUNCH2'
+def cmdskill_start(e):
+    return e[0] == 'CMD' and e[1] == 'COMMAND_SKILL'
 
 def anim_end(e):
     return e[0] == 'ANIM_END'
@@ -205,7 +205,7 @@ class Crouch_Leftdown:
     def draw(self):
         self.gaogaigar.image.clip_draw(self.gaogaigar.frame * 400, 0, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
 
-class Punch1:
+class Attack1:
     def __init__(self, gaogaigar):
         self.gaogaigar = gaogaigar
 
@@ -223,7 +223,25 @@ class Punch1:
     def draw(self):
         self.gaogaigar.image.clip_draw(min(self.gaogaigar.frame, 5) * 400, 400 * 2, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
 
-class Punch2: # Test
+class Attack2:
+    def __init__(self, gaogaigar):
+        self.gaogaigar = gaogaigar
+
+    def enter(self, e):
+        self.gaogaigar.frame = 0
+
+    def exit(self, e):
+        pass
+
+    def do(self):
+        self.gaogaigar.frame += 1
+        if self.gaogaigar.frame > 6:
+            self.gaogaigar.statemachine.handle_state_event(('ANIM_END', 0))
+
+    def draw(self):
+        self.gaogaigar.image.clip_draw(min(self.gaogaigar.frame, 4) * 400, 400 * 3, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
+
+class Command_skill: # Test
     def __init__(self, gaogaigar):
         self.gaogaigar = gaogaigar
 
@@ -254,18 +272,21 @@ class Gaogaigar:
         self.CROUCH = Crouch(self)
         self.CROUCH_RIGHTDOWN = Crouch_Rightdown(self)
         self.CROUCH_LEFTDOWN = Crouch_Leftdown(self)
-        self.PUNCH1 = Punch1(self)
-        self.PUNCH2 = Punch2(self)
+        self.ATTACK1 = Attack1(self)
+        self.ATTACK2 = Attack2(self)
+        self.COMMAND_SKILL = Command_skill(self)
         self.rules = {
             self.IDLE: {right_down: self.RUN, left_down: self.BACK, right_up: self.BACK, left_up: self.RUN, down_down: self.CROUCH,
-                        cmd_is('PUNCH2'): self.PUNCH2, attack_down: self.PUNCH1},
-            self.RUN: {right_up: self.IDLE, left_down: self.IDLE, right_down: self.IDLE, down_down: self.CROUCH_RIGHTDOWN, attack_down: self.PUNCH1},
-            self.BACK: {left_up: self.IDLE, down_down: self.CROUCH_LEFTDOWN},
+                        cmd_is('COMMAND_SKILL'): self.COMMAND_SKILL, attack_down: self.ATTACK1},
+            self.RUN: {right_up: self.IDLE, left_down: self.IDLE, right_down: self.IDLE, down_down: self.CROUCH_RIGHTDOWN,
+                       attack_down: self.ATTACK1},
+            self.BACK: {left_up: self.IDLE, right_down: self.IDLE, down_down: self.CROUCH_LEFTDOWN},
             self.CROUCH: {down_up: self.IDLE, right_down: self.CROUCH_RIGHTDOWN, left_down: self.CROUCH_LEFTDOWN},
             self.CROUCH_RIGHTDOWN: {down_up: self.RUN, right_up: self.CROUCH},
             self.CROUCH_LEFTDOWN: {down_up: self.BACK, left_up: self.CROUCH},
-            self.PUNCH1: {anim_end: self.IDLE, cmd_is('PUNCH2'): self.PUNCH2},
-            self.PUNCH2: {anim_end: self.IDLE}
+            self.ATTACK1: {anim_end: self.IDLE, attack_down: self.ATTACK2, cmd_is('COMMAND_SKILL'): self.COMMAND_SKILL},
+            self.ATTACK2: {anim_end: self.IDLE},
+            self.COMMAND_SKILL: {anim_end: self.IDLE}
         }
         self.statemachine = StateMachine(self.IDLE, self.rules)
 
