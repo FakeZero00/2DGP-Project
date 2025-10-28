@@ -241,6 +241,24 @@ class Attack2:
     def draw(self):
         self.gaogaigar.image.clip_draw(min(self.gaogaigar.frame, 4) * 400, 400 * 3, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
 
+class Attack3:
+    def __init__(self, gaogaigar):
+        self.gaogaigar = gaogaigar
+
+    def enter(self, e):
+        self.gaogaigar.frame = 0
+
+    def exit(self, e):
+        pass
+
+    def do(self):
+        self.gaogaigar.frame += 1
+        if self.gaogaigar.frame > 7:
+            self.gaogaigar.statemachine.handle_state_event(('ANIM_END', 0))
+
+    def draw(self):
+        self.gaogaigar.image.clip_draw(min(self.gaogaigar.frame, 5) * 400, 400 * 4, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
+
 class Command_skill: # Test
     def __init__(self, gaogaigar):
         self.gaogaigar = gaogaigar
@@ -274,6 +292,7 @@ class Gaogaigar:
         self.CROUCH_LEFTDOWN = Crouch_Leftdown(self)
         self.ATTACK1 = Attack1(self)
         self.ATTACK2 = Attack2(self)
+        self.ATTACK3 = Attack3(self)
         self.COMMAND_SKILL = Command_skill(self)
         self.rules = {
             self.IDLE: {right_down: self.RUN, left_down: self.BACK, right_up: self.BACK, left_up: self.RUN, down_down: self.CROUCH,
@@ -285,7 +304,8 @@ class Gaogaigar:
             self.CROUCH_RIGHTDOWN: {down_up: self.RUN, right_up: self.CROUCH},
             self.CROUCH_LEFTDOWN: {down_up: self.BACK, left_up: self.CROUCH},
             self.ATTACK1: {anim_end: self.IDLE, attack_down: self.ATTACK2, cmd_is('COMMAND_SKILL'): self.COMMAND_SKILL},
-            self.ATTACK2: {anim_end: self.IDLE},
+            self.ATTACK2: {anim_end: self.IDLE, attack_down: self.ATTACK3},
+            self.ATTACK3: {anim_end: self.IDLE},
             self.COMMAND_SKILL: {anim_end: self.IDLE}
         }
         self.statemachine = StateMachine(self.IDLE, self.rules)
