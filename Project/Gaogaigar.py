@@ -57,6 +57,27 @@ def anim_end_to_crouch(e):
 def anim_end_to_idle(e):
     return e[0] == 'ANIM_END' and input_booleans['a'] == False and input_booleans['d'] == False and input_booleans['s'] == False
 
+def input_check(e):
+    if(e[0] == 'INPUT'):
+        if(e[1].type == SDL_KEYDOWN):
+            if e[1].key == SDLK_w:
+                input_booleans['w'] = True
+            elif e[1].key == SDLK_a:
+                input_booleans['a'] = True
+            elif e[1].key == SDLK_s:
+                input_booleans['s'] = True
+            elif e[1].key == SDLK_d:
+                input_booleans['d'] = True
+        elif(e[1].type == SDL_KEYUP):
+            if e[1].key == SDLK_w:
+                input_booleans['w'] = False
+            elif e[1].key == SDLK_a:
+                input_booleans['a'] = False
+            elif e[1].key == SDLK_s:
+                input_booleans['s'] = False
+            elif e[1].key == SDLK_d:
+                input_booleans['d'] = False
+
 def left_down(e):
     if(e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_a and input_booleans['a'] == False):
         if (command_buffer.last_token() == 'DOWN'):
@@ -131,7 +152,7 @@ class Idle:
     def exit(self, e):
         pass
 
-    def do(self):
+    def do(self, e):
         pass
 
     def draw(self):
@@ -147,7 +168,7 @@ class Run:
     def exit(self, e):
         pass
 
-    def do(self):
+    def do(self, e):
         self.gaogaigar.frame = (self.gaogaigar.frame + 1) % 10
         self.gaogaigar.x += 50
 
@@ -164,7 +185,7 @@ class Back:
     def exit(self, e):
         pass
 
-    def do(self):
+    def do(self, e):
         self.gaogaigar.x -= 50
 
     def draw(self):
@@ -180,7 +201,7 @@ class Crouch:
     def exit(self, e):
         pass
 
-    def do(self):
+    def do(self, e):
         pass
 
     def draw(self):
@@ -196,7 +217,7 @@ class Crouch_Rightdown:
     def exit(self, e):
         pass
 
-    def do(self):
+    def do(self, e):
         pass
 
     def draw(self):
@@ -212,7 +233,7 @@ class Crouch_Leftdown:
     def exit(self, e):
         pass
 
-    def do(self):
+    def do(self, e):
         pass
 
     def draw(self):
@@ -228,7 +249,8 @@ class Attack1:
     def exit(self, e):
         pass
 
-    def do(self):
+    def do(self, e):
+        input_check(e)
         self.gaogaigar.frame += 1
         if self.gaogaigar.frame > 7:
             self.gaogaigar.statemachine.handle_state_event(('ANIM_END', 0))
@@ -246,7 +268,8 @@ class Attack2:
     def exit(self, e):
         pass
 
-    def do(self):
+    def do(self, e):
+        input_check(e)
         self.gaogaigar.frame += 1
         if self.gaogaigar.frame > 6:
             self.gaogaigar.statemachine.handle_state_event(('ANIM_END', 0))
@@ -264,7 +287,8 @@ class Attack3:
     def exit(self, e):
         pass
 
-    def do(self):
+    def do(self, e):
+        input_check(e)
         self.gaogaigar.frame += 1
         if self.gaogaigar.frame > 7:
             self.gaogaigar.statemachine.handle_state_event(('ANIM_END', 0))
@@ -282,7 +306,8 @@ class Command_skill: # Test
     def exit(self, e):
         pass
 
-    def do(self):
+    def do(self, e):
+        input_check(e)
         self.gaogaigar.frame += 1
         if self.gaogaigar.frame > 100:
             self.gaogaigar.statemachine.handle_state_event(('ANIM_END', 0))
@@ -296,6 +321,7 @@ class Gaogaigar:
         self.image = load_image('../Sprite/Move_Sprite(temp_resize).png')
         self.x, self.y = 800, 450
         self.frame = 0
+        self.cur_input_event = None
 
         self.IDLE = Idle(self)
         self.RUN = Run(self)
@@ -316,15 +342,15 @@ class Gaogaigar:
             self.CROUCH: {down_up: self.IDLE, right_down: self.CROUCH_RIGHTDOWN, left_down: self.CROUCH_LEFTDOWN},
             self.CROUCH_RIGHTDOWN: {down_up: self.RUN, right_up: self.CROUCH},
             self.CROUCH_LEFTDOWN: {down_up: self.BACK, left_up: self.CROUCH},
-            self.ATTACK1: {anim_end: self.IDLE, attack_down: self.ATTACK2, cmd_is('COMMAND_SKILL'): self.COMMAND_SKILL},
-            self.ATTACK2: {anim_end: self.IDLE, attack_down: self.ATTACK3},
-            self.ATTACK3: {anim_end: self.IDLE},
-            self.COMMAND_SKILL: {anim_end: self.IDLE}
+            self.ATTACK1: {anim_end_to_back: self.BACK, anim_end_to_run: self.RUN, anim_end_to_crouch: self.CROUCH, anim_end_to_idle: self.IDLE,  attack_down: self.ATTACK2, cmd_is('COMMAND_SKILL'): self.COMMAND_SKILL},
+            self.ATTACK2: {anim_end_to_back: self.BACK, anim_end_to_run: self.RUN, anim_end_to_crouch: self.CROUCH, anim_end_to_idle: self.IDLE, attack_down: self.ATTACK3},
+            self.ATTACK3: {anim_end_to_back: self.BACK, anim_end_to_run: self.RUN, anim_end_to_crouch: self.CROUCH, anim_end_to_idle: self.IDLE},
+            self.COMMAND_SKILL: {anim_end_to_back: self.BACK, anim_end_to_run: self.RUN, anim_end_to_crouch: self.CROUCH, anim_end_to_idle: self.IDLE}
         }
         self.statemachine = StateMachine(self.IDLE, self.rules)
 
     def update(self):
-        self.statemachine.update()
+        self.statemachine.update(('INPUT', self.cur_input_event))
         cmd_list = Recognizer.match(command_buffer)
         if cmd_list:
             action, used = cmd_list
@@ -338,3 +364,4 @@ class Gaogaigar:
 
     def handle_event(self, event):
         self.statemachine.handle_state_event(('INPUT', event))
+        self.cur_input_event = event
