@@ -48,6 +48,12 @@ def cmd_is(name):
 def cmdskill_start(e):
     return e[0] == 'CMD' and e[1] == 'COMMAND_SKILL'
 
+def anim_end(behavior):
+    if behavior == 'RUN': return anim_end_to_run
+    elif behavior == 'BACK': return anim_end_to_back
+    elif behavior == 'CROUCH': return anim_end_to_crouch
+    elif behavior == 'IDLE': return anim_end_to_idle
+
 def anim_end_to_run(e):
     return e[0] == 'ANIM_END' and input_booleans['d'] == True
 def anim_end_to_back(e):
@@ -342,10 +348,10 @@ class Gaogaigar:
             self.CROUCH: {down_up: self.IDLE, right_down: self.CROUCH_RIGHTDOWN, left_down: self.CROUCH_LEFTDOWN},
             self.CROUCH_RIGHTDOWN: {down_up: self.RUN, right_up: self.CROUCH},
             self.CROUCH_LEFTDOWN: {down_up: self.BACK, left_up: self.CROUCH},
-            self.ATTACK1: {anim_end_to_back: self.BACK, anim_end_to_run: self.RUN, anim_end_to_crouch: self.CROUCH, anim_end_to_idle: self.IDLE,  attack_down: self.ATTACK2, cmd_is('COMMAND_SKILL'): self.COMMAND_SKILL},
-            self.ATTACK2: {anim_end_to_back: self.BACK, anim_end_to_run: self.RUN, anim_end_to_crouch: self.CROUCH, anim_end_to_idle: self.IDLE, attack_down: self.ATTACK3},
-            self.ATTACK3: {anim_end_to_back: self.BACK, anim_end_to_run: self.RUN, anim_end_to_crouch: self.CROUCH, anim_end_to_idle: self.IDLE},
-            self.COMMAND_SKILL: {anim_end_to_back: self.BACK, anim_end_to_run: self.RUN, anim_end_to_crouch: self.CROUCH, anim_end_to_idle: self.IDLE}
+            self.ATTACK1: {anim_end('BACK'): self.BACK, anim_end('RUN'): self.RUN, anim_end('CROUCH'): self.CROUCH, anim_end('IDLE'): self.IDLE,  attack_down: self.ATTACK2, cmd_is('COMMAND_SKILL'): self.COMMAND_SKILL},
+            self.ATTACK2: {anim_end('BACK'): self.BACK, anim_end('RUN'): self.RUN, anim_end('CROUCH'): self.CROUCH, anim_end('IDLE'): self.IDLE, attack_down: self.ATTACK3},
+            self.ATTACK3: {anim_end('BACK'): self.BACK, anim_end('RUN'): self.RUN, anim_end('CROUCH'): self.CROUCH, anim_end('IDLE'): self.IDLE},
+            self.COMMAND_SKILL: {anim_end('BACK'): self.BACK, anim_end('RUN'): self.RUN, anim_end('CROUCH'): self.CROUCH, anim_end('IDLE'): self.IDLE}
         }
         self.statemachine = StateMachine(self.IDLE, self.rules)
 
