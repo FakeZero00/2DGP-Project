@@ -1,25 +1,25 @@
 from pico2d import *
-from Project.Gaogaigar import Gaogaigar, command_buffer
+from Project.Gaogaigar import Gaogaigar
 import PlayScene_world
 
-open_canvas(1600, 900)
-
-#========= 월드 함수 ==========
-def reset_world():
+#========= 씬 함수 ==========
+def init():
     global gaogaigar
 
     gaogaigar = Gaogaigar()
     PlayScene_world.add_object(gaogaigar)
 
-def update_world():
+def update():
     PlayScene_world.update()
 
-def render_world():
+def draw():
     clear_canvas()
     PlayScene_world.render()
     update_canvas()
 
-#Input 이벤트 처리 함수
+def finish(): pass
+
+#====== Input 이벤트 처리 함수 =====
 def Input_Event():
     global Window_Running
 
@@ -31,16 +31,4 @@ def Input_Event():
             gaogaigar.handle_event(event)
 
 #========= 전역 변수 ==========
-Window_Running = True
-
-#========= 메인 루프 ==========
-reset_world()
-
-while Window_Running:
-    Input_Event()
-    update_world()
-    render_world()
-    print(command_buffer.tokens())
-    delay(1 / 20)
-
-close_canvas()
+Running = True
