@@ -1,26 +1,22 @@
 from pico2d import *
 from Project.Gaogaigar import Gaogaigar, command_buffer
+import PlayScene_world
 
 open_canvas(1600, 900)
 
 #========= 월드 함수 ==========
 def reset_world():
-    global world
     global gaogaigar
 
-    world = []
-
     gaogaigar = Gaogaigar()
-    world.append(gaogaigar)
+    PlayScene_world.add_object(gaogaigar)
 
 def update_world():
-    for o in world:
-        o.update()
+    PlayScene_world.update()
 
 def render_world():
     clear_canvas()
-    for o in world:
-        o.draw()
+    PlayScene_world.render()
     update_canvas()
 
 #Input 이벤트 처리 함수
