@@ -18,6 +18,7 @@ def draw():
     update_canvas()
 
 def finish(): pass
+def resume(): pass
 
 #====== Input 이벤트 처리 함수 =====
 def Input_Event():
