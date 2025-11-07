@@ -1,16 +1,7 @@
 from pico2d import *
-import PlayScene
-from Project.Gaogaigar import command_buffer
+import Game_Framework
+import PlayScene as start_scene
 
 open_canvas(1600, 900)
-
-PlayScene.init()
-
-while PlayScene.Running:
-    PlayScene.Input_Event()
-    PlayScene.update()
-    PlayScene.draw()
-    print(command_buffer.tokens())
-    delay(1 / 20)
-
+Game_Framework.run(start_scene)
 close_canvas()

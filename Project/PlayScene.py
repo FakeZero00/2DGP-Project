@@ -1,6 +1,7 @@
 from pico2d import *
 from Project.Gaogaigar import Gaogaigar
 import PlayScene_world
+from Project.Gaogaigar import command_buffer
 
 #========= 씬 함수 ==========
 def init():
@@ -11,6 +12,7 @@ def init():
 
 def update():
     PlayScene_world.update()
+    print(command_buffer.tokens())
 
 def draw():
     clear_canvas()

@@ -47,7 +47,7 @@ def run(start_scene):
     frame_time = 0.0
     current_time = time.time()
     while running:
-        stack[-1].handle_events()
+        stack[-1].Input_Event()
         stack[-1].update()
         stack[-1].draw()
 
