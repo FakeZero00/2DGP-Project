@@ -1,10 +1,9 @@
-from pico2d import load_image, get_time
-from sdl2 import *
+from pico2d import load_image
 from Project.CommandRecognizer import CommandBuffer, CommandRecognizer
 from Project.State_Machine import StateMachine
+from Project.Event_Function import *
 
-
-
+#커맨드 버퍼
 command_buffer = CommandBuffer()
 
 #커맨드 목록
@@ -20,107 +19,8 @@ def cmd_is(name):
     if name == 'COMMAND_SKILL':
         return cmdskill_start
 
-def cmdskill_start(e):
+def cmdskill_start(e, command_buffer = None, input_booleans = None):
     return e[0] == 'CMD' and e[1] == 'COMMAND_SKILL'
-
-def anim_end(behavior):
-    if behavior == 'RUN': return anim_end_to_run
-    elif behavior == 'BACK': return anim_end_to_back
-    elif behavior == 'CROUCH': return anim_end_to_crouch
-    elif behavior == 'IDLE': return anim_end_to_idle
-
-def anim_end_to_run(e):
-    return e[0] == 'ANIM_END' and input_booleans['d'] == True
-def anim_end_to_back(e):
-    return e[0] == 'ANIM_END' and input_booleans['a'] == True
-def anim_end_to_crouch(e):
-    return e[0] == 'ANIM_END' and input_booleans['s'] == True
-def anim_end_to_idle(e):
-    return e[0] == 'ANIM_END' and input_booleans['a'] == False and input_booleans['d'] == False and input_booleans['s'] == False
-
-def input_check(e):
-    if(e[0] == 'INPUT'):
-        if(e[1].type == SDL_KEYDOWN):
-            if e[1].key == SDLK_w:
-                input_booleans['w'] = True
-            elif e[1].key == SDLK_a:
-                input_booleans['a'] = True
-            elif e[1].key == SDLK_s:
-                input_booleans['s'] = True
-            elif e[1].key == SDLK_d:
-                input_booleans['d'] = True
-        elif(e[1].type == SDL_KEYUP):
-            if e[1].key == SDLK_w:
-                input_booleans['w'] = False
-            elif e[1].key == SDLK_a:
-                input_booleans['a'] = False
-            elif e[1].key == SDLK_s:
-                input_booleans['s'] = False
-            elif e[1].key == SDLK_d:
-                input_booleans['d'] = False
-
-def left_down(e):
-    if(e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_a and input_booleans['a'] == False):
-        if (command_buffer.last_token() == 'DOWN'):
-            command_buffer.add('LEFTDOWN')
-        else:
-            command_buffer.add('LEFT')
-        input_booleans['a'] = True
-        return True
-def left_up(e):
-    if(e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_a and input_booleans['a'] == True):
-        if (command_buffer.last_token() == 'LEFTDOWN'):
-            command_buffer.add('DOWN')
-        else:
-            command_buffer.add('IDLE')
-        input_booleans['a'] = False
-        return True
-
-def right_down(e):
-    if(e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_d and input_booleans['d'] == False):
-        if (command_buffer.last_token() == 'DOWN'):
-            command_buffer.add('RIGHTDOWN')
-        else:
-            command_buffer.add('RIGHT')
-        input_booleans['d'] = True
-        return True
-def right_up(e):
-    if(e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_d and input_booleans['d'] == True):
-        if(command_buffer.last_token() == 'RIGHTDOWN'):
-            command_buffer.add('DOWN')
-        else:
-            command_buffer.add('IDLE')
-        input_booleans['d'] = False
-        return True
-
-def down_down(e):
-    if(e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_s and input_booleans['s'] == False):
-        if (command_buffer.last_token() == 'RIGHT'):
-            command_buffer.add('RIGHTDOWN')
-        elif (command_buffer.last_token() == 'LEFT'):
-            command_buffer.add('LEFTDOWN')
-        else:
-            command_buffer.add('DOWN')
-        input_booleans['s'] = True
-        return True
-def down_up(e):
-    if(e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_s and input_booleans['s'] == True):
-        if(command_buffer.last_token() == 'RIGHTDOWN'):
-            command_buffer.add('RIGHT')
-        elif(command_buffer.last_token() == 'LEFTDOWN'):
-            command_buffer.add('LEFT')
-        else:
-            command_buffer.add('IDLE')
-        input_booleans['s'] = False
-        return True
-
-def attack_down(e):
-    if(e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_j):
-        command_buffer.add('ATTACK')
-        return True
-def attack_up(e):
-    if(e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_j):
-        return True
 
 # 상태 클래스들
 class Idle:
@@ -231,10 +131,10 @@ class Attack1:
         pass
 
     def do(self, e):
-        input_check(e)
+        input_check(e, input_booleans)
         self.gaogaigar.frame += 1
         if self.gaogaigar.frame > 7:
-            self.gaogaigar.statemachine.handle_state_event(('ANIM_END', 0))
+            self.gaogaigar.statemachine.handle_state_event(('ANIM_END', 0), command_buffer, input_booleans)
 
     def draw(self):
         self.gaogaigar.image.clip_draw(min(self.gaogaigar.frame, 5) * 400, 400 * 2, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
@@ -250,10 +150,10 @@ class Attack2:
         pass
 
     def do(self, e):
-        input_check(e)
+        input_check(e, input_booleans)
         self.gaogaigar.frame += 1
         if self.gaogaigar.frame > 6:
-            self.gaogaigar.statemachine.handle_state_event(('ANIM_END', 0))
+            self.gaogaigar.statemachine.handle_state_event(('ANIM_END', 0), command_buffer, input_booleans)
 
     def draw(self):
         self.gaogaigar.image.clip_draw(min(self.gaogaigar.frame, 4) * 400, 400 * 3, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
@@ -269,10 +169,10 @@ class Attack3:
         pass
 
     def do(self, e):
-        input_check(e)
+        input_check(e, input_booleans)
         self.gaogaigar.frame += 1
         if self.gaogaigar.frame > 7:
-            self.gaogaigar.statemachine.handle_state_event(('ANIM_END', 0))
+            self.gaogaigar.statemachine.handle_state_event(('ANIM_END', 0), command_buffer, input_booleans)
 
     def draw(self):
         self.gaogaigar.image.clip_draw(min(self.gaogaigar.frame, 5) * 400, 400 * 4, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
@@ -288,10 +188,10 @@ class Command_skill: # Test
         pass
 
     def do(self, e):
-        input_check(e)
+        input_check(e, input_booleans)
         self.gaogaigar.frame += 1
         if self.gaogaigar.frame > 100:
-            self.gaogaigar.statemachine.handle_state_event(('ANIM_END', 0))
+            self.gaogaigar.statemachine.handle_state_event(('ANIM_END', 0), command_buffer, input_booleans)
 
     def draw(self):
         self.gaogaigar.image.clip_draw(min(self.gaogaigar.frame, 5) * 400, 400 * 2, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
@@ -337,12 +237,12 @@ class Gaogaigar:
             action, used = cmd_list
             command_buffer.clear_last_n(used) # 매칭된 커맨드만큼 버퍼에서 제거
             print(f'커맨드 인식: {action}')
-            self.statemachine.handle_state_event(('CMD', action))
+            self.statemachine.handle_state_event(('CMD', action), command_buffer, input_booleans)
 
 
     def draw(self):
         self.statemachine.draw()
 
     def handle_event(self, event):
-        self.statemachine.handle_state_event(('INPUT', event))
+        self.statemachine.handle_state_event(('INPUT', event), command_buffer, input_booleans)
         self.cur_input_event = event

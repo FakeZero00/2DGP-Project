@@ -10,9 +10,9 @@ class StateMachine:
     def draw(self):
         self.cur_state.draw()
 
-    def handle_state_event(self, state_event):
+    def handle_state_event(self, state_event, command_buffer, input_booleans):
         for events in self.rules[self.cur_state]:
-            if events(state_event):
+            if events(state_event, command_buffer, input_booleans):
                 next_state = self.rules[self.cur_state][events]
                 self.cur_state.exit(state_event)
                 next_state.enter(state_event)
