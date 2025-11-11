@@ -29,6 +29,7 @@ ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 
 #이동 속도
 RUN_SPEED_PPS = 1000
+DROP_SPEED_PPS = 100
 
 # 상태 클래스들
 class Idle:
@@ -235,7 +236,8 @@ class Command_skill: # Test
 class Gaogaigar:
     def __init__(self):
         self.image = load_image('../Sprite/Move_Sprite(temp_resize).png')
-        self.x, self.y = 300, 250
+        self.x, self.y = 300, 500#250
+        self.ya = 1
         self.frame = 0
         self.cur_input_event = None
         self.cooltime_bool = True
@@ -246,6 +248,7 @@ class Gaogaigar:
         self.CROUCH = Crouch(self)
         self.CROUCH_RIGHTDOWN = Crouch_Rightdown(self)
         self.CROUCH_LEFTDOWN = Crouch_Leftdown(self)
+        self.JUMP = Jump(self)
         self.ATTACK1 = Attack1(self)
         self.ATTACK2 = Attack2(self)
         self.ATTACK3 = Attack3(self)
@@ -269,6 +272,11 @@ class Gaogaigar:
         self.statemachine = StateMachine(self.IDLE, self.rules)
 
     def update(self):
+        #중력 적용
+        if self.ya != 0:
+            self.y += DROP_SPEED_PPS * (self.ya + Game_Framework.GRAVITY) * Game_Framework.frame_time
+
+        # 현재 입력 이벤트로 상태 머신 업데이트
         self.statemachine.update(('INPUT', self.cur_input_event))
         cmd_list = Recognizer.match(command_buffer)
         if cmd_list:
@@ -290,4 +298,6 @@ class Gaogaigar:
         return self.x - 225, self.y - 225, self.x + 225, self.y + 225
 
     def handle_collision(self, group, other):
-        pass
+        if group == 'gaogaigar:ground':
+            self.y = 250
+            self.ya = 0

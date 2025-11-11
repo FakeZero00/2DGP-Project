@@ -19,8 +19,8 @@ def remove_object(o):
 def add_collision_pairs(group, a, b):
     if group not in collision_pairs:
         collision_pairs[group] = [[], []]
-    if a: collision_pairs[group][0].appand(a)
-    if b: collision_pairs[group][1].appand(b)
+    if a: collision_pairs[group][0].append(a)
+    if b: collision_pairs[group][1].append(b)
 
 def remove_collision_object(o):
     for pairs in collision_pairs.values():

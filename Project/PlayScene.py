@@ -17,6 +17,8 @@ def init():
     gaogaigar = Gaogaigar()
     PlayScene_world.add_object(gaogaigar)
 
+    PlayScene_world.add_collision_pairs('gaogaigar:ground', gaogaigar, ground)
+
 def update():
     PlayScene_world.update()
     PlayScene_world.handle_collisions()

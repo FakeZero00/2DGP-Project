@@ -1,6 +1,6 @@
 import time
 frame_time = 0.0
-GRAVITY = 9.8
+GRAVITY = -9.8
 
 running = None
 stack = None
