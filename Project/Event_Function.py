@@ -7,14 +7,16 @@ def anim_end(behavior):
     elif behavior == 'CROUCH': return anim_end_to_crouch
     elif behavior == 'IDLE': return anim_end_to_idle
 
-def anim_end_to_run(e, command_buffer, input_booleans, cooltime_bool):
-    return e[0] == 'ANIM_END' and input_booleans['d'] == True
-def anim_end_to_back(e, command_buffer, input_booleans, cooltime_bool):
-    return e[0] == 'ANIM_END' and input_booleans['a'] == True
-def anim_end_to_crouch(e, command_buffer, input_booleans, cooltime_bool):
-    return e[0] == 'ANIM_END' and input_booleans['s'] == True
-def anim_end_to_idle(e, command_buffer, input_booleans, cooltime_bool):
-    return e[0] == 'ANIM_END' and input_booleans['a'] == False and input_booleans['d'] == False and input_booleans['s'] == False
+#object_state = (command_buffer, input_booleans, self.cooltime_bool, self.jump_bool)
+
+def anim_end_to_run(e, object_state):
+    return e[0] == 'ANIM_END' and object_state[1]['d'] == True
+def anim_end_to_back(e, object_state):
+    return e[0] == 'ANIM_END' and object_state[1]['a'] == True
+def anim_end_to_crouch(e, object_state):
+    return e[0] == 'ANIM_END' and object_state[1]['s'] == True
+def anim_end_to_idle(e, object_state):
+    return e[0] == 'ANIM_END' and object_state[1]['a'] == False and object_state[1]['d'] == False and object_state[1]['s'] == False
 
 def input_check(e, input_booleans):
     if(e[0] == 'INPUT'):
@@ -37,66 +39,93 @@ def input_check(e, input_booleans):
             elif e[1].key == SDLK_d:
                 input_booleans['d'] = False
 
-def left_down(e, command_buffer, input_booleans, cooltime_bool):
-    if(e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_a and input_booleans['a'] == False):
-        if (command_buffer.last_token() == 'DOWN'):
-            command_buffer.add('LEFTDOWN')
+def left_down(e, object_state):
+    if(e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_a and object_state[1]['a'] == False):
+        if (object_state[0].last_token() == 'DOWN'):
+            object_state[0].add('LEFTDOWN')
         else:
-            command_buffer.add('LEFT')
-        input_booleans['a'] = True
+            object_state[0].add('LEFT')
+        object_state[1]['a'] = True
         return True
-def left_up(e, command_buffer, input_booleans, cooltime_bool):
-    if(e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_a and input_booleans['a'] == True):
-        if (command_buffer.last_token() == 'LEFTDOWN'):
-            command_buffer.add('DOWN')
+def left_up(e, object_state):
+    if(e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_a and object_state[1]['a'] == True):
+        if (object_state[0].last_token() == 'LEFTDOWN'):
+            object_state[0].add('DOWN')
         else:
-            command_buffer.add('IDLE')
-        input_booleans['a'] = False
-        return True
-
-def right_down(e, command_buffer, input_booleans, cooltime_bool):
-    if(e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_d and input_booleans['d'] == False):
-        if (command_buffer.last_token() == 'DOWN'):
-            command_buffer.add('RIGHTDOWN')
-        else:
-            command_buffer.add('RIGHT')
-        input_booleans['d'] = True
-        return True
-def right_up(e, command_buffer, input_booleans, cooltime_bool):
-    if(e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_d and input_booleans['d'] == True):
-        if(command_buffer.last_token() == 'RIGHTDOWN'):
-            command_buffer.add('DOWN')
-        else:
-            command_buffer.add('IDLE')
-        input_booleans['d'] = False
+            object_state[0].add('IDLE')
+        object_state[1]['a'] = False
         return True
 
-def down_down(e, command_buffer, input_booleans, cooltime_bool):
-    if(e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_s and input_booleans['s'] == False):
-        if (command_buffer.last_token() == 'RIGHT'):
-            command_buffer.add('RIGHTDOWN')
-        elif (command_buffer.last_token() == 'LEFT'):
-            command_buffer.add('LEFTDOWN')
+def right_down(e, object_state):
+    if(e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_d and object_state[1]['d'] == False):
+        if (object_state[0].last_token() == 'DOWN'):
+            object_state[0].add('RIGHTDOWN')
+        elif (object_state[0].last_token() == 'UP'):
+            object_state[0].add('RIGHTUP')
         else:
-            command_buffer.add('DOWN')
-        input_booleans['s'] = True
+            object_state[0].add('RIGHT')
+        object_state[1]['d'] = True
         return True
-def down_up(e, command_buffer, input_booleans, cooltime_bool):
-    if(e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_s and input_booleans['s'] == True):
-        if(command_buffer.last_token() == 'RIGHTDOWN'):
-            command_buffer.add('RIGHT')
-        elif(command_buffer.last_token() == 'LEFTDOWN'):
-            command_buffer.add('LEFT')
+def right_up(e, object_state):
+    if(e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_d and object_state[1]['d'] == True):
+        if(object_state[0].last_token() == 'RIGHTDOWN'):
+            object_state[0].add('DOWN')
+        elif (object_state[0].last_token() == 'RIGHTUP'):
+            object_state[0].add('UP')
         else:
-            command_buffer.add('IDLE')
-        input_booleans['s'] = False
+            object_state[0].add('IDLE')
+        object_state[1]['d'] = False
         return True
 
-def attack_down(e, command_buffer, input_booleans = None, cooltime_bool = None):
+def up_down(e, object_state):
+    if(e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_w and object_state[1]['w'] == False and object_state[3] == False):
+        if (object_state[0].last_token() == 'RIGHT'):
+            object_state[0].add('RIGHTUP')
+        elif (object_state[0].last_token() == 'LEFT'):
+            object_state[0].add('LEFTUP')
+        else:
+            object_state[0].add('UP')
+        object_state[1]['w'] = True
+        return True
+
+def up_up(e, object_state):
+    if(e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_w and object_state[1]['w'] == True):
+        if(object_state[0].last_token() == 'RIGHTUP'):
+            object_state[0].add('RIGHT')
+        elif(object_state[0].last_token() == 'LEFTUP'):
+            object_state[0].add('LEFT')
+        else:
+            object_state[0].add('IDLE')
+        object_state[1]['w'] = False
+        return True
+
+def down_down(e, object_state):
+    if(e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_s and object_state[1]['s'] == False and object_state[3] == False):
+        if (object_state[0].last_token() == 'RIGHT'):
+            object_state[0].add('RIGHTDOWN')
+        elif (object_state[0].last_token() == 'LEFT'):
+            object_state[0].add('LEFTDOWN')
+        else:
+            object_state[0].add('DOWN')
+        object_state[1]['s'] = True
+        return True
+
+def down_up(e, object_state):
+    if(e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_s and object_state[1]['s'] == True):
+        if(object_state[0].last_token() == 'RIGHTDOWN'):
+            object_state[0].add('RIGHT')
+        elif(object_state[0].last_token() == 'LEFTDOWN'):
+            object_state[0].add('LEFT')
+        else:
+            object_state[0].add('IDLE')
+        object_state[1]['s'] = False
+        return True
+
+def attack_down(e, object_state):
     if(e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_j):
-        if cooltime_bool:
-            command_buffer.add('ATTACK')
+        if object_state[2]:
+            object_state[0].add('ATTACK')
             return True
-def attack_up(e, command_buffer = None, input_booleans = None, cooltime_bool = None):
+def attack_up(e, object_state):
     if(e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_j):
         return True
