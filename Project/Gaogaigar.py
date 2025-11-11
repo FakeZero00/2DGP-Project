@@ -1,4 +1,4 @@
-from pico2d import load_image
+from pico2d import load_image, draw_rectangle
 from Project.CommandRecognizer import CommandBuffer, CommandRecognizer
 from Project.State_Machine import StateMachine
 from Project.Event_Function import *
@@ -280,7 +280,14 @@ class Gaogaigar:
 
     def draw(self):
         self.statemachine.draw()
+        draw_rectangle(*self.get_bb())
 
     def handle_event(self, event):
         self.statemachine.handle_state_event(('INPUT', event), command_buffer, input_booleans, self.cooltime_bool)
         self.cur_input_event = event
+
+    def get_bb(self):
+        return self.x - 225, self.y - 225, self.x + 225, self.y + 225
+
+    def handle_collision(self, group, other):
+        pass

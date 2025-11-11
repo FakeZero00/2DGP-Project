@@ -19,6 +19,7 @@ def init():
 
 def update():
     PlayScene_world.update()
+    PlayScene_world.handle_collisions()
     print(command_buffer.tokens())
 
 def draw():
