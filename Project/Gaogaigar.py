@@ -20,7 +20,7 @@ def cmd_is(name):
     if name == 'COMMAND_SKILL':
         return cmdskill_start
 
-def cmdskill_start(e, command_buffer = None, input_booleans = None):
+def cmdskill_start(e, command_buffer = None, input_booleans = None, cooltime_bool = None):
     return e[0] == 'CMD' and e[1] == 'COMMAND_SKILL'
 
 #기준 프레임
@@ -134,6 +134,7 @@ class Attack1:
 
     def enter(self, e):
         self.gaogaigar.frame = 0
+        self.gaogaigar.cooltime_bool = False
 
     def exit(self, e):
         pass
@@ -142,7 +143,10 @@ class Attack1:
         input_check(e, input_booleans)
         self.gaogaigar.frame = self.gaogaigar.frame + 10 * ACTION_PER_TIME * Game_Framework.frame_time
         if int(self.gaogaigar.frame) > 7:
-            self.gaogaigar.statemachine.handle_state_event(('ANIM_END', 0), command_buffer, input_booleans)
+            self.gaogaigar.statemachine.handle_state_event(('ANIM_END', 0), command_buffer, input_booleans, self.gaogaigar.cooltime_bool)
+        elif int(self.gaogaigar.frame) >= 4:
+            self.gaogaigar.cooltime_bool = True
+
 
     def draw(self):
         self.gaogaigar.image.clip_draw(min(int(self.gaogaigar.frame), 5) * 400, 400 * 2, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
@@ -153,6 +157,7 @@ class Attack2:
 
     def enter(self, e):
         self.gaogaigar.frame = 0
+        self.gaogaigar.cooltime_bool = False
 
     def exit(self, e):
         pass
@@ -161,7 +166,9 @@ class Attack2:
         input_check(e, input_booleans)
         self.gaogaigar.frame = self.gaogaigar.frame + 10 * ACTION_PER_TIME * Game_Framework.frame_time
         if int(self.gaogaigar.frame) > 6:
-            self.gaogaigar.statemachine.handle_state_event(('ANIM_END', 0), command_buffer, input_booleans)
+            self.gaogaigar.statemachine.handle_state_event(('ANIM_END', 0), command_buffer, input_booleans, self.gaogaigar.cooltime_bool)
+        elif int(self.gaogaigar.frame) >= 3:
+            self.gaogaigar.cooltime_bool = True
 
     def draw(self):
         self.gaogaigar.image.clip_draw(min(int(self.gaogaigar.frame), 4) * 400, 400 * 3, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
@@ -180,7 +187,7 @@ class Attack3:
         input_check(e, input_booleans)
         self.gaogaigar.frame = self.gaogaigar.frame + 10 * ACTION_PER_TIME * Game_Framework.frame_time
         if int(self.gaogaigar.frame) > 8:
-            self.gaogaigar.statemachine.handle_state_event(('ANIM_END', 0), command_buffer, input_booleans)
+            self.gaogaigar.statemachine.handle_state_event(('ANIM_END', 0), command_buffer, input_booleans, self.gaogaigar.cooltime_bool)
 
     def draw(self):
         self.gaogaigar.image.clip_draw(min(int(self.gaogaigar.frame), 5) * 400, 400 * 4, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
@@ -199,7 +206,7 @@ class Command_skill: # Test
         input_check(e, input_booleans)
         self.gaogaigar.frame = self.gaogaigar.frame + 10 * ACTION_PER_TIME * Game_Framework.frame_time
         if int(self.gaogaigar.frame) > 100:
-            self.gaogaigar.statemachine.handle_state_event(('ANIM_END', 0), command_buffer, input_booleans)
+            self.gaogaigar.statemachine.handle_state_event(('ANIM_END', 0), command_buffer, input_booleans, self.gaogaigar.cooltime_bool)
 
     def draw(self):
         self.gaogaigar.image.clip_draw(min(int(self.gaogaigar.frame), 5) * 400, 400 * 2, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
@@ -211,6 +218,7 @@ class Gaogaigar:
         self.x, self.y = 800, 450
         self.frame = 0
         self.cur_input_event = None
+        self.cooltime_bool = True
 
         self.IDLE = Idle(self)
         self.RUN = Run(self)
@@ -231,8 +239,10 @@ class Gaogaigar:
             self.CROUCH: {down_up: self.IDLE, right_down: self.CROUCH_RIGHTDOWN, left_down: self.CROUCH_LEFTDOWN},
             self.CROUCH_RIGHTDOWN: {down_up: self.RUN, right_up: self.CROUCH},
             self.CROUCH_LEFTDOWN: {down_up: self.BACK, left_up: self.CROUCH},
-            self.ATTACK1: {anim_end('BACK'): self.BACK, anim_end('RUN'): self.RUN, anim_end('CROUCH'): self.CROUCH, anim_end('IDLE'): self.IDLE,  attack_down: self.ATTACK2, cmd_is('COMMAND_SKILL'): self.COMMAND_SKILL},
-            self.ATTACK2: {anim_end('BACK'): self.BACK, anim_end('RUN'): self.RUN, anim_end('CROUCH'): self.CROUCH, anim_end('IDLE'): self.IDLE, attack_down: self.ATTACK3},
+            self.ATTACK1: {anim_end('BACK'): self.BACK, anim_end('RUN'): self.RUN, anim_end('CROUCH'): self.CROUCH, anim_end('IDLE'): self.IDLE,
+                           attack_down: self.ATTACK2, cmd_is('COMMAND_SKILL'): self.COMMAND_SKILL},
+            self.ATTACK2: {anim_end('BACK'): self.BACK, anim_end('RUN'): self.RUN, anim_end('CROUCH'): self.CROUCH, anim_end('IDLE'): self.IDLE,
+                           attack_down: self.ATTACK3},
             self.ATTACK3: {anim_end('BACK'): self.BACK, anim_end('RUN'): self.RUN, anim_end('CROUCH'): self.CROUCH, anim_end('IDLE'): self.IDLE},
             self.COMMAND_SKILL: {anim_end('BACK'): self.BACK, anim_end('RUN'): self.RUN, anim_end('CROUCH'): self.CROUCH, anim_end('IDLE'): self.IDLE}
         }
@@ -245,12 +255,12 @@ class Gaogaigar:
             action, used = cmd_list
             command_buffer.clear_last_n(used) # 매칭된 커맨드만큼 버퍼에서 제거
             print(f'커맨드 인식: {action}')
-            self.statemachine.handle_state_event(('CMD', action), command_buffer, input_booleans)
+            self.statemachine.handle_state_event(('CMD', action), command_buffer, input_booleans, self.cooltime_bool)
 
 
     def draw(self):
         self.statemachine.draw()
 
     def handle_event(self, event):
-        self.statemachine.handle_state_event(('INPUT', event), command_buffer, input_booleans)
+        self.statemachine.handle_state_event(('INPUT', event), command_buffer, input_booleans, self.cooltime_bool)
         self.cur_input_event = event
