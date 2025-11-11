@@ -1,11 +1,15 @@
 from pico2d import *
 from Project.Gaogaigar import Gaogaigar
+from Project.Background import Background
 import PlayScene_world
 from Project.Gaogaigar import command_buffer
 
 #========= 씬 함수 ==========
 def init():
     global gaogaigar
+
+    background = Background(0)
+    PlayScene_world.add_object(background)
 
     gaogaigar = Gaogaigar()
     PlayScene_world.add_object(gaogaigar)
