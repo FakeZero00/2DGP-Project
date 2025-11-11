@@ -60,6 +60,8 @@ class Run:
     def do(self, e):
         self.gaogaigar.frame = (self.gaogaigar.frame + 10 * ACTION_PER_TIME * Game_Framework.frame_time) % 10
         self.gaogaigar.x += RUN_SPEED_PPS * Game_Framework.frame_time
+        if self.gaogaigar.x + 225 > 1600:
+            self.gaogaigar.x = 1600 - 225
 
     def draw(self):
         self.gaogaigar.image.clip_draw(int(self.gaogaigar.frame) * 400, 400, 400, 400, self.gaogaigar.x, self.gaogaigar.y, 450, 450)
@@ -76,6 +78,8 @@ class Back:
 
     def do(self, e):
         self.gaogaigar.x -= RUN_SPEED_PPS * Game_Framework.frame_time
+        if(self.gaogaigar.x - 225 < 0):
+            self.gaogaigar.x = 225
 
     def draw(self):
         self.gaogaigar.image.clip_draw(self.gaogaigar.frame * 400, 0, 400, 400, self.gaogaigar.x, self.gaogaigar.y, 450, 450)
