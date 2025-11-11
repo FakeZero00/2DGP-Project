@@ -45,7 +45,7 @@ class Idle:
         pass
 
     def draw(self):
-        self.gaogaigar.image.clip_draw(0, 0, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
+        self.gaogaigar.image.clip_draw(0, 0, 400, 400, self.gaogaigar.x, self.gaogaigar.y, 450, 450)
 
 class Run:
     def __init__(self, gaogaigar):
@@ -62,7 +62,7 @@ class Run:
         self.gaogaigar.x += RUN_SPEED_PPS * Game_Framework.frame_time
 
     def draw(self):
-        self.gaogaigar.image.clip_draw(int(self.gaogaigar.frame) * 400, 400, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
+        self.gaogaigar.image.clip_draw(int(self.gaogaigar.frame) * 400, 400, 400, 400, self.gaogaigar.x, self.gaogaigar.y, 450, 450)
 
 class Back:
     def __init__(self, gaogaigar):
@@ -78,7 +78,7 @@ class Back:
         self.gaogaigar.x -= RUN_SPEED_PPS * Game_Framework.frame_time
 
     def draw(self):
-        self.gaogaigar.image.clip_draw(self.gaogaigar.frame * 400, 0, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
+        self.gaogaigar.image.clip_draw(self.gaogaigar.frame * 400, 0, 400, 400, self.gaogaigar.x, self.gaogaigar.y, 450, 450)
 
 class Crouch:
     def __init__(self, gaogaigar):
@@ -94,7 +94,7 @@ class Crouch:
         pass
 
     def draw(self):
-        self.gaogaigar.image.clip_draw(self.gaogaigar.frame * 400, 0, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
+        self.gaogaigar.image.clip_draw(self.gaogaigar.frame * 400, 0, 400, 400, self.gaogaigar.x, self.gaogaigar.y, 450, 450)
 
 class Crouch_Rightdown:
     def __init__(self, gaogaigar):
@@ -110,7 +110,7 @@ class Crouch_Rightdown:
         pass
 
     def draw(self):
-        self.gaogaigar.image.clip_draw(self.gaogaigar.frame * 400, 0, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
+        self.gaogaigar.image.clip_draw(self.gaogaigar.frame * 400, 0, 400, 400, self.gaogaigar.x, self.gaogaigar.y, 450, 450)
 
 class Crouch_Leftdown:
     def __init__(self, gaogaigar):
@@ -126,7 +126,7 @@ class Crouch_Leftdown:
         pass
 
     def draw(self):
-        self.gaogaigar.image.clip_draw(self.gaogaigar.frame * 400, 0, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
+        self.gaogaigar.image.clip_draw(self.gaogaigar.frame * 400, 0, 400, 400, self.gaogaigar.x, self.gaogaigar.y, 450, 450)
 
 class Attack1:
     def __init__(self, gaogaigar):
@@ -149,7 +149,7 @@ class Attack1:
 
 
     def draw(self):
-        self.gaogaigar.image.clip_draw(min(int(self.gaogaigar.frame), 5) * 400, 400 * 2, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
+        self.gaogaigar.image.clip_draw(min(int(self.gaogaigar.frame), 5) * 400, 400 * 2, 400, 400, self.gaogaigar.x, self.gaogaigar.y, 450, 450)
 
 class Attack2:
     def __init__(self, gaogaigar):
@@ -171,7 +171,7 @@ class Attack2:
             self.gaogaigar.cooltime_bool = True
 
     def draw(self):
-        self.gaogaigar.image.clip_draw(min(int(self.gaogaigar.frame), 4) * 400, 400 * 3, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
+        self.gaogaigar.image.clip_draw(min(int(self.gaogaigar.frame), 4) * 400, 400 * 3, 400, 400, self.gaogaigar.x, self.gaogaigar.y, 450, 450)
 
 class Attack3:
     def __init__(self, gaogaigar):
@@ -190,7 +190,7 @@ class Attack3:
             self.gaogaigar.statemachine.handle_state_event(('ANIM_END', 0), command_buffer, input_booleans, self.gaogaigar.cooltime_bool)
 
     def draw(self):
-        self.gaogaigar.image.clip_draw(min(int(self.gaogaigar.frame), 5) * 400, 400 * 4, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
+        self.gaogaigar.image.clip_draw(min(int(self.gaogaigar.frame), 5) * 400, 400 * 4, 400, 400, self.gaogaigar.x, self.gaogaigar.y, 450, 450)
 
 class Command_skill: # Test
     def __init__(self, gaogaigar):
@@ -209,13 +209,13 @@ class Command_skill: # Test
             self.gaogaigar.statemachine.handle_state_event(('ANIM_END', 0), command_buffer, input_booleans, self.gaogaigar.cooltime_bool)
 
     def draw(self):
-        self.gaogaigar.image.clip_draw(min(int(self.gaogaigar.frame), 5) * 400, 400 * 2, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
+        self.gaogaigar.image.clip_draw(min(int(self.gaogaigar.frame), 5) * 400, 400 * 2, 400, 400, self.gaogaigar.x, self.gaogaigar.y, 450, 450)
 
 # 가오가이거 클래스 본체
 class Gaogaigar:
     def __init__(self):
         self.image = load_image('../Sprite/Move_Sprite(temp_resize).png')
-        self.x, self.y = 800, 450
+        self.x, self.y = 300, 250
         self.frame = 0
         self.cur_input_event = None
         self.cooltime_bool = True

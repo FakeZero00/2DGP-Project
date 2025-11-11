@@ -1,15 +1,18 @@
 from pico2d import *
-from Project.Gaogaigar import Gaogaigar
+from Project.Gaogaigar import Gaogaigar, command_buffer
 from Project.Background import Background
-import PlayScene_world
-from Project.Gaogaigar import command_buffer
+from Project.Ground import Ground
+import PlayScene_world, Game_Framework
 
 #========= 씬 함수 ==========
 def init():
     global gaogaigar
 
     background = Background(0)
-    PlayScene_world.add_object(background)
+    PlayScene_world.add_object(background, 0)
+
+    ground = Ground(0)
+    PlayScene_world.add_object(ground, 0)
 
     gaogaigar = Gaogaigar()
     PlayScene_world.add_object(gaogaigar)
@@ -33,7 +36,7 @@ def Input_Event():
     event_list = get_events()
     for event in event_list:
         if event.type == SDL_QUIT: # 창 닫기 버튼
-            Window_Running = False
+            Game_Framework.quit()
         else:
             gaogaigar.handle_event(event)
 
