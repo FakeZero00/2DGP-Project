@@ -132,6 +132,22 @@ class Crouch_Leftdown:
     def draw(self):
         self.gaogaigar.image.clip_draw(self.gaogaigar.frame * 400, 0, 400, 400, self.gaogaigar.x, self.gaogaigar.y, 450, 450)
 
+class Jump:
+    def __init__(self, gaogaigar):
+        self.gaogaigar = gaogaigar
+
+    def enter(self, e):
+        self.gaogaigar.frame = 4
+
+    def exit(self, e):
+        pass
+
+    def do(self, e):
+        pass
+
+    def draw(self):
+        self.gaogaigar.image.clip_draw(self.gaogaigar.frame * 400, 0, 400, 400, self.gaogaigar.x, self.gaogaigar.y)
+
 class Attack1:
     def __init__(self, gaogaigar):
         self.gaogaigar = gaogaigar
