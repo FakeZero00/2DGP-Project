@@ -175,8 +175,8 @@ class Jump_Leftup:
 
     def do(self, e):
         self.gaogaigar.x -= RUN_SPEED_PPS * Game_Framework.frame_time
-        if self.gaogaigar.x + 225 > 1600:
-            self.gaogaigar.x = 1600 - 225
+        if (self.gaogaigar.x - 225 < 0):
+            self.gaogaigar.x = 225
 
     def draw(self):
         self.gaogaigar.image.clip_draw(self.gaogaigar.frame * 400, 0, 400, 400, self.gaogaigar.x, self.gaogaigar.y, 450, 450)
