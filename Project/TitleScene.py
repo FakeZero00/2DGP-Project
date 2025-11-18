@@ -1,17 +1,13 @@
-import Game_Framework, TitleScene
+import Game_Framework
 from pico2d import *
 
 def init():
     global image, logo_start_time
 
-    image = load_image("../Sprite/Sponsor_Logo.png")
-    logo_start_time = get_time()
+    image = load_image("../Sprite/Title_Background.png")
 
 def update():
-    global logo_start_time
-    if get_time() - logo_start_time >= 2.0:
-        logo_start_time = get_time()
-        Game_Framework.change_scene(TitleScene)
+    pass
 
 def draw():
     clear_canvas()
