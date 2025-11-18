@@ -18,6 +18,7 @@ def draw():
     image.draw(800, 450)
     update_canvas()
 
+def pause(): pass
 def resume(): pass
 
 def finish():
