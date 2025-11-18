@@ -34,14 +34,9 @@ def resume(): pass
 
 #====== Input 이벤트 처리 함수 =====
 def Input_Event():
-    global Window_Running
-
     event_list = get_events()
     for event in event_list:
         if event.type == SDL_QUIT: # 창 닫기 버튼
             Game_Framework.quit()
         else:
             gaogaigar.handle_event(event)
-
-#========= 전역 변수 ==========
-Running = True
