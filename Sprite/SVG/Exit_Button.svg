@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="1536mm"
-   height="512mm"
-   viewBox="0 0 1536 512"
+   width="300"
+   height="100"
+   viewBox="0 0 79.374998 26.458333"
    version="1.1"
    id="svg1"
    inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
@@ -27,27 +27,27 @@
      inkscape:pagecheckerboard="true"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="px"
-     inkscape:zoom="0.27015116"
-     inkscape:cx="2952.0509"
-     inkscape:cy="320.19111"
+     inkscape:zoom="4.3224186"
+     inkscape:cx="148.64363"
+     inkscape:cy="54.94609"
      inkscape:window-width="2560"
-     inkscape:window-height="1494"
-     inkscape:window-x="-11"
-     inkscape:window-y="-11"
+     inkscape:window-height="1369"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1" />
   <defs
      id="defs1">
     <rect
-       x="551.54306"
-       y="77.734257"
+       x="551.54303"
+       y="77.734261"
        width="4571.5146"
        height="1810.0977"
        id="rect4" />
     <rect
-       x="840.2703"
+       x="840.27032"
        y="347.95334"
-       width="3649.8084"
+       width="3649.8083"
        height="1125.2959"
        id="rect3" />
     <linearGradient
@@ -74,21 +74,22 @@
        y1="-511.45239"
        x2="768.3822"
        y2="1023.927"
-       gradientUnits="userSpaceOnUse" />
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.05169732,0,0,0.05176848,-0.03580212,-0.0358514)" />
   </defs>
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1">
     <path
-       style="fill:url(#linearGradient2);stroke:none;stroke-width:0.700087"
-       d="M 132.27385,0.69253327 0.69253327,248.61944 139.19919,511.78208 1373.3266,511.08953 1536.0719,264.54771 1357.3984,0.69253327 Z"
+       style="fill:url(#linearGradient2);stroke:none;stroke-width:0.0362175"
+       d="M 6.8024014,0 0,12.834801 7.1604228,26.458333 70.961503,26.42248 79.374999,13.659383 70.138057,0 Z"
        id="path1"
        sodipodi:nodetypes="ccccccc" />
     <path
-       d="M 487.71126,413.04832 H 276.90309 V 93.075498 H 487.71126 V 130.89633 H 319.45148 v 87.67556 h 168.25978 v 37.82083 H 319.45148 V 375.22749 H 487.71126 Z M 799.30332,93.075498 688.84929,251.23534 799.08842,413.04832 H 749.87836 L 662.63254,281.32008 573.23787,413.04832 H 526.82141 L 638.3499,253.16935 529.40008,93.075498 h 48.99516 L 664.56657,223.0846 752.6719,93.075498 Z M 969.49703,413.04832 H 843.14111 v -32.66344 h 41.90377 V 125.73894 H 843.14111 V 93.075498 h 126.35592 v 32.663442 h -41.90377 v 254.64594 h 41.90377 z M 1270.1297,130.89633 h -114.3221 v 282.15199 h -42.5484 V 130.89633 H 998.93714 V 93.075498 h 271.19256 z"
+       d="M 25.177563,21.347035 H 14.279346 V 4.7825262 h 10.898217 v 1.9579273 h -8.69858 v 4.5388315 h 8.69858 v 1.957927 h -8.69858 v 6.151896 h 8.69858 z M 41.286037,4.7825262 35.57586,12.970221 41.274928,21.347035 H 38.7309 l -4.510375,-6.819372 -4.621465,6.819372 h -2.399607 l 5.765723,-8.276692 -5.632413,-8.2878168 h 2.532918 l 4.454828,6.7303748 4.554809,-6.7303748 z m 8.798558,16.5645088 h -6.532261 v -1.690937 h 2.166311 V 6.4734633 H 43.552334 V 4.7825262 h 6.532261 V 6.4734633 H 47.918284 V 19.656098 h 2.166311 z M 65.6265,6.7404535 H 59.716353 V 21.347035 H 57.516714 V 6.7404535 H 51.606571 V 4.7825262 H 65.6265 Z"
        id="text3"
-       style="font-size:666.667px;-inkscape-font-specification:'sans-serif, Normal';text-align:center;text-anchor:middle;white-space:pre;stroke:#494949;stroke-width:11.9812"
+       style="font-size:666.667px;-inkscape-font-specification:'sans-serif, Normal';text-align:center;text-anchor:middle;white-space:pre;stroke:#494949;stroke-width:0.619822"
        aria-label="EXIT" />
   </g>
 </svg>
