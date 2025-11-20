@@ -1,25 +1,32 @@
 import Game_Framework
 from pico2d import *
 
-def init():
-    global image, logo_start_time
+TIME_PER_VIDEO = 5.0
+VIDEO_PER_TIME = 1.0 / TIME_PER_VIDEO
 
-    image = load_image("../Sprite/Title_Background.png")
+def init():
+    global background_image, title_image, title_animation, framex, framey, frame
+
+    background_image = load_image("../Sprite/Title_Background.png")
+    title_image = load_image("../Sprite/Title.png")
+    frame = 0.0
 
 def update():
-    pass
+    global frame
+    frame += frame * VIDEO_PER_TIME * Game_Framework.frame_time
 
 def draw():
     clear_canvas()
-    image.draw(800, 450)
+    background_image.draw(800, 450)
+    title_image.clip_draw(0, 0, 1600, 900, 800, 450, 1600, 900)
     update_canvas()
 
 def pause(): pass
 def resume(): pass
 
 def finish():
-    global image
-    del image
+    global background_image, letter_image, title_image
+    del background_image, letter_image, title_image
 
 def Input_Event():
     event_list = get_events()
