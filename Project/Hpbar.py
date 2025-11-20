@@ -8,8 +8,6 @@ class Hpbar:
         self.Maxhp = 100
         self.hp = 100
 
-
-
     def update(self):
         pass
 
