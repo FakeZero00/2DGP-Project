@@ -2,6 +2,7 @@ from pico2d import *
 from Project.Gaogaigar import Gaogaigar, command_buffer
 from Project.Background import Background
 from Project.Ground import Ground
+from Project.Hpbar import Hpbar
 import PlayScene_world, Game_Framework
 
 #========= 씬 함수 ==========
@@ -13,6 +14,11 @@ def init():
 
     ground = Ground(0)
     PlayScene_world.add_object(ground, 0)
+
+    p1hp = Hpbar(1)
+    PlayScene_world.add_object(p1hp, 0)
+    p2hp = Hpbar(2)
+    PlayScene_world.add_object(p2hp, 0)
 
     gaogaigar = Gaogaigar()
     PlayScene_world.add_object(gaogaigar)
