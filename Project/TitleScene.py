@@ -9,6 +9,8 @@ def init():
 
     background_image = load_image("../Sprite/Title_Background.png")
     title_image = load_image("../Sprite/Title.png")
+
+    
     frame = 0.0
 
 def update():
