@@ -149,7 +149,7 @@ class Jump:
         self.gaogaigar.frame = 4
         if not self.gaogaigar.jump_bool:
             self.gaogaigar.jump_bool = True
-            self.gaogaigar.yv = 10
+            self.gaogaigar.jump_frame = 0
 
     def exit(self, e):
         pass
@@ -168,7 +168,7 @@ class Jump_Leftup:
         self.gaogaigar.frame = 1
         if not self.gaogaigar.jump_bool:
             self.gaogaigar.jump_bool = True
-            self.gaogaigar.yv = 10
+            self.gaogaigar.jump_frame = 0
 
     def exit(self, e):
         pass
@@ -189,7 +189,7 @@ class Jump_Rightup:
         self.gaogaigar.frame = 2
         if not self.gaogaigar.jump_bool:
             self.gaogaigar.jump_bool = True
-            self.gaogaigar.yv = 10
+            self.gaogaigar.jump_frame = 0
 
     def exit(self, e):
         pass
@@ -295,6 +295,11 @@ class Gaogaigar:
         self.cur_input_event = None
         self.cooltime_bool = True
         self.jump_bool = False
+        self.jump_frame = 0
+        #점프 높이 테이블 (프레임별 y 오프셋)
+        self.jump_table = [0, 20, 50, 90, 140, 200, 270, 300, 330, 350, 380, 400, 400, 400, 400, 400, 400, 380, 350, 330, 300, 270, 200, 140, 90, 50, 20, 0]
+
+        #객체 상태 초기화
         self.object_state = (command_buffer, input_booleans, self.cooltime_bool, self.jump_bool)
 
         self.IDLE = Idle(self)
@@ -335,10 +340,14 @@ class Gaogaigar:
         #객체 상태 업데이트
         self.object_state = (command_buffer, input_booleans, self.cooltime_bool, self.jump_bool)
 
-        #중력 적용
-        if self.yv != 0:
-            self.yv +=  Game_Framework.GRAVITY * Game_Framework.frame_time
-            self.y += DROP_SPEED_PPS * self.yv * Game_Framework.frame_time
+        #점프 프레임 테이블 적용
+        if self.jump_bool:
+            self.jump_frame += 20 * ACTION_PER_TIME * Game_Framework.frame_time
+            if int(self.jump_frame) < len(self.jump_table):
+                self.y = 250 + self.jump_table[int(self.jump_frame)]
+            else:
+                self.jump_bool = False
+                self.y = 250
 
         # 현재 입력 이벤트로 상태 머신 업데이트
         self.statemachine.update(('INPUT', self.cur_input_event))
@@ -362,7 +371,7 @@ class Gaogaigar:
         return self.x - 225, self.y - 225, self.x + 225, self.y + 225
 
     def handle_collision(self, group, other):
-        if group == 'gaogaigar:ground':
-            self.y = 250
-            self.yv = 0
-            self.jump_bool = False
+        # if group == 'gaogaigar:ground':
+        #     self.y = 250
+        #     self.jump_bool = False
+        pass

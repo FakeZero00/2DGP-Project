@@ -21,13 +21,11 @@ def init():
     p2hp = Hpbar(2)
     PlayScene_world.add_object(p2hp, 0)
 
-    timer = Timer(5)
+    timer = Timer(60)
     PlayScene_world.add_object(timer, 0)
 
     gaogaigar = Gaogaigar()
     PlayScene_world.add_object(gaogaigar)
-
-    PlayScene_world.add_collision_pairs('gaogaigar:ground', gaogaigar, ground)
 
 def update():
     PlayScene_world.update()
