@@ -30,6 +30,7 @@ ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 #이동 속도
 RUN_SPEED_PPS = 1000
 DROP_SPEED_PPS = 100
+ATTACK_MOVE_SPEED_PPS = 200
 
 # 상태 클래스들
 class Idle:
@@ -215,12 +216,17 @@ class Attack1:
 
     def do(self, e):
         input_check(e, input_booleans)
+
         self.gaogaigar.frame = self.gaogaigar.frame + 10 * ACTION_PER_TIME * Game_Framework.frame_time
         if int(self.gaogaigar.frame) > 7:
             self.gaogaigar.statemachine.handle_state_event(('ANIM_END', 0), self.gaogaigar.object_state)
         elif int(self.gaogaigar.frame) >= 4:
             self.gaogaigar.cooltime_bool = True
 
+        if self.gaogaigar.y <= 250:
+            self.gaogaigar.x += ATTACK_MOVE_SPEED_PPS * Game_Framework.frame_time
+        if self.gaogaigar.x + 225 > 1600:
+            self.gaogaigar.x = 1600 - 225
 
     def draw(self):
         self.gaogaigar.image.clip_draw(min(int(self.gaogaigar.frame), 5) * 400, 400 * 2, 400, 400, self.gaogaigar.x, self.gaogaigar.y, 450, 450)
@@ -238,11 +244,17 @@ class Attack2:
 
     def do(self, e):
         input_check(e, input_booleans)
+
         self.gaogaigar.frame = self.gaogaigar.frame + 10 * ACTION_PER_TIME * Game_Framework.frame_time
         if int(self.gaogaigar.frame) > 6:
             self.gaogaigar.statemachine.handle_state_event(('ANIM_END', 0), self.gaogaigar.object_state)
         elif int(self.gaogaigar.frame) >= 3:
             self.gaogaigar.cooltime_bool = True
+
+        if self.gaogaigar.y <= 250:
+            self.gaogaigar.x += ATTACK_MOVE_SPEED_PPS * Game_Framework.frame_time
+        if self.gaogaigar.x + 225 > 1600:
+            self.gaogaigar.x = 1600 - 225
 
     def draw(self):
         self.gaogaigar.image.clip_draw(min(int(self.gaogaigar.frame), 4) * 400, 400 * 3, 400, 400, self.gaogaigar.x, self.gaogaigar.y, 450, 450)
@@ -259,9 +271,15 @@ class Attack3:
 
     def do(self, e):
         input_check(e, input_booleans)
+
         self.gaogaigar.frame = self.gaogaigar.frame + 10 * ACTION_PER_TIME * Game_Framework.frame_time
         if int(self.gaogaigar.frame) > 8:
             self.gaogaigar.statemachine.handle_state_event(('ANIM_END', 0), self.gaogaigar.object_state)
+
+        if self.gaogaigar.y <= 250:
+            self.gaogaigar.x += ATTACK_MOVE_SPEED_PPS * Game_Framework.frame_time
+        if self.gaogaigar.x + 225 > 1600:
+            self.gaogaigar.x = 1600 - 225
 
     def draw(self):
         self.gaogaigar.image.clip_draw(min(int(self.gaogaigar.frame), 5) * 400, 400 * 4, 400, 400, self.gaogaigar.x, self.gaogaigar.y, 450, 450)
@@ -315,6 +333,7 @@ class Gaogaigar:
         self.ATTACK2 = Attack2(self)
         self.ATTACK3 = Attack3(self)
         self.COMMAND_SKILL = Command_skill(self)
+
         self.rules = {
             self.IDLE: {right_down: self.RUN, left_down: self.BACK, right_up: self.BACK, left_up: self.RUN, down_down: self.CROUCH, up_down: self.JUMP, up_up: self.IDLE,
                         cmd_is('COMMAND_SKILL'): self.COMMAND_SKILL, attack_down: self.ATTACK1},
