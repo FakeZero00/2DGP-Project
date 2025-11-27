@@ -1,5 +1,6 @@
 from pico2d import *
-from Project.Gaogaigar import Gaogaigar, command_buffer
+from Project.Gaogaigar import Gaogaigar#, command_buffer
+from Project.Gundam import Gundam, command_buffer
 from Project.Background import Background
 from Project.Ground import Ground
 from Project.Hpbar import Hpbar
@@ -8,7 +9,7 @@ import PlayScene_world, Game_Framework
 
 #========= 씬 함수 ==========
 def init():
-    global gaogaigar
+    global gaogaigar, gundam
 
     background = Background(0)
     PlayScene_world.add_object(background, 0)
@@ -24,8 +25,10 @@ def init():
     timer = Timer(60)
     PlayScene_world.add_object(timer, 0)
 
-    gaogaigar = Gaogaigar()
-    PlayScene_world.add_object(gaogaigar)
+    # gaogaigar = Gaogaigar()
+    # PlayScene_world.add_object(gaogaigar)
+    gundam = Gundam()
+    PlayScene_world.add_object(gundam)
 
 def update():
     PlayScene_world.update()
@@ -49,4 +52,5 @@ def Input_Event():
         if event.type == SDL_QUIT: # 창 닫기 버튼
             Game_Framework.quit()
         else:
-            gaogaigar.handle_event(event)
+            #gaogaigar.handle_event(event)
+            gundam.handle_event(event)
