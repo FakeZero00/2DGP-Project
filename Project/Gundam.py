@@ -1,11 +1,9 @@
 from pico2d import load_image, draw_rectangle
 from Project.CommandRecognizer import CommandBuffer, CommandRecognizer
 from Project.State_Machine import StateMachine
-from Project.P1_Event_Function import *
-import Game_Framework
-
-#커맨드 버퍼
-command_buffer = CommandBuffer()
+import Project.P1_Event_Function as P1
+import Project.P2_Event_Function as P2
+import Game_Framework, Global_Object
 
 #커맨드 목록
 CommandList = [
@@ -15,7 +13,6 @@ CommandList = [
 Recognizer = CommandRecognizer(CommandList)
 
 #커맨드, INPUT 등 이벤트 함수
-input_booleans = {input_key : False for input_key in ['w', 'a', 's', 'd']}
 def cmd_is(name):
     if name == 'COMMAND_SKILL':
         return cmdskill_start
@@ -50,7 +47,7 @@ class Idle:
         if self.gundam.jump_bool:
             self.gundam.image.clip_draw(self.gundam.frame * 820, 0, 800, 800, self.gundam.x, self.gundam.y, 450, 450)
         else:
-            self.gundam.image.clip_draw(0, 0, 800, 700, self.gundam.x, self.gundam.y, 450, 450)
+            self.gundam.image.clip_draw(0, 0, 700, 700, self.gundam.x, self.gundam.y - 30, 400, 400)
 
 class Run:
     def __init__(self, gundam):
@@ -215,7 +212,10 @@ class Attack1:
         pass
 
     def do(self, e):
-        input_check(e, input_booleans)
+        if self.gundam.player == 'p1':
+            P1.input_check(e, self.gundam.input_booleans)
+        elif self.gundam.player == 'p2':
+            P2.input_check(e, self.gundam.input_booleans)
 
         self.gundam.frame = self.gundam.frame + 10 * ACTION_PER_TIME * Game_Framework.frame_time
         if int(self.gundam.frame) > 4:
@@ -246,7 +246,10 @@ class Attack2:
         pass
 
     def do(self, e):
-        input_check(e, input_booleans)
+        if self.gundam.player == 'p1':
+            P1.input_check(e, self.gundam.input_booleans)
+        elif self.gundam.player == 'p2':
+            P2.input_check(e, self.gundam.input_booleans)
 
         self.gundam.frame = self.gundam.frame + 10 * ACTION_PER_TIME * Game_Framework.frame_time
         if int(self.gundam.frame) > 5:
@@ -282,7 +285,10 @@ class Attack3:
         pass
 
     def do(self, e):
-        input_check(e, input_booleans)
+        if self.gundam.player == 'p1':
+            P1.input_check(e, self.gundam.input_booleans)
+        elif self.gundam.player == 'p2':
+            P2.input_check(e, self.gundam.input_booleans)
 
         self.gundam.frame = self.gundam.frame + 10 * ACTION_PER_TIME * Game_Framework.frame_time
         if int(self.gundam.frame) > 5:
@@ -314,7 +320,11 @@ class Command_skill: # Test
         self.gundam.cooltime_bool = True
 
     def do(self, e):
-        input_check(e, input_booleans)
+        if self.gundam.player == 'p1':
+            P1.input_check(e, self.gundam.input_booleans)
+        elif self.gundam.player == 'p2':
+            P2.input_check(e, self.gundam.input_booleans)
+
         self.gundam.frame = self.gundam.frame + 10 * ACTION_PER_TIME * Game_Framework.frame_time
         if int(self.gundam.frame) > 100:
             self.gundam.statemachine.handle_state_event(('ANIM_END', 0), self.gundam.object_state)
@@ -327,7 +337,7 @@ class Command_skill: # Test
 
 # 건담 클래스 본체
 class Gundam:
-    def __init__(self):
+    def __init__(self, player):
         self.image = load_image('../Sprite/Gundam_Sprite.png')
         self.x, self.y = 300, 250
         self.yv = 0
@@ -340,7 +350,13 @@ class Gundam:
         self.jump_table = [0, 20, 50, 90, 140, 200, 270, 300, 330, 350, 380, 400, 400, 400, 400, 400, 400, 380, 350, 330, 300, 270, 200, 140, 90, 50, 20, 0]
 
         #객체 상태 초기화
-        self.object_state = (command_buffer, input_booleans, self.cooltime_bool, self.jump_bool)
+        self.player = player
+        if self.player == 'p1':
+            self.input_booleans = {input_key: False for input_key in ['w', 'a', 's', 'd']}
+        elif self.player == 'p2':
+            self.input_booleans = {input_key: False for input_key in ['UP', 'LEFT', 'DOWN', 'RIGHT']}
+        self.command_buffer = CommandBuffer()
+        self.object_state = (self.command_buffer, self.input_booleans, self.cooltime_bool, self.jump_bool)
 
         self.IDLE = Idle(self)
         self.RUN = Run(self)
@@ -356,30 +372,60 @@ class Gundam:
         self.ATTACK3 = Attack3(self)
         self.COMMAND_SKILL = Command_skill(self)
 
-        self.rules = {
-            self.IDLE: {right_down: self.RUN, left_down: self.BACK, right_up: self.BACK, left_up: self.RUN, down_down: self.CROUCH, up_down: self.JUMP, up_up: self.IDLE,
-                        cmd_is('COMMAND_SKILL'): self.COMMAND_SKILL, attack_down: self.ATTACK1},
-            self.RUN: {right_up: self.IDLE, left_down: self.IDLE, right_down: self.IDLE, down_down: self.CROUCH_RIGHTDOWN, up_down: self.JUMP_RIGHTUP,
-                       attack_down: self.ATTACK1},
-            self.BACK: {left_up: self.IDLE, right_down: self.IDLE, down_down: self.CROUCH_LEFTDOWN, up_down: self.JUMP_LEFTUP},
-            self.CROUCH: {down_up: self.IDLE, right_down: self.CROUCH_RIGHTDOWN, left_down: self.CROUCH_LEFTDOWN},
-            self.CROUCH_RIGHTDOWN: {down_up: self.RUN, right_up: self.CROUCH},
-            self.CROUCH_LEFTDOWN: {down_up: self.BACK, left_up: self.CROUCH},
-            self.JUMP: {up_up: self.IDLE, left_down: self.JUMP_LEFTUP, right_down: self.JUMP_RIGHTUP},
-            self.JUMP_LEFTUP: {up_up: self.BACK, left_up: self.IDLE},
-            self.JUMP_RIGHTUP: {up_up: self.RUN, right_up: self.IDLE},
-            self.ATTACK1: {anim_end('BACK'): self.BACK, anim_end('RUN'): self.RUN, anim_end('CROUCH'): self.CROUCH, anim_end('IDLE'): self.IDLE,
-                           attack_down: self.ATTACK2, cmd_is('COMMAND_SKILL'): self.COMMAND_SKILL},
-            self.ATTACK2: {anim_end('BACK'): self.BACK, anim_end('RUN'): self.RUN, anim_end('CROUCH'): self.CROUCH, anim_end('IDLE'): self.IDLE,
-                           attack_down: self.ATTACK3},
-            self.ATTACK3: {anim_end('BACK'): self.BACK, anim_end('RUN'): self.RUN, anim_end('CROUCH'): self.CROUCH, anim_end('IDLE'): self.IDLE},
-            self.COMMAND_SKILL: {anim_end('BACK'): self.BACK, anim_end('RUN'): self.RUN, anim_end('CROUCH'): self.CROUCH, anim_end('IDLE'): self.IDLE}
+        self.P1rules = {
+            self.IDLE: {P1.right_down: self.RUN, P1.left_down: self.BACK, P1.right_up: self.BACK, P1.left_up: self.RUN, P1.down_down: self.CROUCH, P1.up_down: self.JUMP, P1.up_up: self.IDLE,
+                        cmd_is('COMMAND_SKILL'): self.COMMAND_SKILL, P1.attack_down: self.ATTACK1},
+            self.RUN: {P1.right_up: self.IDLE, P1.left_down: self.IDLE, P1.right_down: self.IDLE, P1.down_down: self.CROUCH_RIGHTDOWN, P1.up_down: self.JUMP_RIGHTUP,
+                       P1.attack_down: self.ATTACK1},
+            self.BACK: {P1.left_up: self.IDLE, P1.right_down: self.IDLE, P1.down_down: self.CROUCH_LEFTDOWN, P1.up_down: self.JUMP_LEFTUP},
+            self.CROUCH: {P1.down_up: self.IDLE, P1.right_down: self.CROUCH_RIGHTDOWN, P1.left_down: self.CROUCH_LEFTDOWN},
+            self.CROUCH_RIGHTDOWN: {P1.down_up: self.RUN, P1.right_up: self.CROUCH},
+            self.CROUCH_LEFTDOWN: {P1.down_up: self.BACK, P1.left_up: self.CROUCH},
+            self.JUMP: {P1.up_up: self.IDLE, P1.left_down: self.JUMP_LEFTUP, P1.right_down: self.JUMP_RIGHTUP},
+            self.JUMP_LEFTUP: {P1.up_up: self.BACK, P1.left_up: self.IDLE},
+            self.JUMP_RIGHTUP: {P1.up_up: self.RUN, P1.right_up: self.IDLE},
+            self.ATTACK1: {P1.anim_end('BACK'): self.BACK, P1.anim_end('RUN'): self.RUN, P1.anim_end('CROUCH'): self.CROUCH, P1.anim_end('IDLE'): self.IDLE,
+                           P1.attack_down: self.ATTACK2, cmd_is('COMMAND_SKILL'): self.COMMAND_SKILL},
+            self.ATTACK2: {P1.anim_end('BACK'): self.BACK, P1.anim_end('RUN'): self.RUN, P1.anim_end('CROUCH'): self.CROUCH, P1.anim_end('IDLE'): self.IDLE,
+                           P1.attack_down: self.ATTACK3},
+            self.ATTACK3: {P1.anim_end('BACK'): self.BACK, P1.anim_end('RUN'): self.RUN, P1.anim_end('CROUCH'): self.CROUCH, P1.anim_end('IDLE'): self.IDLE},
+            self.COMMAND_SKILL: {P1.anim_end('BACK'): self.BACK, P1.anim_end('RUN'): self.RUN, P1.anim_end('CROUCH'): self.CROUCH, P1.anim_end('IDLE'): self.IDLE}
         }
-        self.statemachine = StateMachine(self.IDLE, self.rules)
+        self.P2rules = {
+            self.IDLE: {P2.right_down: self.RUN, P2.left_down: self.BACK, P2.right_up: self.BACK, P2.left_up: self.RUN,
+                        P2.down_down: self.CROUCH, P2.up_down: self.JUMP, P2.up_up: self.IDLE,
+                        cmd_is('COMMAND_SKILL'): self.COMMAND_SKILL, P2.attack_down: self.ATTACK1},
+            self.RUN: {P2.right_up: self.IDLE, P2.left_down: self.IDLE, P2.right_down: self.IDLE,
+                       P2.down_down: self.CROUCH_RIGHTDOWN, P2.up_down: self.JUMP_RIGHTUP,
+                       P2.attack_down: self.ATTACK1},
+            self.BACK: {P2.left_up: self.IDLE, P2.right_down: self.IDLE, P2.down_down: self.CROUCH_LEFTDOWN,
+                        P2.up_down: self.JUMP_LEFTUP},
+            self.CROUCH: {P2.down_up: self.IDLE, P2.right_down: self.CROUCH_RIGHTDOWN,
+                          P2.left_down: self.CROUCH_LEFTDOWN},
+            self.CROUCH_RIGHTDOWN: {P2.down_up: self.RUN, P2.right_up: self.CROUCH},
+            self.CROUCH_LEFTDOWN: {P2.down_up: self.BACK, P2.left_up: self.CROUCH},
+            self.JUMP: {P2.up_up: self.IDLE, P2.left_down: self.JUMP_LEFTUP, P2.right_down: self.JUMP_RIGHTUP},
+            self.JUMP_LEFTUP: {P2.up_up: self.BACK, P2.left_up: self.IDLE},
+            self.JUMP_RIGHTUP: {P2.up_up: self.RUN, P2.right_up: self.IDLE},
+            self.ATTACK1: {P2.anim_end('BACK'): self.BACK, P2.anim_end('RUN'): self.RUN,
+                           P2.anim_end('CROUCH'): self.CROUCH, P2.anim_end('IDLE'): self.IDLE,
+                           P2.attack_down: self.ATTACK2, cmd_is('COMMAND_SKILL'): self.COMMAND_SKILL},
+            self.ATTACK2: {P2.anim_end('BACK'): self.BACK, P2.anim_end('RUN'): self.RUN,
+                           P2.anim_end('CROUCH'): self.CROUCH, P2.anim_end('IDLE'): self.IDLE,
+                           P2.attack_down: self.ATTACK3},
+            self.ATTACK3: {P2.anim_end('BACK'): self.BACK, P2.anim_end('RUN'): self.RUN,
+                           P2.anim_end('CROUCH'): self.CROUCH, P2.anim_end('IDLE'): self.IDLE},
+            self.COMMAND_SKILL: {P2.anim_end('BACK'): self.BACK, P2.anim_end('RUN'): self.RUN,
+                                 P2.anim_end('CROUCH'): self.CROUCH, P2.anim_end('IDLE'): self.IDLE}
+        }
+        if self.player == 'p1':
+            self.statemachine = StateMachine(self.IDLE, self.P1rules)
+        if self.player == 'p2':
+            self.statemachine = StateMachine(self.IDLE, self.P2rules)
 
     def update(self):
         #객체 상태 업데이트
-        self.object_state = (command_buffer, input_booleans, self.cooltime_bool, self.jump_bool)
+        self.object_state = (self.command_buffer, self.input_booleans, self.cooltime_bool, self.jump_bool)
 
         #점프 프레임 테이블 적용
         if self.jump_bool:
@@ -392,10 +438,10 @@ class Gundam:
 
         # 현재 입력 이벤트로 상태 머신 업데이트
         self.statemachine.update(('INPUT', self.cur_input_event))
-        cmd_list = Recognizer.match(command_buffer)
+        cmd_list = Recognizer.match(self.command_buffer)
         if cmd_list:
             action, used = cmd_list
-            command_buffer.clear_last_n(used) # 매칭된 커맨드만큼 버퍼에서 제거
+            self.command_buffer.clear_last_n(used) # 매칭된 커맨드만큼 버퍼에서 제거
             print(f'커맨드 인식: {action}')
             self.statemachine.handle_state_event(('CMD', action), self.object_state)
 
