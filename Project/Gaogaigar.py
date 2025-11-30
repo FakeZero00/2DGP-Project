@@ -292,7 +292,7 @@ class Command_skill: # Test
         self.gaogaigar.frame = 0
 
     def exit(self, e):
-        pass
+        self.gaogaigar.cooltime_bool = True
 
     def do(self, e):
         input_check(e, input_booleans)

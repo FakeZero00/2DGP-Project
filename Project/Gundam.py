@@ -24,7 +24,7 @@ def cmdskill_start(e, object_state):
     return e[0] == 'CMD' and e[1] == 'COMMAND_SKILL'
 
 #기준 프레임
-TIME_PER_ACTION = 0.5
+TIME_PER_ACTION = 0.6
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 
 #이동 속도
@@ -48,9 +48,9 @@ class Idle:
 
     def draw(self):
         if self.gundam.jump_bool:
-            self.gundam.image.clip_draw(self.gundam.frame * 800, 0, 800, 800, self.gundam.x, self.gundam.y, 450, 450)
+            self.gundam.image.clip_draw(self.gundam.frame * 820, 0, 800, 800, self.gundam.x, self.gundam.y, 450, 450)
         else:
-            self.gundam.image.clip_draw(0, 0, 800, 800, self.gundam.x, self.gundam.y, 450, 450)
+            self.gundam.image.clip_draw(0, 0, 800, 700, self.gundam.x, self.gundam.y, 450, 450)
 
 class Run:
     def __init__(self, gundam):
@@ -108,7 +108,7 @@ class Crouch:
         pass
 
     def draw(self):
-        self.gundam.image.clip_draw(self.gundam.frame * 800, 0, 800, 800, self.gundam.x, self.gundam.y, 450, 450)
+        self.gundam.image.clip_draw(self.gundam.frame * 820, 0, 800, 800, self.gundam.x, self.gundam.y, 450, 450)
 
 class Crouch_Rightdown:
     def __init__(self, gundam):
@@ -124,7 +124,7 @@ class Crouch_Rightdown:
         pass
 
     def draw(self):
-        self.gundam.image.clip_draw(self.gundam.frame * 800, 0, 800, 800, self.gundam.x, self.gundam.y, 450, 450)
+        self.gundam.image.clip_draw(self.gundam.frame * 820, 0, 800, 800, self.gundam.x, self.gundam.y, 450, 450)
 
 class Crouch_Leftdown:
     def __init__(self, gundam):
@@ -140,7 +140,7 @@ class Crouch_Leftdown:
         pass
 
     def draw(self):
-        self.gundam.image.clip_draw(self.gundam.frame * 800, 0, 800, 800, self.gundam.x, self.gundam.y, 450, 450)
+        self.gundam.image.clip_draw(self.gundam.frame * 820, 0, 800, 800, self.gundam.x, self.gundam.y, 450, 450)
 
 class Jump:
     def __init__(self, gundam):
@@ -159,7 +159,7 @@ class Jump:
         pass
 
     def draw(self):
-        self.gundam.image.clip_draw(self.gundam.frame * 800, 0, 800, 800, self.gundam.x, self.gundam.y, 450, 450)
+        self.gundam.image.clip_draw(self.gundam.frame * 820, 0, 800, 800, self.gundam.x, self.gundam.y, 450, 450)
 
 class Jump_Leftup:
     def __init__(self, gundam):
@@ -180,7 +180,7 @@ class Jump_Leftup:
             self.gundam.x = 225
 
     def draw(self):
-        self.gundam.image.clip_draw(self.gundam.frame * 800, 0, 800, 800, self.gundam.x, self.gundam.y, 450, 450)
+        self.gundam.image.clip_draw(self.gundam.frame * 820, 0, 800, 800, self.gundam.x, self.gundam.y, 450, 450)
 
 class Jump_Rightup:
     def __init__(self, gundam):
@@ -201,7 +201,7 @@ class Jump_Rightup:
             self.gundam.x = 1600 - 225
 
     def draw(self):
-        self.gundam.image.clip_draw(self.gundam.frame * 800, 0, 800, 800, self.gundam.x, self.gundam.y, 450, 450)
+        self.gundam.image.clip_draw(self.gundam.frame * 820, 0, 800, 800, self.gundam.x, self.gundam.y, 450, 450)
 
 class Attack1:
     def __init__(self, gundam):
@@ -218,9 +218,9 @@ class Attack1:
         input_check(e, input_booleans)
 
         self.gundam.frame = self.gundam.frame + 10 * ACTION_PER_TIME * Game_Framework.frame_time
-        if int(self.gundam.frame) > 7:
+        if int(self.gundam.frame) > 4:
             self.gundam.statemachine.handle_state_event(('ANIM_END', 0), self.gundam.object_state)
-        elif int(self.gundam.frame) >= 4:
+        elif int(self.gundam.frame) >= 3:
             self.gundam.cooltime_bool = True
 
         if self.gundam.y <= 250:
@@ -229,7 +229,10 @@ class Attack1:
             self.gundam.x = 1600 - 225
 
     def draw(self):
-        self.gundam.image.clip_draw(min(int(self.gundam.frame), 5) * 800, 800 * 2, 800, 800, self.gundam.x, self.gundam.y, 450, 450)
+        if int(self.gundam.frame) == 3 or int(self.gundam.frame) == 4:
+            self.gundam.image.clip_draw(min(int(self.gundam.frame), 4) * 850, 800 * 2, 800, 800, self.gundam.x + 70, self.gundam.y, 450, 450)
+        else:
+            self.gundam.image.clip_draw(min(int(self.gundam.frame), 4) * 800, 800 * 2, 800, 800, self.gundam.x, self.gundam.y, 450, 450)
 
 class Attack2:
     def __init__(self, gundam):
@@ -246,7 +249,7 @@ class Attack2:
         input_check(e, input_booleans)
 
         self.gundam.frame = self.gundam.frame + 10 * ACTION_PER_TIME * Game_Framework.frame_time
-        if int(self.gundam.frame) > 6:
+        if int(self.gundam.frame) > 5:
             self.gundam.statemachine.handle_state_event(('ANIM_END', 0), self.gundam.object_state)
         elif int(self.gundam.frame) >= 3:
             self.gundam.cooltime_bool = True
@@ -257,7 +260,16 @@ class Attack2:
             self.gundam.x = 1600 - 225
 
     def draw(self):
-        self.gundam.image.clip_draw(min(int(self.gundam.frame), 4) * 800, 800 * 3, 800, 800, self.gundam.x, self.gundam.y, 450, 450)
+        if int(self.gundam.frame) == 0:
+            self.gundam.image.clip_draw(min(int(self.gundam.frame), 4) * 800, 830 * 3, 800, 760, self.gundam.x, self.gundam.y, 450, 450)
+        elif int(self.gundam.frame) == 2:
+            self.gundam.image.clip_draw(min(int(self.gundam.frame), 4) * 800, 800 * 3, 830, 800, self.gundam.x, self.gundam.y, 550, 450)
+        elif int(self.gundam.frame) == 3:
+            self.gundam.image.clip_draw(min(int(self.gundam.frame), 4) * 830, 800 * 3, 700, 800, self.gundam.x, self.gundam.y, 450, 450)
+        elif int(self.gundam.frame) >= 4:
+            self.gundam.image.clip_draw(min(int(self.gundam.frame), 4) * 800, 800 * 3, 1000, 800, self.gundam.x - 120, self.gundam.y, 650, 450)
+        else:
+            self.gundam.image.clip_draw(min(int(self.gundam.frame), 4) * 800, 800 * 3, 800, 800, self.gundam.x, self.gundam.y, 450, 450)
 
 class Attack3:
     def __init__(self, gundam):
@@ -273,7 +285,7 @@ class Attack3:
         input_check(e, input_booleans)
 
         self.gundam.frame = self.gundam.frame + 10 * ACTION_PER_TIME * Game_Framework.frame_time
-        if int(self.gundam.frame) > 8:
+        if int(self.gundam.frame) > 5:
             self.gundam.statemachine.handle_state_event(('ANIM_END', 0), self.gundam.object_state)
 
         if self.gundam.y <= 250:
@@ -282,7 +294,14 @@ class Attack3:
             self.gundam.x = 1600 - 225
 
     def draw(self):
-        self.gundam.image.clip_draw(min(int(self.gundam.frame), 5) * 800, 800 * 4, 800, 800, self.gundam.x, self.gundam.y, 450, 450)
+        if int(self.gundam.frame) == 1:
+            self.gundam.image.clip_draw(min(int(self.gundam.frame), 3) * 800, 800 * 4, 800, 800, self.gundam.x + 70, self.gundam.y, 450, 450)
+        elif int(self.gundam.frame) == 2:
+            self.gundam.image.clip_draw(min(int(self.gundam.frame), 3) * 800, 800 * 4, 880, 800, self.gundam.x + 30, self.gundam.y + 20, 500, 450)
+        elif int(self.gundam.frame) >= 3:
+            self.gundam.image.clip_draw(min(int(self.gundam.frame), 3) * 840, 800 * 4, 880, 800, self.gundam.x + 100, self.gundam.y + 20, 500, 450)
+        else:
+            self.gundam.image.clip_draw(min(int(self.gundam.frame), 3) * 800, 800 * 4, 800, 800, self.gundam.x, self.gundam.y, 450, 450)
 
 class Command_skill: # Test
     def __init__(self, gundam):
@@ -292,7 +311,7 @@ class Command_skill: # Test
         self.gundam.frame = 0
 
     def exit(self, e):
-        pass
+        self.gundam.cooltime_bool = True
 
     def do(self, e):
         input_check(e, input_booleans)
@@ -301,9 +320,12 @@ class Command_skill: # Test
             self.gundam.statemachine.handle_state_event(('ANIM_END', 0), self.gundam.object_state)
 
     def draw(self):
-        self.gundam.image.clip_draw(min(int(self.gundam.frame), 5) * 800, 800 * 2, 800, 800, self.gundam.x, self.gundam.y, 450, 450)
+        if int(self.gundam.frame) == 3 or int(self.gundam.frame) >= 4:
+            self.gundam.image.clip_draw(min(int(self.gundam.frame), 4) * 850, 800 * 2, 800, 800, self.gundam.x + 70, self.gundam.y, 450, 450)
+        else:
+            self.gundam.image.clip_draw(min(int(self.gundam.frame), 4) * 800, 800 * 2, 800, 800, self.gundam.x, self.gundam.y, 450, 450)
 
-# 가오가이거 클래스 본체
+# 건담 클래스 본체
 class Gundam:
     def __init__(self):
         self.image = load_image('../Sprite/Gundam_Sprite.png')
