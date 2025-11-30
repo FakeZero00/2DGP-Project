@@ -1,7 +1,7 @@
 from pico2d import load_image, draw_rectangle
 from Project.CommandRecognizer import CommandBuffer, CommandRecognizer
 from Project.State_Machine import StateMachine
-from Project.Event_Function import *
+from Project.P1_Event_Function import *
 import Game_Framework
 
 #커맨드 버퍼
