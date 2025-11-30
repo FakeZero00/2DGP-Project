@@ -318,7 +318,6 @@ class Gaogaigar:
     def __init__(self, player):
         self.image = load_image('../Sprite/Gaogaigar_Sprite.png')
         self.x, self.y = 300, 250
-        self.yv = 0
         self.frame = 0
         self.cur_input_event = None
         self.cooltime_bool = True
