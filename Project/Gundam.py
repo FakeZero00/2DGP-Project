@@ -6,11 +6,17 @@ import Project.P2_Event_Function as P2
 import Game_Framework, Global_Object
 
 #커맨드 목록
-CommandList = [
+LeftCommandList = [
     (('DOWN', 'RIGHTDOWN', 'RIGHT', 'ATTACK'), 'COMMAND_SKILL'),
     (('DOWN', 'RIGHTDOWN', 'RIGHT', 'IDLE', 'ATTACK'), 'COMMAND_SKILL')
 ]
-Recognizer = CommandRecognizer(CommandList)
+LeftRecognizer = CommandRecognizer(LeftCommandList)
+
+RightCommandList = [
+    (('DOWN', 'LEFTDOWN', 'LEFT', 'ATTACK'), 'COMMAND_SKILL'),
+    (('DOWN', 'LEFTDOWN', 'LEFT', 'IDLE', 'ATTACK'), 'COMMAND_SKILL')
+]
+RightRecognizer = CommandRecognizer(RightCommandList)
 
 #커맨드, INPUT 등 이벤트 함수
 def cmd_is(name):
@@ -473,7 +479,11 @@ class Gundam:
 
         # 현재 입력 이벤트로 상태 머신 업데이트
         self.statemachine.update(('INPUT', self.cur_input_event))
-        cmd_list = Recognizer.match(self.command_buffer)
+        cmd_list =  None
+        if self.dir[0] == 1:
+            cmd_list = LeftRecognizer.match(self.command_buffer)
+        elif self.dir[0] == -1:
+            cmd_list = RightRecognizer.match(self.command_buffer)
         if cmd_list:
             action, used = cmd_list
             self.command_buffer.clear_last_n(used) # 매칭된 커맨드만큼 버퍼에서 제거
