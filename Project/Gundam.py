@@ -1,6 +1,7 @@
 from pico2d import *
 from Project.CommandRecognizer import CommandBuffer, CommandRecognizer
 from Project.State_Machine import StateMachine
+from Project.Collider import Collider
 import Project.P1_Event_Function as P1
 import Project.P2_Event_Function as P2
 import Game_Framework, Global_Object
@@ -70,7 +71,7 @@ class Run:
             self.gundam.frame = (self.gundam.frame + 10 * ACTION_PER_TIME * Game_Framework.frame_time) % 10
 
         self.gundam.x += RUN_SPEED_PPS * Game_Framework.frame_time
-        if self.gundam.get_bb()[2] > 1600:
+        if self.gundam.get_collider('body').get_bb()[2] > 1600:
             self.gundam.x = 1600
 
     def draw(self):
@@ -103,7 +104,7 @@ class Back:
             self.gundam.frame = 1
 
         self.gundam.x -= RUN_SPEED_PPS * Game_Framework.frame_time
-        if self.gundam.get_bb()[0] < 0:
+        if self.gundam.get_collider('body').get_bb()[0] < 0:
             self.gundam.x = 0
 
     def draw(self):
@@ -197,7 +198,7 @@ class Jump_Leftup:
 
     def do(self, e):
         self.gundam.x -= RUN_SPEED_PPS * Game_Framework.frame_time
-        if self.gundam.get_bb()[0] < 0:
+        if self.gundam.get_collider('body').get_bb()[0] < 0:
             self.gundam.x = 0
 
     def draw(self):
@@ -221,7 +222,7 @@ class Jump_Rightup:
 
     def do(self, e):
         self.gundam.x += RUN_SPEED_PPS * Game_Framework.frame_time
-        if self.gundam.get_bb()[2] > 1600:
+        if self.gundam.get_collider('body').get_bb()[2] > 1600:
             self.gundam.x = 1600
 
     def draw(self):
@@ -255,9 +256,9 @@ class Attack1:
 
         if self.gundam.y <= 250:
             self.gundam.x += ATTACK_MOVE_SPEED_PPS * Game_Framework.frame_time * self.gundam.dir[0]
-        if self.gundam.get_bb()[0] < 0:
+        if self.gundam.get_collider('body').get_bb()[0] < 0:
             self.gundam.x = 0
-        elif self.gundam.get_bb()[2] > 1600:
+        elif self.gundam.get_collider('body').get_bb()[2] > 1600:
             self.gundam.x = 1600
 
     def draw(self):
@@ -291,9 +292,9 @@ class Attack2:
 
         if self.gundam.y <= 250:
             self.gundam.x += ATTACK_MOVE_SPEED_PPS * Game_Framework.frame_time * self.gundam.dir[0]
-        if self.gundam.get_bb()[0] < 0:
+        if self.gundam.get_collider('body').get_bb()[0] < 0:
             self.gundam.x = 0
-        elif self.gundam.get_bb()[2] > 1600:
+        elif self.gundam.get_collider('body').get_bb()[2] > 1600:
             self.gundam.x = 1600
 
     def draw(self):
@@ -330,9 +331,9 @@ class Attack3:
 
         if self.gundam.y <= 250:
             self.gundam.x += ATTACK_MOVE_SPEED_PPS * Game_Framework.frame_time * self.gundam.dir[0]
-        if self.gundam.get_bb()[0] < 0:
+        if self.gundam.get_collider('body').get_bb()[0] < 0:
             self.gundam.x = 0
-        elif self.gundam.get_bb()[2] > 1600:
+        elif self.gundam.get_collider('body').get_bb()[2] > 1600:
             self.gundam.x = 1600
 
     def draw(self):
@@ -499,19 +500,22 @@ class Gundam:
 
     def draw(self):
         self.statemachine.draw()
-        draw_rectangle(*self.get_bb())
+        draw_rectangle(*self.get_collider('body').get_bb())
 
     def handle_event(self, event):
         self.statemachine.handle_state_event(('INPUT', event), self.object_state)
         self.cur_input_event = event
 
-    def get_bb(self):
-        bb = None
+    def get_collider(self, name):
+        collider = {}
+
+        #몸 콜라이더
         if self.dir[0] == 1:
-            bb = (self.x, self.y - 225, self.x + 150, self.y + 140)
+            collider['body'] = Collider(self.x, self.y - 255, 150, 365)
         elif self.dir[0] == -1:
-            bb = (self.x - 150, self.y - 225, self.x, self.y + 140)
-        return bb
+            collider['body'] = Collider(self.x - 150, self.y - 255, 150, 365)
+
+        return collider[name]
 
     def handle_collision(self, group, other):
         # if group == 'gaogaigar:ground':
