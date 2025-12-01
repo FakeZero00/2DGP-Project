@@ -51,7 +51,7 @@ class Idle:
 
     def draw(self):
         if self.gundam.jump_bool:
-            self.gundam.image.clip_composite_draw(self.gundam.frame * 820, 0, 800, 800, 0, self.gundam.dir[1], self.gundam.x, self.gundam.y, 450, 450)
+            self.gundam.image.clip_composite_draw(self.gundam.frame * 820, 0, 800, 800, 0, self.gundam.dir[1], self.gundam.x + 40 * self.gundam.dir[0], self.gundam.y - 80, 450, 450)
         else:
             self.gundam.image.clip_composite_draw(0, 0, 700, 700, 0, self.gundam.dir[1], self.gundam.x, self.gundam.y - 30, 400, 400)
 
@@ -76,9 +76,9 @@ class Run:
     def draw(self):
         if self.gundam.dir[0] == 1:
             if self.gundam.jump_bool:
-                self.gundam.image.clip_composite_draw(2 * 800, 0, 800, 800, 0, self.gundam.dir[1], self.gundam.x, self.gundam.y, 450, 450)
+                self.gundam.image.clip_composite_draw(2 * 800, 0, 800, 800, 0, self.gundam.dir[1], self.gundam.x + 80 * self.gundam.dir[0], self.gundam.y, 450, 450)
             else:
-                self.gundam.image.clip_composite_draw(int(self.gundam.frame) * 800, 800, 800, 800, 0, self.gundam.dir[1], self.gundam.x, self.gundam.y, 450, 450)
+                self.gundam.image.clip_composite_draw(int(self.gundam.frame) * 800, 800, 800, 800, 0, self.gundam.dir[1], self.gundam.x + 80 * self.gundam.dir[0], self.gundam.y, 450, 450)
         elif self.gundam.dir[0] == -1:
             self.gundam.image.clip_composite_draw(800, 0, 800, 800, 0, self.gundam.dir[1], self.gundam.x, self.gundam.y, 450, 450)
 
@@ -111,9 +111,9 @@ class Back:
             self.gundam.image.clip_composite_draw(self.gundam.frame * 800, 0, 800, 800, 0, self.gundam.dir[1], self.gundam.x, self.gundam.y, 450, 450)
         elif self.gundam.dir[0] == -1:
             if self.gundam.jump_bool:
-                self.gundam.image.clip_composite_draw(2 * 800, 0, 800, 800, 0, self.gundam.dir[1], self.gundam.x, self.gundam.y, 450, 450)
+                self.gundam.image.clip_composite_draw(2 * 800, 0, 800, 800, 0, self.gundam.dir[1], self.gundam.x + 80 * self.gundam.dir[0], self.gundam.y, 450, 450)
             else:
-                self.gundam.image.clip_composite_draw(int(self.gundam.frame) * 800, 800, 800, 800, 0, self.gundam.dir[1], self.gundam.x, self.gundam.y, 450, 450)
+                self.gundam.image.clip_composite_draw(int(self.gundam.frame) * 800, 800, 800, 800, 0, self.gundam.dir[1], self.gundam.x + 80 * self.gundam.dir[0], self.gundam.y, 450, 450)
 
 class Crouch:
     def __init__(self, gundam):
@@ -180,7 +180,7 @@ class Jump:
         pass
 
     def draw(self):
-        self.gundam.image.clip_composite_draw(self.gundam.frame * 820, 0, 800, 800, 0, self.gundam.dir[1], self.gundam.x, self.gundam.y, 450, 450)
+        self.gundam.image.clip_composite_draw(self.gundam.frame * 820, 0, 800, 800, 0, self.gundam.dir[1], self.gundam.x + 40 * self.gundam.dir[0], self.gundam.y - 80, 450, 450)
 
 class Jump_Leftup:
     def __init__(self, gundam):
@@ -260,7 +260,7 @@ class Attack1:
 
     def draw(self):
         if int(self.gundam.frame) == 3 or int(self.gundam.frame) == 4:
-            self.gundam.image.clip_composite_draw(min(int(self.gundam.frame), 4) * 850, 800 * 2, 800, 800, 0, self.gundam.dir[1], self.gundam.x + 70 * self.gundam.dir[0], self.gundam.y, 450, 450)
+            self.gundam.image.clip_composite_draw(min(int(self.gundam.frame), 4) * 850, 800 * 2, 800, 800, 0, self.gundam.dir[1], self.gundam.x + 170 * self.gundam.dir[0], self.gundam.y, 450, 450)
         else:
             self.gundam.image.clip_composite_draw(min(int(self.gundam.frame), 4) * 800, 800 * 2, 800, 800, 0, self.gundam.dir[1], self.gundam.x, self.gundam.y, 450, 450)
 
@@ -294,15 +294,15 @@ class Attack2:
 
     def draw(self):
         if int(self.gundam.frame) == 0:
-            self.gundam.image.clip_composite_draw(min(int(self.gundam.frame), 4) * 800, 830 * 3, 800, 760, 0, self.gundam.dir[1], self.gundam.x, self.gundam.y, 450, 450)
+            self.gundam.image.clip_composite_draw(min(int(self.gundam.frame), 4) * 800, 830 * 3, 800, 760, 0, self.gundam.dir[1], self.gundam.x + 120 * self.gundam.dir[0], self.gundam.y - 20, 400, 400)
         elif int(self.gundam.frame) == 2:
-            self.gundam.image.clip_composite_draw(min(int(self.gundam.frame), 4) * 800, 800 * 3, 830, 800, 0, self.gundam.dir[1], self.gundam.x, self.gundam.y, 550, 450)
+            self.gundam.image.clip_composite_draw(min(int(self.gundam.frame), 4) * 800, 800 * 3, 830, 800, 0, self.gundam.dir[1], self.gundam.x + 120 * self.gundam.dir[0], self.gundam.y - 20, 500, 400)
         elif int(self.gundam.frame) == 3:
-            self.gundam.image.clip_composite_draw(min(int(self.gundam.frame), 4) * 830, 800 * 3, 700, 800, 0, self.gundam.dir[1], self.gundam.x, self.gundam.y, 450, 450)
+            self.gundam.image.clip_composite_draw(min(int(self.gundam.frame), 4) * 830, 800 * 3, 700, 800, 0, self.gundam.dir[1], self.gundam.x + 120 * self.gundam.dir[0], self.gundam.y - 20, 400, 400)
         elif int(self.gundam.frame) >= 4:
-            self.gundam.image.clip_composite_draw(min(int(self.gundam.frame), 4) * 800, 800 * 3, 1000, 800, 0, self.gundam.dir[1], self.gundam.x - 120 * self.gundam.dir[0], self.gundam.y, 650, 450)
+            self.gundam.image.clip_composite_draw(min(int(self.gundam.frame), 4) * 800, 800 * 3, 1000, 800, 0, self.gundam.dir[1], self.gundam.x - 120 * self.gundam.dir[0], self.gundam.y, 600, 400)
         else:
-            self.gundam.image.clip_composite_draw(min(int(self.gundam.frame), 4) * 800, 800 * 3, 800, 800, 0, self.gundam.dir[1], self.gundam.x, self.gundam.y, 450, 450)
+            self.gundam.image.clip_composite_draw(min(int(self.gundam.frame), 4) * 800, 800 * 3, 800, 800, 0, self.gundam.dir[1], self.gundam.x + 120 * self.gundam.dir[0], self.gundam.y, 400, 400)
 
 class Attack3:
     def __init__(self, gundam):
@@ -331,11 +331,11 @@ class Attack3:
 
     def draw(self):
         if int(self.gundam.frame) == 1:
-            self.gundam.image.clip_composite_draw(min(int(self.gundam.frame), 3) * 800, 800 * 4, 800, 800, 0, self.gundam.dir[1], self.gundam.x + 70 * self.gundam.dir[0], self.gundam.y, 450, 450)
+            self.gundam.image.clip_composite_draw(min(int(self.gundam.frame), 3) * 800, 800 * 4, 800, 800, 0, self.gundam.dir[1], self.gundam.x + 170 * self.gundam.dir[0], self.gundam.y, 450, 450)
         elif int(self.gundam.frame) == 2:
-            self.gundam.image.clip_composite_draw(min(int(self.gundam.frame), 3) * 800, 800 * 4, 880, 800, 0, self.gundam.dir[1], self.gundam.x + 30 * self.gundam.dir[0], self.gundam.y + 20, 500, 450)
+            self.gundam.image.clip_composite_draw(min(int(self.gundam.frame), 3) * 800, 800 * 4, 880, 800, 0, self.gundam.dir[1], self.gundam.x + 130 * self.gundam.dir[0], self.gundam.y + 20, 500, 450)
         elif int(self.gundam.frame) >= 3:
-            self.gundam.image.clip_composite_draw(min(int(self.gundam.frame), 3) * 840, 800 * 4, 880, 800, 0, self.gundam.dir[1], self.gundam.x + 100 * self.gundam.dir[0], self.gundam.y + 20, 500, 450)
+            self.gundam.image.clip_composite_draw(min(int(self.gundam.frame), 3) * 840, 800 * 4, 880, 800, 0, self.gundam.dir[1], self.gundam.x + 200 * self.gundam.dir[0], self.gundam.y + 20, 500, 450)
         else:
             self.gundam.image.clip_composite_draw(min(int(self.gundam.frame), 3) * 800, 800 * 4, 800, 800, 0, self.gundam.dir[1], self.gundam.x, self.gundam.y, 450, 450)
 
@@ -367,9 +367,9 @@ class Command_skill: # Test
 
 # 건담 클래스 본체
 class Gundam:
-    def __init__(self, player):
+    def __init__(self, player, x = 1300, y = 250):
         self.image = load_image('../Sprite/Gundam_Sprite.png')
-        self.x, self.y = 300, 250
+        self.x, self.y = x, y
         self.dir = [-1, 'h']
         self.frame = 0
         self.cur_input_event = None
@@ -493,14 +493,19 @@ class Gundam:
 
     def draw(self):
         self.statemachine.draw()
-        draw_rectangle(*self.get_bb())
+        draw_rectangle(*self.get_body())
 
     def handle_event(self, event):
         self.statemachine.handle_state_event(('INPUT', event), self.object_state)
         self.cur_input_event = event
 
-    def get_bb(self):
-        return self.x - 225, self.y - 225, self.x + 225, self.y + 225
+    def get_body(self):
+        bb = None
+        if self.dir[0] == 1:
+            bb = (self.x + 150, self.y - 225, self.x, self.y + 140)
+        elif self.dir[0] == -1:
+            bb = (self.x - 150, self.y - 225, self.x, self.y + 140)
+        return bb
 
     def handle_collision(self, group, other):
         # if group == 'gaogaigar:ground':

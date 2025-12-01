@@ -344,9 +344,9 @@ class Command_skill: # Test
 
 # 가오가이거 클래스 본체
 class Gaogaigar:
-    def __init__(self, player):
+    def __init__(self, player, x = 300, y = 250):
         self.image = load_image('../Sprite/Gaogaigar_Sprite.png')
-        self.x, self.y = 300, 250
+        self.x, self.y = x, y
         self.dir = [1, '']
         self.frame = 0
         self.cur_input_event = None
@@ -478,14 +478,19 @@ class Gaogaigar:
 
     def draw(self):
         self.statemachine.draw()
-        draw_rectangle(*self.get_bb())
+        draw_rectangle(*self.get_body())
 
     def handle_event(self, event):
         self.statemachine.handle_state_event(('INPUT', event), self.object_state)
         self.cur_input_event = event
 
-    def get_bb(self):
-        return self.x - 225, self.y - 225, self.x + 225, self.y + 225
+    def get_body(self):
+        bb = None
+        if self.dir[0] == 1:
+            bb = (self.x - 40, self.y - 225, self.x + 120, self.y + 140)
+        elif self.dir[0] == -1:
+            bb = (self.x + 40, self.y - 225, self.x - 120, self.y + 140)
+        return bb
 
     def handle_collision(self, group, other):
         # if group == 'gaogaigar:ground':
