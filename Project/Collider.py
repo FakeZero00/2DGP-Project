@@ -1,9 +1,10 @@
 class Collider:
-    def __init__(self, x, y, width, height):
+    def __init__(self, x, y, width, height, object):
         self.x = x
         self.y = y
         self.width = width
         self.height = height
+        self.object = object
 
     def get_bb(self):
         left = self.x
@@ -11,3 +12,6 @@ class Collider:
         right = self.x + self.width
         top = self.y + self.height
         return left, bottom, right, top
+
+    def handle_collision(self, group, other):
+        self.object.handle_collision(group, other)

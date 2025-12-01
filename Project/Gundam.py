@@ -396,6 +396,14 @@ class Gundam:
         self.command_buffer = CommandBuffer()
         self.object_state = (self.command_buffer, self.input_booleans, self.cooltime_bool, self.jump_bool)
 
+        # 콜라이더 생성
+        self.colliders = {}
+        # 몸 콜라이더
+        if self.dir[0] == 1:
+            self.colliders['body'] = Collider(self.x, self.y - 225, 150, 365, self)
+        elif self.dir[0] == -1:
+            self.colliders['body'] = Collider(self.x - 150, self.y - 225, 150, 365, self)
+
         self.IDLE = Idle(self)
         self.RUN = Run(self)
         self.BACK = Back(self)
@@ -475,6 +483,14 @@ class Gundam:
             self.dir[0] = 1
             self.dir[1] = ''
 
+        # 콜라이더 위치 업데이트
+        for name, collider in self.colliders.items():
+            if self.dir[0] == 1:
+                collider.x = self.x
+            elif self.dir[0] == -1:
+                collider.x = self.x - 150
+            collider.y = self.y - 225
+
         #점프 프레임 테이블 적용
         if self.jump_bool:
             self.jump_frame += 20 * ACTION_PER_TIME * Game_Framework.frame_time
@@ -507,18 +523,8 @@ class Gundam:
         self.cur_input_event = event
 
     def get_collider(self, name):
-        collider = {}
-
-        #몸 콜라이더
-        if self.dir[0] == 1:
-            collider['body'] = Collider(self.x, self.y - 255, 150, 365)
-        elif self.dir[0] == -1:
-            collider['body'] = Collider(self.x - 150, self.y - 255, 150, 365)
-
-        return collider[name]
+        return self.colliders[name]
 
     def handle_collision(self, group, other):
-        # if group == 'gaogaigar:ground':
-        #     self.y = 250
-        #     self.jump_bool = False
-        pass
+        if group == 'p1_body:p2_body':
+             self.x -= RUN_SPEED_PPS * Game_Framework.frame_time * self.dir[0]

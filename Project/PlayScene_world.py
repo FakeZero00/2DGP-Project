@@ -39,10 +39,13 @@ def collide(a, b):
     return True
 
 def handle_collisions():
+    all_objects = world[0] + world[1]
+    all_colliders =  [c for obj in all_objects for c in getattr(obj, 'colliders', {}).values()]
+
     for group, pairs in collision_pairs.items():
         for a in pairs[0]:
             for b in pairs[1]:
-                if a in world[0] + world[1] and collide(a, b):
+                if a in all_colliders and b in all_colliders and collide(a, b):
                     a.handle_collision(group, b)
                     b.handle_collision(group, a)
 

@@ -31,6 +31,8 @@ def init():
     Global_Object.p2 = Gundam('p2')
     PlayScene_world.add_object(Global_Object.p2)
 
+    PlayScene_world.add_collision_pairs('p1_body:p2_body', Global_Object.p1.get_collider('body'), Global_Object.p2.get_collider('body'))
+
 def update():
     PlayScene_world.update()
     PlayScene_world.handle_collisions()
