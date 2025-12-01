@@ -70,7 +70,7 @@ class Run:
             self.gundam.frame = (self.gundam.frame + 10 * ACTION_PER_TIME * Game_Framework.frame_time) % 10
 
         self.gundam.x += RUN_SPEED_PPS * Game_Framework.frame_time
-        if self.gundam.get_body()[2] > 1600:
+        if self.gundam.get_bb()[2] > 1600:
             self.gundam.x = 1600
 
     def draw(self):
@@ -103,7 +103,7 @@ class Back:
             self.gundam.frame = 1
 
         self.gundam.x -= RUN_SPEED_PPS * Game_Framework.frame_time
-        if self.gundam.get_body()[0] < 0:
+        if self.gundam.get_bb()[0] < 0:
             self.gundam.x = 0
 
     def draw(self):
@@ -197,7 +197,7 @@ class Jump_Leftup:
 
     def do(self, e):
         self.gundam.x -= RUN_SPEED_PPS * Game_Framework.frame_time
-        if self.gundam.get_body()[0] < 0:
+        if self.gundam.get_bb()[0] < 0:
             self.gundam.x = 0
 
     def draw(self):
@@ -221,7 +221,7 @@ class Jump_Rightup:
 
     def do(self, e):
         self.gundam.x += RUN_SPEED_PPS * Game_Framework.frame_time
-        if self.gundam.get_body()[2] > 1600:
+        if self.gundam.get_bb()[2] > 1600:
             self.gundam.x = 1600
 
     def draw(self):
@@ -255,9 +255,9 @@ class Attack1:
 
         if self.gundam.y <= 250:
             self.gundam.x += ATTACK_MOVE_SPEED_PPS * Game_Framework.frame_time * self.gundam.dir[0]
-        if self.gundam.get_body()[0] < 0:
+        if self.gundam.get_bb()[0] < 0:
             self.gundam.x = 0
-        elif self.gundam.get_body()[2] > 1600:
+        elif self.gundam.get_bb()[2] > 1600:
             self.gundam.x = 1600
 
     def draw(self):
@@ -291,9 +291,9 @@ class Attack2:
 
         if self.gundam.y <= 250:
             self.gundam.x += ATTACK_MOVE_SPEED_PPS * Game_Framework.frame_time * self.gundam.dir[0]
-        if self.gundam.get_body()[0] < 0:
+        if self.gundam.get_bb()[0] < 0:
             self.gundam.x = 0
-        elif self.gundam.get_body()[2] > 1600:
+        elif self.gundam.get_bb()[2] > 1600:
             self.gundam.x = 1600
 
     def draw(self):
@@ -330,9 +330,9 @@ class Attack3:
 
         if self.gundam.y <= 250:
             self.gundam.x += ATTACK_MOVE_SPEED_PPS * Game_Framework.frame_time * self.gundam.dir[0]
-        if self.gundam.get_body()[0] < 0:
+        if self.gundam.get_bb()[0] < 0:
             self.gundam.x = 0
-        elif self.gundam.get_body()[2] > 1600:
+        elif self.gundam.get_bb()[2] > 1600:
             self.gundam.x = 1600
 
     def draw(self):
@@ -499,13 +499,13 @@ class Gundam:
 
     def draw(self):
         self.statemachine.draw()
-        draw_rectangle(*self.get_body())
+        draw_rectangle(*self.get_bb())
 
     def handle_event(self, event):
         self.statemachine.handle_state_event(('INPUT', event), self.object_state)
         self.cur_input_event = event
 
-    def get_body(self):
+    def get_bb(self):
         bb = None
         if self.dir[0] == 1:
             bb = (self.x, self.y - 225, self.x + 150, self.y + 140)

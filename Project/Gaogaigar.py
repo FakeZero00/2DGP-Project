@@ -70,7 +70,7 @@ class Run:
             self.gaogaigar.frame = (self.gaogaigar.frame + 10 * ACTION_PER_TIME * Game_Framework.frame_time) % 10
 
         self.gaogaigar.x += RUN_SPEED_PPS * Game_Framework.frame_time
-        if self.gaogaigar.get_body()[2] > 1600:
+        if self.gaogaigar.get_bb()[2] > 1600:
             self.gaogaigar.x = 1600 - 40
 
     def draw(self):
@@ -102,7 +102,7 @@ class Back:
             self.gaogaigar.frame = 1
 
         self.gaogaigar.x -= RUN_SPEED_PPS * Game_Framework.frame_time
-        if self.gaogaigar.get_body()[0] < 0:
+        if self.gaogaigar.get_bb()[0] < 0:
             self.gaogaigar.x = 40
 
     def draw(self):
@@ -196,7 +196,7 @@ class Jump_Leftup:
 
     def do(self, e):
         self.gaogaigar.x -= RUN_SPEED_PPS * Game_Framework.frame_time
-        if self.gaogaigar.get_body()[0] < 0:
+        if self.gaogaigar.get_bb()[0] < 0:
             self.gaogaigar.x = 40
 
     def draw(self):
@@ -220,7 +220,7 @@ class Jump_Rightup:
 
     def do(self, e):
         self.gaogaigar.x += RUN_SPEED_PPS * Game_Framework.frame_time
-        if self.gaogaigar.get_body()[2] > 1600:
+        if self.gaogaigar.get_bb()[2] > 1600:
             self.gaogaigar.x = 1600 - 40
 
     def draw(self):
@@ -254,9 +254,9 @@ class Attack1:
 
         if self.gaogaigar.y <= 250:
             self.gaogaigar.x += ATTACK_MOVE_SPEED_PPS * Game_Framework.frame_time * self.gaogaigar.dir[0]
-        if self.gaogaigar.get_body()[2] > 1600:
+        if self.gaogaigar.get_bb()[2] > 1600:
             self.gaogaigar.x = 1600 - 40
-        elif self.gaogaigar.get_body()[0] < 0:
+        elif self.gaogaigar.get_bb()[0] < 0:
             self.gaogaigar.x = 40
 
     def draw(self):
@@ -287,9 +287,9 @@ class Attack2:
 
         if self.gaogaigar.y <= 250:
             self.gaogaigar.x += ATTACK_MOVE_SPEED_PPS * Game_Framework.frame_time * self.gaogaigar.dir[0]
-        if self.gaogaigar.get_body()[2] > 1600:
+        if self.gaogaigar.get_bb()[2] > 1600:
             self.gaogaigar.x = 1600 - 40
-        elif self.gaogaigar.get_body()[0] < 0:
+        elif self.gaogaigar.get_bb()[0] < 0:
             self.gaogaigar.x = 40
 
     def draw(self):
@@ -317,9 +317,9 @@ class Attack3:
 
         if self.gaogaigar.y <= 250:
             self.gaogaigar.x += ATTACK_MOVE_SPEED_PPS * Game_Framework.frame_time * self.gaogaigar.dir[0]
-        if self.gaogaigar.get_body()[2] > 1600:
+        if self.gaogaigar.get_bb()[2] > 1600:
             self.gaogaigar.x = 1600 - 40
-        elif self.gaogaigar.get_body()[0] < 0:
+        elif self.gaogaigar.get_bb()[0] < 0:
             self.gaogaigar.x = 40
 
     def draw(self):
@@ -484,13 +484,13 @@ class Gaogaigar:
 
     def draw(self):
         self.statemachine.draw()
-        draw_rectangle(*self.get_body())
+        draw_rectangle(*self.get_bb())
 
     def handle_event(self, event):
         self.statemachine.handle_state_event(('INPUT', event), self.object_state)
         self.cur_input_event = event
 
-    def get_body(self):
+    def get_bb(self):
         bb = None
         if self.dir[0] == 1:
             bb = (self.x - 40, self.y - 225, self.x + 120, self.y + 140)
