@@ -70,8 +70,8 @@ class Run:
             self.gaogaigar.frame = (self.gaogaigar.frame + 10 * ACTION_PER_TIME * Game_Framework.frame_time) % 10
 
         self.gaogaigar.x += RUN_SPEED_PPS * Game_Framework.frame_time
-        if self.gaogaigar.x + 225 > 1600:
-            self.gaogaigar.x = 1600 - 225
+        if self.gaogaigar.get_body()[2] > 1600:
+            self.gaogaigar.x = 1600 - 40
 
     def draw(self):
         if self.gaogaigar.dir[0] == 1:
@@ -102,8 +102,8 @@ class Back:
             self.gaogaigar.frame = 1
 
         self.gaogaigar.x -= RUN_SPEED_PPS * Game_Framework.frame_time
-        if(self.gaogaigar.x - 225 < 0):
-            self.gaogaigar.x = 225
+        if self.gaogaigar.get_body()[0] < 0:
+            self.gaogaigar.x = 40
 
     def draw(self):
         if self.gaogaigar.dir[0] == 1:
@@ -196,8 +196,8 @@ class Jump_Leftup:
 
     def do(self, e):
         self.gaogaigar.x -= RUN_SPEED_PPS * Game_Framework.frame_time
-        if (self.gaogaigar.x - 225 < 0):
-            self.gaogaigar.x = 225
+        if self.gaogaigar.get_body()[0] < 0:
+            self.gaogaigar.x = 40
 
     def draw(self):
         if self.gaogaigar.dir[0] == 1:
@@ -220,8 +220,8 @@ class Jump_Rightup:
 
     def do(self, e):
         self.gaogaigar.x += RUN_SPEED_PPS * Game_Framework.frame_time
-        if self.gaogaigar.x + 225 > 1600:
-            self.gaogaigar.x = 1600 - 225
+        if self.gaogaigar.get_body()[2] > 1600:
+            self.gaogaigar.x = 1600 - 40
 
     def draw(self):
         if self.gaogaigar.dir[0] == 1:
@@ -254,8 +254,10 @@ class Attack1:
 
         if self.gaogaigar.y <= 250:
             self.gaogaigar.x += ATTACK_MOVE_SPEED_PPS * Game_Framework.frame_time * self.gaogaigar.dir[0]
-        if self.gaogaigar.x + 225 > 1600:
-            self.gaogaigar.x = 1600 - 225
+        if self.gaogaigar.get_body()[2] > 1600:
+            self.gaogaigar.x = 1600 - 40
+        elif self.gaogaigar.get_body()[0] < 0:
+            self.gaogaigar.x = 40
 
     def draw(self):
         self.gaogaigar.image.clip_composite_draw(min(int(self.gaogaigar.frame), 5) * 800, 800 * 2, 800, 800, 0, self.gaogaigar.dir[1], self.gaogaigar.x, self.gaogaigar.y, 450, 450)
@@ -285,8 +287,10 @@ class Attack2:
 
         if self.gaogaigar.y <= 250:
             self.gaogaigar.x += ATTACK_MOVE_SPEED_PPS * Game_Framework.frame_time * self.gaogaigar.dir[0]
-        if self.gaogaigar.x + 225 > 1600:
-            self.gaogaigar.x = 1600 - 225
+        if self.gaogaigar.get_body()[2] > 1600:
+            self.gaogaigar.x = 1600 - 40
+        elif self.gaogaigar.get_body()[0] < 0:
+            self.gaogaigar.x = 40
 
     def draw(self):
         self.gaogaigar.image.clip_composite_draw(min(int(self.gaogaigar.frame), 4) * 800, 800 * 3, 800, 800, 0, self.gaogaigar.dir[1], self.gaogaigar.x, self.gaogaigar.y, 450, 450)
@@ -313,8 +317,10 @@ class Attack3:
 
         if self.gaogaigar.y <= 250:
             self.gaogaigar.x += ATTACK_MOVE_SPEED_PPS * Game_Framework.frame_time * self.gaogaigar.dir[0]
-        if self.gaogaigar.x + 225 > 1600:
-            self.gaogaigar.x = 1600 - 225
+        if self.gaogaigar.get_body()[2] > 1600:
+            self.gaogaigar.x = 1600 - 40
+        elif self.gaogaigar.get_body()[0] < 0:
+            self.gaogaigar.x = 40
 
     def draw(self):
         self.gaogaigar.image.clip_composite_draw(min(int(self.gaogaigar.frame), 5) * 800, 800 * 4, 800, 800, 0, self.gaogaigar.dir[1], self.gaogaigar.x, self.gaogaigar.y, 450, 450)
@@ -489,7 +495,7 @@ class Gaogaigar:
         if self.dir[0] == 1:
             bb = (self.x - 40, self.y - 225, self.x + 120, self.y + 140)
         elif self.dir[0] == -1:
-            bb = (self.x + 40, self.y - 225, self.x - 120, self.y + 140)
+            bb = (self.x - 120, self.y - 225, self.x + 40, self.y + 140)
         return bb
 
     def handle_collision(self, group, other):

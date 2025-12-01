@@ -70,8 +70,8 @@ class Run:
             self.gundam.frame = (self.gundam.frame + 10 * ACTION_PER_TIME * Game_Framework.frame_time) % 10
 
         self.gundam.x += RUN_SPEED_PPS * Game_Framework.frame_time
-        if self.gundam.x + 225 > 1600:
-            self.gundam.x = 1600 - 225
+        if self.gundam.get_body()[2] > 1600:
+            self.gundam.x = 1600
 
     def draw(self):
         if self.gundam.dir[0] == 1:
@@ -103,8 +103,8 @@ class Back:
             self.gundam.frame = 1
 
         self.gundam.x -= RUN_SPEED_PPS * Game_Framework.frame_time
-        if(self.gundam.x - 225 < 0):
-            self.gundam.x = 225
+        if self.gundam.get_body()[0] < 0:
+            self.gundam.x = 0
 
     def draw(self):
         if self.gundam.dir[0] == 1:
@@ -197,8 +197,8 @@ class Jump_Leftup:
 
     def do(self, e):
         self.gundam.x -= RUN_SPEED_PPS * Game_Framework.frame_time
-        if (self.gundam.x - 225 < 0):
-            self.gundam.x = 225
+        if self.gundam.get_body()[0] < 0:
+            self.gundam.x = 0
 
     def draw(self):
         if self.gundam.dir[0] == 1:
@@ -221,8 +221,8 @@ class Jump_Rightup:
 
     def do(self, e):
         self.gundam.x += RUN_SPEED_PPS * Game_Framework.frame_time
-        if self.gundam.x + 225 > 1600:
-            self.gundam.x = 1600 - 225
+        if self.gundam.get_body()[2] > 1600:
+            self.gundam.x = 1600
 
     def draw(self):
         if self.gundam.dir[0] == 1:
@@ -255,8 +255,10 @@ class Attack1:
 
         if self.gundam.y <= 250:
             self.gundam.x += ATTACK_MOVE_SPEED_PPS * Game_Framework.frame_time * self.gundam.dir[0]
-        if self.gundam.x + 225 > 1600:
-            self.gundam.x = 1600 - 225
+        if self.gundam.get_body()[0] < 0:
+            self.gundam.x = 0
+        elif self.gundam.get_body()[2] > 1600:
+            self.gundam.x = 1600
 
     def draw(self):
         if int(self.gundam.frame) == 3 or int(self.gundam.frame) == 4:
@@ -289,8 +291,10 @@ class Attack2:
 
         if self.gundam.y <= 250:
             self.gundam.x += ATTACK_MOVE_SPEED_PPS * Game_Framework.frame_time * self.gundam.dir[0]
-        if self.gundam.x + 225 > 1600:
-            self.gundam.x = 1600 - 225
+        if self.gundam.get_body()[0] < 0:
+            self.gundam.x = 0
+        elif self.gundam.get_body()[2] > 1600:
+            self.gundam.x = 1600
 
     def draw(self):
         if int(self.gundam.frame) == 0:
@@ -326,8 +330,10 @@ class Attack3:
 
         if self.gundam.y <= 250:
             self.gundam.x += ATTACK_MOVE_SPEED_PPS * Game_Framework.frame_time * self.gundam.dir[0]
-        if self.gundam.x + 225 > 1600:
-            self.gundam.x = 1600 - 225
+        if self.gundam.get_body()[0] < 0:
+            self.gundam.x = 0
+        elif self.gundam.get_body()[2] > 1600:
+            self.gundam.x = 1600
 
     def draw(self):
         if int(self.gundam.frame) == 1:
@@ -502,7 +508,7 @@ class Gundam:
     def get_body(self):
         bb = None
         if self.dir[0] == 1:
-            bb = (self.x + 150, self.y - 225, self.x, self.y + 140)
+            bb = (self.x, self.y - 225, self.x + 150, self.y + 140)
         elif self.dir[0] == -1:
             bb = (self.x - 150, self.y - 225, self.x, self.y + 140)
         return bb
