@@ -1,4 +1,4 @@
-from pico2d import load_image, draw_rectangle
+from pico2d import *
 from Project.CommandRecognizer import CommandBuffer, CommandRecognizer
 from Project.State_Machine import StateMachine
 import Project.P1_Event_Function as P1
@@ -6,11 +6,17 @@ import Project.P2_Event_Function as P2
 import Game_Framework, Global_Object
 
 #커맨드 목록
-CommandList = [
+LeftCommandList = [
     (('DOWN', 'RIGHTDOWN', 'RIGHT', 'ATTACK'), 'COMMAND_SKILL'),
     (('DOWN', 'RIGHTDOWN', 'RIGHT', 'IDLE', 'ATTACK'), 'COMMAND_SKILL')
 ]
-Recognizer = CommandRecognizer(CommandList)
+LeftRecognizer = CommandRecognizer(LeftCommandList)
+
+RightCommandList = [
+    (('DOWN', 'LEFTDOWN', 'LEFT', 'ATTACK'), 'COMMAND_SKILL'),
+    (('DOWN', 'LEFTDOWN', 'LEFT', 'IDLE', 'ATTACK'), 'COMMAND_SKILL')
+]
+RightRecognizer = CommandRecognizer(RightCommandList)
 
 #커맨드, INPUT 등 이벤트 함수
 def cmd_is(name):
@@ -45,9 +51,9 @@ class Idle:
 
     def draw(self):
         if self.gaogaigar.jump_bool:
-            self.gaogaigar.image.clip_draw(self.gaogaigar.frame * 800, 0, 800, 800, self.gaogaigar.x, self.gaogaigar.y, 450, 450)
+            self.gaogaigar.image.clip_composite_draw(self.gaogaigar.frame * 800, 0, 800, 800, 0, self.gaogaigar.dir[1], self.gaogaigar.x, self.gaogaigar.y, 450, 450)
         else:
-            self.gaogaigar.image.clip_draw(0, 0, 800, 800, self.gaogaigar.x, self.gaogaigar.y, 450, 450)
+            self.gaogaigar.image.clip_composite_draw(0, 0, 800, 800, 0, self.gaogaigar.dir[1], self.gaogaigar.x, self.gaogaigar.y, 450, 450)
 
 class Run:
     def __init__(self, gaogaigar):
@@ -68,28 +74,45 @@ class Run:
             self.gaogaigar.x = 1600 - 225
 
     def draw(self):
-        if self.gaogaigar.jump_bool:
-            self.gaogaigar.image.clip_draw(2 * 800, 0, 800, 800, self.gaogaigar.x, self.gaogaigar.y, 450, 450)
-        else:
-            self.gaogaigar.image.clip_draw(int(self.gaogaigar.frame) * 800, 800, 800, 800, self.gaogaigar.x, self.gaogaigar.y, 450, 450)
+        if self.gaogaigar.dir[0] == 1:
+            if self.gaogaigar.jump_bool:
+                self.gaogaigar.image.clip_composite_draw(2 * 800, 0, 800, 800, 0, self.gaogaigar.dir[1], self.gaogaigar.x, self.gaogaigar.y, 450, 450)
+            else:
+                self.gaogaigar.image.clip_composite_draw(int(self.gaogaigar.frame) * 800, 800, 800, 800, 0, self.gaogaigar.dir[1], self.gaogaigar.x, self.gaogaigar.y, 450, 450)
+        elif self.gaogaigar.dir[0] == -1:
+            self.gaogaigar.image.clip_composite_draw(800, 0, 800, 800, 0, self.gaogaigar.dir[1], self.gaogaigar.x, self.gaogaigar.y, 450, 450)
 
 class Back:
     def __init__(self, gaogaigar):
         self.gaogaigar = gaogaigar
 
     def enter(self, e):
-        self.gaogaigar.frame = 1
+        if self.gaogaigar.dir[0] == 1:
+            self.gaogaigar.frame = 1
+        elif self.gaogaigar.dir[0] == -1:
+            self.gaogaigar.frame = 0
 
     def exit(self, e):
         pass
 
     def do(self, e):
+        if not self.gaogaigar.jump_bool and self.gaogaigar.dir[0] == -1:
+            self.gaogaigar.frame = (self.gaogaigar.frame + 10 * ACTION_PER_TIME * Game_Framework.frame_time) % 10
+        elif self.gaogaigar.dir[0] == 1:
+            self.gaogaigar.frame = 1
+
         self.gaogaigar.x -= RUN_SPEED_PPS * Game_Framework.frame_time
         if(self.gaogaigar.x - 225 < 0):
             self.gaogaigar.x = 225
 
     def draw(self):
-        self.gaogaigar.image.clip_draw(self.gaogaigar.frame * 800, 0, 800, 800, self.gaogaigar.x, self.gaogaigar.y, 450, 450)
+        if self.gaogaigar.dir[0] == 1:
+            self.gaogaigar.image.clip_composite_draw(self.gaogaigar.frame * 800, 0, 800, 800, 0, self.gaogaigar.dir[1], self.gaogaigar.x, self.gaogaigar.y, 450, 450)
+        elif self.gaogaigar.dir[0] == -1:
+            if self.gaogaigar.jump_bool:
+                self.gaogaigar.image.clip_composite_draw(2 * 800, 0, 800, 800, 0, self.gaogaigar.dir[1], self.gaogaigar.x, self.gaogaigar.y, 450, 450)
+            else:
+                self.gaogaigar.image.clip_composite_draw(int(self.gaogaigar.frame) * 800, 800, 800, 800, 0, self.gaogaigar.dir[1], self.gaogaigar.x, self.gaogaigar.y, 450, 450)
 
 class Crouch:
     def __init__(self, gaogaigar):
@@ -105,7 +128,7 @@ class Crouch:
         pass
 
     def draw(self):
-        self.gaogaigar.image.clip_draw(self.gaogaigar.frame * 800, 0, 800, 800, self.gaogaigar.x, self.gaogaigar.y, 450, 450)
+        self.gaogaigar.image.clip_composite_draw(self.gaogaigar.frame * 800, 0, 800, 800, 0, self.gaogaigar.dir[1], self.gaogaigar.x, self.gaogaigar.y, 450, 450)
 
 class Crouch_Rightdown:
     def __init__(self, gaogaigar):
@@ -121,7 +144,7 @@ class Crouch_Rightdown:
         pass
 
     def draw(self):
-        self.gaogaigar.image.clip_draw(self.gaogaigar.frame * 800, 0, 800, 800, self.gaogaigar.x, self.gaogaigar.y, 450, 450)
+        self.gaogaigar.image.clip_composite_draw(self.gaogaigar.frame * 800, 0, 800, 800, 0, self.gaogaigar.dir[1], self.gaogaigar.x, self.gaogaigar.y, 450, 450)
 
 class Crouch_Leftdown:
     def __init__(self, gaogaigar):
@@ -137,7 +160,7 @@ class Crouch_Leftdown:
         pass
 
     def draw(self):
-        self.gaogaigar.image.clip_draw(self.gaogaigar.frame * 800, 0, 800, 800, self.gaogaigar.x, self.gaogaigar.y, 450, 450)
+        self.gaogaigar.image.clip_composite_draw(self.gaogaigar.frame * 800, 0, 800, 800, 0, self.gaogaigar.dir[1], self.gaogaigar.x, self.gaogaigar.y, 450, 450)
 
 class Jump:
     def __init__(self, gaogaigar):
@@ -156,7 +179,7 @@ class Jump:
         pass
 
     def draw(self):
-        self.gaogaigar.image.clip_draw(self.gaogaigar.frame * 800, 0, 800, 800, self.gaogaigar.x, self.gaogaigar.y, 450, 450)
+        self.gaogaigar.image.clip_composite_draw(self.gaogaigar.frame * 800, 0, 800, 800, 0, self.gaogaigar.dir[1], self.gaogaigar.x, self.gaogaigar.y, 450, 450)
 
 class Jump_Leftup:
     def __init__(self, gaogaigar):
@@ -177,7 +200,10 @@ class Jump_Leftup:
             self.gaogaigar.x = 225
 
     def draw(self):
-        self.gaogaigar.image.clip_draw(self.gaogaigar.frame * 800, 0, 800, 800, self.gaogaigar.x, self.gaogaigar.y, 450, 450)
+        if self.gaogaigar.dir[0] == 1:
+            self.gaogaigar.image.clip_composite_draw(self.gaogaigar.frame * 800, 0, 800, 800, 0, self.gaogaigar.dir[1], self.gaogaigar.x, self.gaogaigar.y, 450, 450)
+        elif self.gaogaigar.dir[0] == -1:
+            self.gaogaigar.image.clip_composite_draw(self.gaogaigar.frame * 800, 0, 800, 800, 0, self.gaogaigar.dir[1], self.gaogaigar.x, self.gaogaigar.y, 450, 450)
 
 class Jump_Rightup:
     def __init__(self, gaogaigar):
@@ -198,7 +224,10 @@ class Jump_Rightup:
             self.gaogaigar.x = 1600 - 225
 
     def draw(self):
-        self.gaogaigar.image.clip_draw(self.gaogaigar.frame * 800, 0, 800, 800, self.gaogaigar.x, self.gaogaigar.y, 450, 450)
+        if self.gaogaigar.dir[0] == 1:
+            self.gaogaigar.image.clip_composite_draw(self.gaogaigar.frame * 800, 0, 800, 800, 0, self.gaogaigar.dir[1], self.gaogaigar.x, self.gaogaigar.y, 450, 450)
+        elif self.gaogaigar.dir[0] == -1:
+            self.gaogaigar.image.clip_composite_draw(self.gaogaigar.frame * 800, 0, 800, 800, 0, self.gaogaigar.dir[1], self.gaogaigar.x, self.gaogaigar.y, 450, 450)
 
 class Attack1:
     def __init__(self, gaogaigar):
@@ -224,12 +253,12 @@ class Attack1:
             self.gaogaigar.cooltime_bool = True
 
         if self.gaogaigar.y <= 250:
-            self.gaogaigar.x += ATTACK_MOVE_SPEED_PPS * Game_Framework.frame_time
+            self.gaogaigar.x += ATTACK_MOVE_SPEED_PPS * Game_Framework.frame_time * self.gaogaigar.dir[0]
         if self.gaogaigar.x + 225 > 1600:
             self.gaogaigar.x = 1600 - 225
 
     def draw(self):
-        self.gaogaigar.image.clip_draw(min(int(self.gaogaigar.frame), 5) * 800, 800 * 2, 800, 800, self.gaogaigar.x, self.gaogaigar.y, 450, 450)
+        self.gaogaigar.image.clip_composite_draw(min(int(self.gaogaigar.frame), 5) * 800, 800 * 2, 800, 800, 0, self.gaogaigar.dir[1], self.gaogaigar.x, self.gaogaigar.y, 450, 450)
 
 class Attack2:
     def __init__(self, gaogaigar):
@@ -255,12 +284,12 @@ class Attack2:
             self.gaogaigar.cooltime_bool = True
 
         if self.gaogaigar.y <= 250:
-            self.gaogaigar.x += ATTACK_MOVE_SPEED_PPS * Game_Framework.frame_time
+            self.gaogaigar.x += ATTACK_MOVE_SPEED_PPS * Game_Framework.frame_time * self.gaogaigar.dir[0]
         if self.gaogaigar.x + 225 > 1600:
             self.gaogaigar.x = 1600 - 225
 
     def draw(self):
-        self.gaogaigar.image.clip_draw(min(int(self.gaogaigar.frame), 4) * 800, 800 * 3, 800, 800, self.gaogaigar.x, self.gaogaigar.y, 450, 450)
+        self.gaogaigar.image.clip_composite_draw(min(int(self.gaogaigar.frame), 4) * 800, 800 * 3, 800, 800, 0, self.gaogaigar.dir[1], self.gaogaigar.x, self.gaogaigar.y, 450, 450)
 
 class Attack3:
     def __init__(self, gaogaigar):
@@ -283,12 +312,12 @@ class Attack3:
             self.gaogaigar.statemachine.handle_state_event(('ANIM_END', 0), self.gaogaigar.object_state)
 
         if self.gaogaigar.y <= 250:
-            self.gaogaigar.x += ATTACK_MOVE_SPEED_PPS * Game_Framework.frame_time
+            self.gaogaigar.x += ATTACK_MOVE_SPEED_PPS * Game_Framework.frame_time * self.gaogaigar.dir[0]
         if self.gaogaigar.x + 225 > 1600:
             self.gaogaigar.x = 1600 - 225
 
     def draw(self):
-        self.gaogaigar.image.clip_draw(min(int(self.gaogaigar.frame), 5) * 800, 800 * 4, 800, 800, self.gaogaigar.x, self.gaogaigar.y, 450, 450)
+        self.gaogaigar.image.clip_composite_draw(min(int(self.gaogaigar.frame), 5) * 800, 800 * 4, 800, 800, 0, self.gaogaigar.dir[1], self.gaogaigar.x, self.gaogaigar.y, 450, 450)
 
 class Command_skill: # Test
     def __init__(self, gaogaigar):
@@ -311,13 +340,14 @@ class Command_skill: # Test
             self.gaogaigar.statemachine.handle_state_event(('ANIM_END', 0), self.gaogaigar.object_state)
 
     def draw(self):
-        self.gaogaigar.image.clip_draw(min(int(self.gaogaigar.frame), 5) * 800, 800 * 2, 800, 800, self.gaogaigar.x, self.gaogaigar.y, 450, 450)
+        self.gaogaigar.image.clip_composite_draw(min(int(self.gaogaigar.frame), 5) * 800, 800 * 2, 800, 800, 0, self.gaogaigar.dir[1], self.gaogaigar.x, self.gaogaigar.y, 450, 450)
 
 # 가오가이거 클래스 본체
 class Gaogaigar:
     def __init__(self, player):
         self.image = load_image('../Sprite/Gaogaigar_Sprite.png')
         self.x, self.y = 300, 250
+        self.dir = [1, '']
         self.frame = 0
         self.cur_input_event = None
         self.cooltime_bool = True
@@ -325,6 +355,7 @@ class Gaogaigar:
         self.jump_frame = 0
         #점프 높이 테이블 (프레임별 y 오프셋)
         self.jump_table = [0, 20, 50, 90, 140, 200, 270, 300, 330, 350, 380, 400, 400, 400, 400, 400, 400, 380, 350, 330, 300, 270, 200, 140, 90, 50, 20, 0]
+        self.other = None
 
         #객체 상태 초기화
         self.player = player
@@ -411,6 +442,16 @@ class Gaogaigar:
     def update(self):
         #객체 상태 업데이트
         self.object_state = (self.command_buffer, self.input_booleans, self.cooltime_bool, self.jump_bool)
+        if self.player == 'p1':
+            self.other = Global_Object.p2
+        elif self.player == 'p2':
+            self.other = Global_Object.p1
+        if self.x > self.other.x:
+            self.dir[0] = -1
+            self.dir[1] = 'h'
+        elif self.x < self.other.x:
+            self.dir[0] = 1
+            self.dir[1] = ''
 
         #점프 프레임 테이블 적용
         if self.jump_bool:
@@ -423,7 +464,11 @@ class Gaogaigar:
 
         # 현재 입력 이벤트로 상태 머신 업데이트
         self.statemachine.update(('INPUT', self.cur_input_event))
-        cmd_list = Recognizer.match(self.command_buffer)
+        cmd_list = None
+        if self.dir[0] == 1:
+            cmd_list = LeftRecognizer.match(self.command_buffer)
+        elif self.dir[0] == -1:
+            cmd_list = RightRecognizer.match(self.command_buffer)
         if cmd_list:
             action, used = cmd_list
             self.command_buffer.clear_last_n(used) # 매칭된 커맨드만큼 버퍼에서 제거

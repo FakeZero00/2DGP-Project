@@ -379,10 +379,6 @@ class Gundam:
         #점프 높이 테이블 (프레임별 y 오프셋)
         self.jump_table = [0, 20, 50, 90, 140, 200, 270, 300, 330, 350, 380, 400, 400, 400, 400, 400, 400, 380, 350, 330, 300, 270, 200, 140, 90, 50, 20, 0]
         self.other = None
-        if player == 'p1':
-            self.other = Global_Object.p2
-        elif player == 'p2':
-            self.other = Global_Object.p1
 
         #객체 상태 초기화
         self.player = player
@@ -461,6 +457,10 @@ class Gundam:
     def update(self):
         #객체 상태 업데이트
         self.object_state = (self.command_buffer, self.input_booleans, self.cooltime_bool, self.jump_bool)
+        if self.player == 'p1':
+            self.other = Global_Object.p2
+        elif self.player == 'p2':
+            self.other = Global_Object.p1
         if self.x > self.other.x:
             self.dir[0] = -1
             self.dir[1] = 'h'
