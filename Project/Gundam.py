@@ -28,7 +28,7 @@ def cmdskill_start(e, object_state):
     return e[0] == 'CMD' and e[1] == 'COMMAND_SKILL'
 
 #기준 프레임
-TIME_PER_ACTION = 0.6
+TIME_PER_ACTION = 0.8
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 
 #이동 속도
@@ -403,6 +403,11 @@ class Gundam:
             self.colliders['body'] = Collider(self.x, self.y - 225, 150, 365, self)
         elif self.dir[0] == -1:
             self.colliders['body'] = Collider(self.x - 150, self.y - 225, 150, 365, self)
+        #공격 콜라이더
+        if self.dir[0] == 1:
+            self.colliders['attack'] = Collider(self.x + 290, self.y - 255, 260, 450, self)
+        elif self.dir[0] == -1:
+            self.colliders['attack'] = Collider(self.x - 390, self.y - 225, 260, 450, self)
 
         self.IDLE = Idle(self)
         self.RUN = Run(self)
@@ -487,11 +492,18 @@ class Gundam:
 
         # 콜라이더 위치 업데이트
         for name, collider in self.colliders.items():
-            if self.dir[0] == 1:
-                collider.x = self.x
-            elif self.dir[0] == -1:
-                collider.x = self.x - 150
-            collider.y = self.y - 225
+            if name == 'body':
+                if self.dir[0] == 1:
+                    collider.x = self.x
+                elif self.dir[0] == -1:
+                    collider.x = self.x - 150
+                collider.y = self.y - 225
+            elif name == 'attack':
+                if self.dir[0] == 1:
+                    collider.x = self.x + 120
+                elif self.dir[0] == -1:
+                    collider.x = self.x - 380
+                collider.y = self.y - 225
 
         #점프 프레임 테이블 적용
         if self.jump_bool:
@@ -519,6 +531,7 @@ class Gundam:
     def draw(self):
         self.statemachine.draw()
         draw_rectangle(*self.get_collider('body').get_bb())
+        draw_rectangle(*self.get_collider('attack').get_bb())
 
     def handle_event(self, event):
         self.statemachine.handle_state_event(('INPUT', event), self.object_state)

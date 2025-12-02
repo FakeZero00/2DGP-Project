@@ -28,7 +28,7 @@ def cmdskill_start(e, object_state):
     return e[0] == 'CMD' and e[1] == 'COMMAND_SKILL'
 
 #기준 프레임
-TIME_PER_ACTION = 0.5
+TIME_PER_ACTION = 0.7
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 
 #이동 속도
