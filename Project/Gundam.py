@@ -542,13 +542,5 @@ class Gundam:
 
     def handle_collision(self, group, other):
         if group == 'p1_body:p2_body':
-            if other.object.behavior_state == other.object.IDLE:
-                self.x -= RUN_SPEED_PPS * Game_Framework.frame_time * self.dir[0]
-            elif self.behavior_state == self.RUN and other.object.behavior_state == other.object.RUN:
-                self.x -= RUN_SPEED_PPS * Game_Framework.frame_time * self.dir[0]
-            elif self.behavior_state == self.RUN and other.object.behavior_state == other.object.BACK:
-                self.x -= RUN_SPEED_PPS * Game_Framework.frame_time * self.dir[0]
-            elif self.behavior_state == self.BACK and other.object.behavior_state == other.object.RUN:
-                self.x -= RUN_SPEED_PPS * Game_Framework.frame_time * self.dir[0]
-            elif self.behavior_state == self.BACK and other.object.behavior_state == other.object.BACK:
+            if not self.behavior_state == self.IDLE:
                 self.x -= RUN_SPEED_PPS * Game_Framework.frame_time * self.dir[0]
