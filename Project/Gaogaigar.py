@@ -380,6 +380,11 @@ class Gaogaigar:
             self.colliders['body'] = Collider(self.x - 40, self.y - 225, 160, 365, self)
         elif self.dir[0] == -1:
             self.colliders['body'] = Collider(self.x - 120, self.y - 225, 160, 365, self)
+        #공격 콜라이더
+        if self.dir[0] == 1:
+            self.colliders['attack'] = Collider(self.x + 80, self.y - 40, 100, 120, self)
+        elif self.dir[0] == -1:
+            self.colliders['attack'] = Collider(self.x - 180, self.y - 40, 100, 120, self)
 
         self.IDLE = Idle(self)
         self.RUN = Run(self)
@@ -472,11 +477,18 @@ class Gaogaigar:
 
         #콜라이더 위치 업데이트
         for name, collider in self.colliders.items():
-            if self.dir[0] == 1:
-                collider.x = self.x - 40
-            elif self.dir[0] == -1:
-                collider.x = self.x - 120
-            collider.y = self.y - 225
+            if name == 'body':
+                if self.dir[0] == 1:
+                    collider.x = self.x - 40
+                elif self.dir[0] == -1:
+                    collider.x = self.x - 120
+                collider.y = self.y - 225
+            elif name == 'attack':
+                if self.dir[0] == 1:
+                    collider.x = self.x + 80
+                elif self.dir[0] == -1:
+                    collider.x = self.x - 180
+                collider.y = self.y - 40
 
         #점프 프레임 테이블 적용
         if self.jump_bool:
@@ -504,6 +516,7 @@ class Gaogaigar:
     def draw(self):
         self.statemachine.draw()
         draw_rectangle(*self.get_collider('body').get_bb())
+        draw_rectangle(*self.get_collider('attack').get_bb())
 
     def handle_event(self, event):
         self.statemachine.handle_state_event(('INPUT', event), self.object_state)
