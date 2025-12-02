@@ -468,10 +468,12 @@ class Gundam:
             self.statemachine = StateMachine(self.IDLE, self.P1rules)
         if self.player == 'p2':
             self.statemachine = StateMachine(self.IDLE, self.P2rules)
+        self.behavior_state = self.statemachine.cur_state
 
     def update(self):
         #객체 상태 업데이트
         self.object_state = (self.command_buffer, self.input_booleans, self.cooltime_bool, self.jump_bool)
+        self.behavior_state = self.statemachine.cur_state
         if self.player == 'p1':
             self.other = Global_Object.p2
         elif self.player == 'p2':
@@ -527,4 +529,13 @@ class Gundam:
 
     def handle_collision(self, group, other):
         if group == 'p1_body:p2_body':
-             self.x -= RUN_SPEED_PPS * Game_Framework.frame_time * self.dir[0]
+            if other.object.behavior_state == other.object.IDLE:
+                self.x -= RUN_SPEED_PPS * Game_Framework.frame_time * self.dir[0]
+            elif self.behavior_state == self.RUN and other.object.behavior_state == other.object.RUN:
+                self.x -= RUN_SPEED_PPS * Game_Framework.frame_time * self.dir[0]
+            elif self.behavior_state == self.RUN and other.object.behavior_state == other.object.BACK:
+                self.x -= RUN_SPEED_PPS * Game_Framework.frame_time * self.dir[0]
+            elif self.behavior_state == self.BACK and other.object.behavior_state == other.object.RUN:
+                self.x -= RUN_SPEED_PPS * Game_Framework.frame_time * self.dir[0]
+            elif self.behavior_state == self.BACK and other.object.behavior_state == other.object.BACK:
+                self.x -= RUN_SPEED_PPS * Game_Framework.frame_time * self.dir[0]
