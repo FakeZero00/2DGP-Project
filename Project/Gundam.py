@@ -52,7 +52,7 @@ class Idle:
 
     def draw(self):
         if self.gundam.jump_bool:
-            self.gundam.image.clip_composite_draw(self.gundam.frame * 820, 0, 800, 800, 0, self.gundam.dir[1], self.gundam.x + 40 * self.gundam.dir[0], self.gundam.y - 80, 450, 450)
+            self.gundam.image.clip_composite_draw(self.gundam.frame * 810, 0, 770, 800, 0, self.gundam.dir[1], self.gundam.x + 40 * self.gundam.dir[0], self.gundam.y - 80, 450, 450)
         else:
             self.gundam.image.clip_composite_draw(0, 0, 700, 700, 0, self.gundam.dir[1], self.gundam.x, self.gundam.y - 30, 400, 400)
 
@@ -181,7 +181,7 @@ class Jump:
         pass
 
     def draw(self):
-        self.gundam.image.clip_composite_draw(self.gundam.frame * 820, 0, 800, 800, 0, self.gundam.dir[1], self.gundam.x + 40 * self.gundam.dir[0], self.gundam.y - 80, 450, 450)
+        self.gundam.image.clip_composite_draw(self.gundam.frame * 810, 0, 770, 800, 0, self.gundam.dir[1], self.gundam.x + 40 * self.gundam.dir[0], self.gundam.y - 80, 450, 450)
 
 class Jump_Leftup:
     def __init__(self, gundam):
@@ -230,6 +230,31 @@ class Jump_Rightup:
             self.gundam.image.clip_composite_draw(self.gundam.frame * 820, 0, 800, 800, 0, self.gundam.dir[1], self.gundam.x, self.gundam.y, 450, 450)
         elif self.gundam.dir[0] == -1:
             self.gundam.image.clip_composite_draw(self.gundam.frame * 820, 0, 800, 800, 0, self.gundam.dir[1], self.gundam.x, self.gundam.y, 450, 450)
+
+class Hit:
+    def __init__(self, gundam):
+        self.gundam = gundam
+        self.timer = 0
+
+    def enter(self, e):
+        self.gundam.frame = 5
+        self.timer = 0
+
+    def exit(self, e):
+        pass
+
+    def do(self, e):
+        if self.gundam.player == 'p1':
+            P1.input_check(e, self.gundam.input_booleans)
+        elif self.gundam.player == 'p2':
+            P2.input_check(e, self.gundam.input_booleans)
+
+        if self.timer >= 0.1:
+            self.gundam.statemachine.handle_state_event(('ANIM_END', 0), self.gundam.object_state)
+        self.timer += Game_Framework.frame_time
+
+    def draw(self):
+        self.gundam.image.clip_composite_draw(self.gundam.frame * 800, 0, 880, 790, 0, self.gundam.dir[1], self.gundam.x + 20 * self.gundam.dir[0], self.gundam.y, 450, 450)
 
 class Attack1:
     def __init__(self, gundam):
@@ -418,6 +443,7 @@ class Gundam:
         self.JUMP = Jump(self)
         self.JUMP_LEFTUP = Jump_Leftup(self)
         self.JUMP_RIGHTUP = Jump_Rightup(self)
+        self.HIT = Hit(self)
         self.ATTACK1 = Attack1(self)
         self.ATTACK2 = Attack2(self)
         self.ATTACK3 = Attack3(self)
@@ -435,6 +461,7 @@ class Gundam:
             self.JUMP: {P1.up_up: self.IDLE, P1.left_down: self.JUMP_LEFTUP, P1.right_down: self.JUMP_RIGHTUP},
             self.JUMP_LEFTUP: {P1.up_up: self.BACK, P1.left_up: self.IDLE},
             self.JUMP_RIGHTUP: {P1.up_up: self.RUN, P1.right_up: self.IDLE},
+            self.HIT: {P1.anim_end('BACK'): self.BACK, P1.anim_end('RUN'): self.RUN, P1.anim_end('CROUCH'): self.CROUCH, P1.anim_end('IDLE'): self.IDLE},
             self.ATTACK1: {P1.anim_end('BACK'): self.BACK, P1.anim_end('RUN'): self.RUN, P1.anim_end('CROUCH'): self.CROUCH, P1.anim_end('IDLE'): self.IDLE,
                            P1.attack_down: self.ATTACK2, cmd_is('COMMAND_SKILL'): self.COMMAND_SKILL},
             self.ATTACK2: {P1.anim_end('BACK'): self.BACK, P1.anim_end('RUN'): self.RUN, P1.anim_end('CROUCH'): self.CROUCH, P1.anim_end('IDLE'): self.IDLE,
@@ -458,6 +485,7 @@ class Gundam:
             self.JUMP: {P2.up_up: self.IDLE, P2.left_down: self.JUMP_LEFTUP, P2.right_down: self.JUMP_RIGHTUP},
             self.JUMP_LEFTUP: {P2.up_up: self.BACK, P2.left_up: self.IDLE},
             self.JUMP_RIGHTUP: {P2.up_up: self.RUN, P2.right_up: self.IDLE},
+            self.HIT: {P2.anim_end('BACK'): self.BACK, P2.anim_end('RUN'): self.RUN, P2.anim_end('CROUCH'): self.CROUCH, P2.anim_end('IDLE'): self.IDLE},
             self.ATTACK1: {P2.anim_end('BACK'): self.BACK, P2.anim_end('RUN'): self.RUN,
                            P2.anim_end('CROUCH'): self.CROUCH, P2.anim_end('IDLE'): self.IDLE,
                            P2.attack_down: self.ATTACK2, cmd_is('COMMAND_SKILL'): self.COMMAND_SKILL},
@@ -544,3 +572,12 @@ class Gundam:
         if group == 'p1_body:p2_body':
             if not self.behavior_state == self.IDLE:
                 self.x -= RUN_SPEED_PPS * Game_Framework.frame_time * self.dir[0]
+            if self.get_collider('body').get_bb()[1] >= other.get_bb()[3] - 20:
+                if self.get_collider('body').x + self.get_collider('body').width // 2 <= other.x + other.width // 2:
+                    self.x = other.object.get_collider('body').get_bb()[0] - 150
+                else:
+                    self.x = other.object.get_collider('body').get_bb()[2] + 150
+
+        elif group == 'p1_body:p2_attack':
+            if other.object.behavior_state in [other.object.ATTACK1, other.object.ATTACK2, other.object.ATTACK3, other.object.COMMAND_SKILL] and other.object.frame >= 2:
+                self.statemachine.handle_state_event(('HIT', self.HIT), self.object_state)
