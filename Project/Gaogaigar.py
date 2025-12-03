@@ -559,6 +559,11 @@ class Gaogaigar:
         if group == 'p1_body:p2_body':
             if not self.behavior_state == self.IDLE:
                 self.x -= RUN_SPEED_PPS * Game_Framework.frame_time * self.dir[0]
+            if self.get_collider('body').get_bb()[1] >= other.get_bb()[3] - 20:
+                if self.get_collider('body').x + self.get_collider('body').width // 2 <= other.x + other.width // 2:
+                    self.x = other.object.get_collider('body').get_bb()[0] - 120
+                else:
+                    self.x = other.object.get_collider('body').get_bb()[2] + 120
         elif group == 'p1_body:p2_attack':
             if other.object.behavior_state in [other.object.ATTACK1, other.object.ATTACK2, other.object.ATTACK3, other.object.COMMAND_SKILL] and other.object.frame >= 2:
                 self.statemachine.handle_state_event(('HIT', self.HIT), self.object_state)
