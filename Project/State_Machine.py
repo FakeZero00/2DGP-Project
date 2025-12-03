@@ -18,3 +18,10 @@ class StateMachine:
                 next_state.enter(state_event)
                 self.cur_state = next_state
                 return
+        else:
+            if state_event[0] == 'HIT':
+                next_state = state_event[1] #Hit state
+                self.cur_state.exit(0)
+                next_state.enter(state_event)
+                self.cur_state = next_state
+                return

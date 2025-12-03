@@ -230,6 +230,31 @@ class Jump_Rightup:
         elif self.gaogaigar.dir[0] == -1:
             self.gaogaigar.image.clip_composite_draw(self.gaogaigar.frame * 800, 0, 800, 800, 0, self.gaogaigar.dir[1], self.gaogaigar.x, self.gaogaigar.y, 450, 450)
 
+class Hit:
+    def __init__(self, gaogaigar):
+        self.gaogaigar = gaogaigar
+        self.timer = 0
+
+    def enter(self, e):
+        self.gaogaigar.frame = 5
+        self.timer = 0
+
+    def exit(self, e):
+        pass
+
+    def do(self, e):
+        if self.gaogaigar.player == 'p1':
+            P1.input_check(e, self.gaogaigar.input_booleans)
+        elif self.gaogaigar.player == 'p2':
+            P2.input_check(e, self.gaogaigar.input_booleans)
+
+        if self.timer >= 0.1:
+            self.gaogaigar.statemachine.handle_state_event(('ANIM_END', 0), self.gaogaigar.object_state)
+        self.timer += Game_Framework.frame_time
+
+    def draw(self):
+        self.gaogaigar.image.clip_composite_draw(self.gaogaigar.frame * 800, 0, 800, 800, 0, self.gaogaigar.dir[1], self.gaogaigar.x, self.gaogaigar.y, 450, 450)
+
 class Attack1:
     def __init__(self, gaogaigar):
         self.gaogaigar = gaogaigar
@@ -395,6 +420,7 @@ class Gaogaigar:
         self.JUMP = Jump(self)
         self.JUMP_LEFTUP = Jump_Leftup(self)
         self.JUMP_RIGHTUP = Jump_Rightup(self)
+        self.HIT = Hit(self)
         self.ATTACK1 = Attack1(self)
         self.ATTACK2 = Attack2(self)
         self.ATTACK3 = Attack3(self)
@@ -416,6 +442,8 @@ class Gaogaigar:
             self.JUMP: {P1.up_up: self.IDLE, P1.left_down: self.JUMP_LEFTUP, P1.right_down: self.JUMP_RIGHTUP},
             self.JUMP_LEFTUP: {P1.up_up: self.BACK, P1.left_up: self.IDLE},
             self.JUMP_RIGHTUP: {P1.up_up: self.RUN, P1.right_up: self.IDLE},
+            self.HIT: {P1.anim_end('BACK'): self.BACK, P1.anim_end('RUN'): self.RUN,
+                        P1.anim_end('CROUCH'): self.CROUCH, P1.anim_end('IDLE'): self.IDLE},
             self.ATTACK1: {P1.anim_end('BACK'): self.BACK, P1.anim_end('RUN'): self.RUN,
                            P1.anim_end('CROUCH'): self.CROUCH, P1.anim_end('IDLE'): self.IDLE,
                            P1.attack_down: self.ATTACK2, cmd_is('COMMAND_SKILL'): self.COMMAND_SKILL},
@@ -443,6 +471,8 @@ class Gaogaigar:
             self.JUMP: {P2.up_up: self.IDLE, P2.left_down: self.JUMP_LEFTUP, P2.right_down: self.JUMP_RIGHTUP},
             self.JUMP_LEFTUP: {P2.up_up: self.BACK, P2.left_up: self.IDLE},
             self.JUMP_RIGHTUP: {P2.up_up: self.RUN, P2.right_up: self.IDLE},
+            self.HIT: {P2.anim_end('BACK'): self.BACK, P2.anim_end('RUN'): self.RUN,
+                       P2.anim_end('CROUCH'): self.CROUCH, P2.anim_end('IDLE'): self.IDLE},
             self.ATTACK1: {P2.anim_end('BACK'): self.BACK, P2.anim_end('RUN'): self.RUN,
                            P2.anim_end('CROUCH'): self.CROUCH, P2.anim_end('IDLE'): self.IDLE,
                            P2.attack_down: self.ATTACK2, cmd_is('COMMAND_SKILL'): self.COMMAND_SKILL},
@@ -529,3 +559,6 @@ class Gaogaigar:
         if group == 'p1_body:p2_body':
             if not self.behavior_state == self.IDLE:
                 self.x -= RUN_SPEED_PPS * Game_Framework.frame_time * self.dir[0]
+        elif group == 'p1_body:p2_attack':
+            if other.object.behavior_state in [other.object.ATTACK1, other.object.ATTACK2, other.object.ATTACK3, other.object.COMMAND_SKILL] and other.object.frame >= 2:
+                self.statemachine.handle_state_event(('HIT', self.HIT), self.object_state)
