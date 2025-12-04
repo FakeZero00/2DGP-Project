@@ -17,10 +17,10 @@ def init():
     ground = Ground(0)
     PlayScene_world.add_object(ground, 0)
 
-    p1hp = Hpbar(1)
-    PlayScene_world.add_object(p1hp, 0)
-    p2hp = Hpbar(2)
-    PlayScene_world.add_object(p2hp, 0)
+    Global_Object.p1hp = Hpbar(1)
+    PlayScene_world.add_object(Global_Object.p1hp, 0)
+    Global_Object.p2hp = Hpbar(2)
+    PlayScene_world.add_object(Global_Object.p2hp, 0)
 
     timer = Timer(60)
     PlayScene_world.add_object(timer, 0)
