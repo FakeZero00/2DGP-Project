@@ -239,6 +239,11 @@ class Hit:
         self.gaogaigar.frame = 5
         self.timer = 0
 
+        if self.gaogaigar.player == 'p1':
+            Global_Object.p1hp.hp -= 10
+        elif self.gaogaigar.player == 'p2':
+            Global_Object.p2hp.hp -= 10
+
     def exit(self, e):
         pass
 
@@ -258,13 +263,15 @@ class Hit:
 class Attack1:
     def __init__(self, gaogaigar):
         self.gaogaigar = gaogaigar
+        self.attack_state = 'ready'
 
     def enter(self, e):
         self.gaogaigar.frame = 0
         self.gaogaigar.cooltime_bool = False
+        self.attack_state = 'running'
 
     def exit(self, e):
-        pass
+        self.attack_state = 'ready'
 
     def do(self, e):
         if self.gaogaigar.player == 'p1':
@@ -291,13 +298,15 @@ class Attack1:
 class Attack2:
     def __init__(self, gaogaigar):
         self.gaogaigar = gaogaigar
+        self.attack_state = 'ready'
 
     def enter(self, e):
         self.gaogaigar.frame = 0
         self.gaogaigar.cooltime_bool = False
+        self.attack_state = 'running'
 
     def exit(self, e):
-        pass
+        self.attack_state = 'ready'
 
     def do(self, e):
         if self.gaogaigar.player == 'p1':
@@ -324,12 +333,14 @@ class Attack2:
 class Attack3:
     def __init__(self, gaogaigar):
         self.gaogaigar = gaogaigar
+        self.attack_state = 'ready'
 
     def enter(self, e):
         self.gaogaigar.frame = 0
+        self.attack_state = 'running'
 
     def exit(self, e):
-        pass
+        self.attack_state = 'ready'
 
     def do(self, e):
         if self.gaogaigar.player == 'p1':
@@ -354,12 +365,15 @@ class Attack3:
 class Command_skill: # Test
     def __init__(self, gaogaigar):
         self.gaogaigar = gaogaigar
+        self.attack_state = 'ready'
 
     def enter(self, e):
         self.gaogaigar.frame = 0
+        self.attack_state = 'running'
 
     def exit(self, e):
         self.gaogaigar.cooltime_bool = True
+        self.attack_state = 'ready'
 
     def do(self, e):
         if self.gaogaigar.player == 'p1':
@@ -564,6 +578,13 @@ class Gaogaigar:
                     self.x = other.object.get_collider('body').get_bb()[0] - 120
                 else:
                     self.x = other.object.get_collider('body').get_bb()[2] + 120
+
         elif group == 'p1_body:p2_attack':
             if other.object.behavior_state in [other.object.ATTACK1, other.object.ATTACK2, other.object.ATTACK3, other.object.COMMAND_SKILL] and other.object.frame >= 2:
-                self.statemachine.handle_state_event(('HIT', self.HIT), self.object_state)
+                if other.object.behavior_state.attack_state == 'running':
+                    self.statemachine.handle_state_event(('HIT', self.HIT), self.object_state)
+
+        elif group == 'p2_body:p1_attack':
+            if self.behavior_state in [self.ATTACK1, self.ATTACK2, self.ATTACK3, self.COMMAND_SKILL] and self.frame >= 2:
+                if self.behavior_state.attack_state == 'running':
+                    self.behavior_state.attack_state = 'hit'
