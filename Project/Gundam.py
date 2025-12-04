@@ -578,6 +578,6 @@ class Gundam:
                 else:
                     self.x = other.object.get_collider('body').get_bb()[2] + 150
 
-        elif group == 'p1_body:p2_attack':
+        elif group == 'p2_body:p1_attack':
             if other.object.behavior_state in [other.object.ATTACK1, other.object.ATTACK2, other.object.ATTACK3, other.object.COMMAND_SKILL] and other.object.frame >= 2:
                 self.statemachine.handle_state_event(('HIT', self.HIT), self.object_state)
