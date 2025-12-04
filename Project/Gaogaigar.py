@@ -580,11 +580,21 @@ class Gaogaigar:
                     self.x = other.object.get_collider('body').get_bb()[2] + 120
 
         elif group == 'p1_body:p2_attack':
-            if other.object.behavior_state in [other.object.ATTACK1, other.object.ATTACK2, other.object.ATTACK3, other.object.COMMAND_SKILL] and other.object.frame >= 2:
-                if other.object.behavior_state.attack_state == 'running':
-                    self.statemachine.handle_state_event(('HIT', self.HIT), self.object_state)
+            if self.player == 'p1':
+                if other.object.behavior_state in [other.object.ATTACK1, other.object.ATTACK2, other.object.ATTACK3, other.object.COMMAND_SKILL] and other.object.frame >= 2:
+                    if other.object.behavior_state.attack_state == 'running':
+                        self.statemachine.handle_state_event(('HIT', self.HIT), self.object_state)
+            elif self.player == 'p2':
+                if self.behavior_state in [self.ATTACK1, self.ATTACK2, self.ATTACK3, self.COMMAND_SKILL] and self.frame >= 2:
+                    if self.behavior_state.attack_state == 'running':
+                        self.behavior_state.attack_state = 'hit'
 
         elif group == 'p2_body:p1_attack':
-            if self.behavior_state in [self.ATTACK1, self.ATTACK2, self.ATTACK3, self.COMMAND_SKILL] and self.frame >= 2:
-                if self.behavior_state.attack_state == 'running':
-                    self.behavior_state.attack_state = 'hit'
+            if self.player == 'p1':
+                if self.behavior_state in [self.ATTACK1, self.ATTACK2, self.ATTACK3, self.COMMAND_SKILL] and self.frame >= 2:
+                    if self.behavior_state.attack_state == 'running':
+                        self.behavior_state.attack_state = 'hit'
+            elif self.player == 'p2':
+                if other.object.behavior_state in [other.object.ATTACK1, other.object.ATTACK2, other.object.ATTACK3, other.object.COMMAND_SKILL] and other.object.frame >= 2:
+                    if other.object.behavior_state.attack_state == 'running':
+                        self.statemachine.handle_state_event(('HIT', self.HIT), self.object_state)
