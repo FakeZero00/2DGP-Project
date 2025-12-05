@@ -70,7 +70,10 @@ class Run:
         if not self.gundam.jump_bool:
             self.gundam.frame = (self.gundam.frame + 10 * ACTION_PER_TIME * Game_Framework.frame_time) % 10
 
-        self.gundam.x += RUN_SPEED_PPS * Game_Framework.frame_time
+        if self.gundam.dir[0] == 1:
+            self.gundam.x += RUN_SPEED_PPS * Game_Framework.frame_time
+        elif self.gundam.dir[0] == -1:
+            self.gundam.x += RUN_SPEED_PPS * 0.8 * Game_Framework.frame_time
         if self.gundam.get_collider('body').get_bb()[2] > 1600:
             self.gundam.x = 1600
 
@@ -103,7 +106,10 @@ class Back:
         elif self.gundam.dir[0] == 1:
             self.gundam.frame = 1
 
-        self.gundam.x -= RUN_SPEED_PPS * Game_Framework.frame_time
+        if self.gundam.dir[0] == 1:
+            self.gundam.x -= RUN_SPEED_PPS * 0.8 * Game_Framework.frame_time
+        elif self.gundam.dir[0] == -1:
+            self.gundam.x -= RUN_SPEED_PPS * Game_Framework.frame_time
         if self.gundam.get_collider('body').get_bb()[0] < 0:
             self.gundam.x = 0
 
@@ -499,7 +505,7 @@ class Gundam:
                         cmd_is('COMMAND_SKILL'): self.COMMAND_SKILL, P1.attack_down: self.ATTACK1},
             self.RUN: {P1.right_up: self.IDLE, P1.left_down: self.IDLE, P1.right_down: self.IDLE, P1.down_down: self.CROUCH_RIGHTDOWN, P1.up_down: self.JUMP_RIGHTUP,
                        P1.attack_down: self.ATTACK1},
-            self.BACK: {P1.left_up: self.IDLE, P1.right_down: self.IDLE, P1.down_down: self.CROUCH_LEFTDOWN, P1.up_down: self.JUMP_LEFTUP},
+            self.BACK: {P1.left_up: self.IDLE, P1.right_down: self.IDLE, P1.down_down: self.CROUCH_LEFTDOWN, P1.up_down: self.JUMP_LEFTUP, P1.attack_down: self.ATTACK1},
             self.CROUCH: {P1.down_up: self.IDLE, P1.right_down: self.CROUCH_RIGHTDOWN, P1.left_down: self.CROUCH_LEFTDOWN},
             self.CROUCH_RIGHTDOWN: {P1.down_up: self.RUN, P1.right_up: self.CROUCH},
             self.CROUCH_LEFTDOWN: {P1.down_up: self.BACK, P1.left_up: self.CROUCH},
@@ -523,7 +529,7 @@ class Gundam:
                        P2.down_down: self.CROUCH_RIGHTDOWN, P2.up_down: self.JUMP_RIGHTUP,
                        P2.attack_down: self.ATTACK1},
             self.BACK: {P2.left_up: self.IDLE, P2.right_down: self.IDLE, P2.down_down: self.CROUCH_LEFTDOWN,
-                        P2.up_down: self.JUMP_LEFTUP},
+                        P2.up_down: self.JUMP_LEFTUP, P2.attack_down: self.ATTACK1},
             self.CROUCH: {P2.down_up: self.IDLE, P2.right_down: self.CROUCH_RIGHTDOWN,
                           P2.left_down: self.CROUCH_LEFTDOWN},
             self.CROUCH_RIGHTDOWN: {P2.down_up: self.RUN, P2.right_up: self.CROUCH},

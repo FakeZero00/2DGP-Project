@@ -70,7 +70,10 @@ class Run:
         if not self.gaogaigar.jump_bool:
             self.gaogaigar.frame = (self.gaogaigar.frame + 10 * ACTION_PER_TIME * Game_Framework.frame_time) % 10
 
-        self.gaogaigar.x += RUN_SPEED_PPS * Game_Framework.frame_time
+        if self.gaogaigar.dir[0] == 1:
+            self.gaogaigar.x += RUN_SPEED_PPS * Game_Framework.frame_time
+        elif self.gaogaigar.dir[0] == -1:
+            self.gaogaigar.x += RUN_SPEED_PPS * 0.8 * Game_Framework.frame_time
         if self.gaogaigar.get_collider('body').get_bb()[2] > 1600:
             self.gaogaigar.x = 1600 - 40
 
@@ -102,7 +105,10 @@ class Back:
         elif self.gaogaigar.dir[0] == 1:
             self.gaogaigar.frame = 1
 
-        self.gaogaigar.x -= RUN_SPEED_PPS * Game_Framework.frame_time
+        if self.gaogaigar.dir[0] == 1:
+            self.gaogaigar.x -= RUN_SPEED_PPS * 0.8 * Game_Framework.frame_time
+        elif self.gaogaigar.dir[0] == -1:
+            self.gaogaigar.x -= RUN_SPEED_PPS * Game_Framework.frame_time
         if self.gaogaigar.get_collider('body').get_bb()[0] < 0:
             self.gaogaigar.x = 40
 
@@ -479,7 +485,7 @@ class Gaogaigar:
                        P1.down_down: self.CROUCH_RIGHTDOWN, P1.up_down: self.JUMP_RIGHTUP,
                        P1.attack_down: self.ATTACK1},
             self.BACK: {P1.left_up: self.IDLE, P1.right_down: self.IDLE, P1.down_down: self.CROUCH_LEFTDOWN,
-                        P1.up_down: self.JUMP_LEFTUP},
+                        P1.up_down: self.JUMP_LEFTUP, P1.attack_down: self.ATTACK1},
             self.CROUCH: {P1.down_up: self.IDLE, P1.right_down: self.CROUCH_RIGHTDOWN,
                           P1.left_down: self.CROUCH_LEFTDOWN},
             self.CROUCH_RIGHTDOWN: {P1.down_up: self.RUN, P1.right_up: self.CROUCH},
@@ -510,7 +516,7 @@ class Gaogaigar:
                        P2.down_down: self.CROUCH_RIGHTDOWN, P2.up_down: self.JUMP_RIGHTUP,
                        P2.attack_down: self.ATTACK1},
             self.BACK: {P2.left_up: self.IDLE, P2.right_down: self.IDLE, P2.down_down: self.CROUCH_LEFTDOWN,
-                        P2.up_down: self.JUMP_LEFTUP},
+                        P2.up_down: self.JUMP_LEFTUP, P2.attack_down: self.ATTACK1},
             self.CROUCH: {P2.down_up: self.IDLE, P2.right_down: self.CROUCH_RIGHTDOWN,
                           P2.left_down: self.CROUCH_LEFTDOWN},
             self.CROUCH_RIGHTDOWN: {P2.down_up: self.RUN, P2.right_up: self.CROUCH},
