@@ -254,7 +254,7 @@ class Hit:
         elif self.gundam.player == 'p2':
             P2.input_check(e, self.gundam.input_booleans)
 
-        if self.timer >= 0.1:
+        if self.timer >= 0.2:
             self.gundam.statemachine.handle_state_event(('ANIM_END', 0), self.gundam.object_state)
         self.timer += Game_Framework.frame_time
 
@@ -411,6 +411,36 @@ class Command_skill: # Test
         else:
             self.gundam.image.clip_composite_draw(min(int(self.gundam.frame), 4) * 800, 800 * 2, 800, 800, 0, self.gundam.dir[1], self.gundam.x, self.gundam.y, 450, 450)
 
+class Defend:
+    def __init__(self, gundam):
+        self.gundam = gundam
+        self.timer = 0
+
+    def enter(self, e):
+        self.gundam.frame = 6
+        self.timer = 0
+
+        if self.gundam.player == 'p1':
+            Global_Object.p1hp.hp -= 1
+        elif self.gundam.player == 'p2':
+            Global_Object.p2hp.hp -= 1
+
+    def exit(self, e):
+        pass
+
+    def do(self, e):
+        if self.gundam.player == 'p1':
+            P1.input_check(e, self.gundam.input_booleans)
+        elif self.gundam.player == 'p2':
+            P2.input_check(e, self.gundam.input_booleans)
+
+        if self.timer >= 0.5:
+            self.gundam.statemachine.handle_state_event(('ANIM_END', 0), self.gundam.object_state)
+        self.timer += Game_Framework.frame_time
+
+    def draw(self):
+        self.gundam.image.clip_composite_draw(self.gundam.frame * 820, 0, 780, 800, 0, self.gundam.dir[1], self.gundam.x + 80 * self.gundam.dir[0], self.gundam.y, 450, 450)
+
 # 건담 클래스 본체
 class Gundam:
     def __init__(self, player, x = 1300, y = 250):
@@ -462,6 +492,7 @@ class Gundam:
         self.ATTACK2 = Attack2(self)
         self.ATTACK3 = Attack3(self)
         self.COMMAND_SKILL = Command_skill(self)
+        self.DEFEND = Defend(self)
 
         self.P1rules = {
             self.IDLE: {P1.right_down: self.RUN, P1.left_down: self.BACK, P1.right_up: self.BACK, P1.left_up: self.RUN, P1.down_down: self.CROUCH, P1.up_down: self.JUMP, P1.up_up: self.IDLE,
@@ -481,7 +512,8 @@ class Gundam:
             self.ATTACK2: {P1.anim_end('BACK'): self.BACK, P1.anim_end('RUN'): self.RUN, P1.anim_end('CROUCH'): self.CROUCH, P1.anim_end('IDLE'): self.IDLE,
                            P1.attack_down: self.ATTACK3},
             self.ATTACK3: {P1.anim_end('BACK'): self.BACK, P1.anim_end('RUN'): self.RUN, P1.anim_end('CROUCH'): self.CROUCH, P1.anim_end('IDLE'): self.IDLE},
-            self.COMMAND_SKILL: {P1.anim_end('BACK'): self.BACK, P1.anim_end('RUN'): self.RUN, P1.anim_end('CROUCH'): self.CROUCH, P1.anim_end('IDLE'): self.IDLE}
+            self.COMMAND_SKILL: {P1.anim_end('BACK'): self.BACK, P1.anim_end('RUN'): self.RUN, P1.anim_end('CROUCH'): self.CROUCH, P1.anim_end('IDLE'): self.IDLE},
+            self.DEFEND: {P1.anim_end('BACK'): self.BACK, P1.anim_end('RUN'): self.RUN, P1.anim_end('CROUCH'): self.CROUCH, P1.anim_end('IDLE'): self.IDLE}
         }
         self.P2rules = {
             self.IDLE: {P2.right_down: self.RUN, P2.left_down: self.BACK, P2.right_up: self.BACK, P2.left_up: self.RUN,
@@ -508,8 +540,8 @@ class Gundam:
                            P2.attack_down: self.ATTACK3},
             self.ATTACK3: {P2.anim_end('BACK'): self.BACK, P2.anim_end('RUN'): self.RUN,
                            P2.anim_end('CROUCH'): self.CROUCH, P2.anim_end('IDLE'): self.IDLE},
-            self.COMMAND_SKILL: {P2.anim_end('BACK'): self.BACK, P2.anim_end('RUN'): self.RUN,
-                                 P2.anim_end('CROUCH'): self.CROUCH, P2.anim_end('IDLE'): self.IDLE}
+            self.COMMAND_SKILL: {P2.anim_end('BACK'): self.BACK, P2.anim_end('RUN'): self.RUN, P2.anim_end('CROUCH'): self.CROUCH, P2.anim_end('IDLE'): self.IDLE},
+            self.DEFEND: {P2.anim_end('BACK'): self.BACK, P2.anim_end('RUN'): self.RUN, P2.anim_end('CROUCH'): self.CROUCH, P2.anim_end('IDLE'): self.IDLE}
         }
         if self.player == 'p1':
             self.statemachine = StateMachine(self.IDLE, self.P1rules)
@@ -597,7 +629,10 @@ class Gundam:
             if self.player == 'p1':
                 if other.object.behavior_state in [other.object.ATTACK1, other.object.ATTACK2, other.object.ATTACK3, other.object.COMMAND_SKILL] and other.object.frame >= 2:
                     if other.object.behavior_state.attack_state == 'running':
-                        self.statemachine.handle_state_event(('HIT', self.HIT), self.object_state)
+                        if self.behavior_state in [self.BACK, self.DEFEND]:
+                            self.statemachine.handle_state_event(('DEFEND', self.DEFEND), self.object_state)
+                        else:
+                            self.statemachine.handle_state_event(('HIT', self.HIT), self.object_state)
             elif self.player == 'p2':
                 if self.behavior_state in [self.ATTACK1, self.ATTACK2, self.ATTACK3, self.COMMAND_SKILL] and self.frame >= 2:
                     if self.behavior_state.attack_state == 'running':
@@ -611,4 +646,7 @@ class Gundam:
             elif self.player == 'p2':
                 if other.object.behavior_state in [other.object.ATTACK1, other.object.ATTACK2, other.object.ATTACK3, other.object.COMMAND_SKILL] and other.object.frame >= 2:
                     if other.object.behavior_state.attack_state == 'running':
-                        self.statemachine.handle_state_event(('HIT', self.HIT), self.object_state)
+                        if self.behavior_state in [self.BACK, self.DEFEND]:
+                            self.statemachine.handle_state_event(('DEFEND', self.DEFEND), self.object_state)
+                        else:
+                            self.statemachine.handle_state_event(('HIT', self.HIT), self.object_state)

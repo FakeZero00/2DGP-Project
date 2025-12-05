@@ -25,3 +25,9 @@ class StateMachine:
                 next_state.enter(state_event)
                 self.cur_state = next_state
                 return
+            elif state_event[0] == 'DEFEND':
+                next_state = state_event[1] #Defend state
+                self.cur_state.exit(0)
+                next_state.enter(state_event)
+                self.cur_state = next_state
+                return
