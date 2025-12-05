@@ -474,9 +474,9 @@ class Gundam:
             self.colliders['body'] = Collider(self.x - 150, self.y - 225, 150, 365, self)
         #공격 콜라이더
         if self.dir[0] == 1:
-            self.colliders['attack'] = Collider(self.x + 290, self.y - 255, 260, 450, self)
+            self.colliders['attack'] = Collider(self.x + 290, self.y - 255, 260, 350, self)
         elif self.dir[0] == -1:
-            self.colliders['attack'] = Collider(self.x - 390, self.y - 225, 260, 450, self)
+            self.colliders['attack'] = Collider(self.x - 390, self.y - 225, 260, 350, self)
 
         self.IDLE = Idle(self)
         self.RUN = Run(self)
@@ -629,7 +629,7 @@ class Gundam:
             if self.player == 'p1':
                 if other.object.behavior_state in [other.object.ATTACK1, other.object.ATTACK2, other.object.ATTACK3, other.object.COMMAND_SKILL] and other.object.frame >= 2:
                     if other.object.behavior_state.attack_state == 'running':
-                        if self.behavior_state in [self.BACK, self.DEFEND]:
+                        if (self.dir[0] == 1 and self.behavior_state in [self.BACK, self.DEFEND]) or (self.dir[0] == -1 and self.behavior_state in [self.RUN, self.DEFEND]):
                             self.statemachine.handle_state_event(('DEFEND', self.DEFEND), self.object_state)
                         else:
                             self.statemachine.handle_state_event(('HIT', self.HIT), self.object_state)
@@ -646,7 +646,7 @@ class Gundam:
             elif self.player == 'p2':
                 if other.object.behavior_state in [other.object.ATTACK1, other.object.ATTACK2, other.object.ATTACK3, other.object.COMMAND_SKILL] and other.object.frame >= 2:
                     if other.object.behavior_state.attack_state == 'running':
-                        if self.behavior_state in [self.BACK, self.DEFEND]:
+                        if (self.dir[0] == 1 and self.behavior_state in [self.BACK, self.DEFEND]) or (self.dir[0] == -1 and self.behavior_state in [self.RUN, self.DEFEND]):
                             self.statemachine.handle_state_event(('DEFEND', self.DEFEND), self.object_state)
                         else:
                             self.statemachine.handle_state_event(('HIT', self.HIT), self.object_state)
