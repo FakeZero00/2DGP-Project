@@ -3,7 +3,7 @@ from Project.Gaogaigar import Gaogaigar
 from Project.Gundam import Gundam
 from Project.Background import Background
 from Project.Ground import Ground
-from Project.Hpbar import Hpbar
+from Project.Bar import Bar
 from Project.Timer import Timer
 import PlayScene_world, Game_Framework, Global_Object
 
@@ -17,10 +17,15 @@ def init():
     ground = Ground(0)
     PlayScene_world.add_object(ground, 0)
 
-    Global_Object.p1hp = Hpbar(1)
+    Global_Object.p1hp = Bar(1, 'HP', 100)
     PlayScene_world.add_object(Global_Object.p1hp, 0)
-    Global_Object.p2hp = Hpbar(2)
+    Global_Object.p2hp = Bar(2, 'HP', 100)
     PlayScene_world.add_object(Global_Object.p2hp, 0)
+
+    Global_Object.p1pp = Bar(1, 'PP', 0)
+    PlayScene_world.add_object(Global_Object.p1pp, 0)
+    Global_Object.p2pp = Bar(2, 'PP', 0)
+    PlayScene_world.add_object(Global_Object.p2pp, 0)
 
     timer = Timer(60)
     PlayScene_world.add_object(timer, 0)

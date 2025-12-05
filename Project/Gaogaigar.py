@@ -246,9 +246,9 @@ class Hit:
         self.timer = 0
 
         if self.gaogaigar.player == 'p1':
-            Global_Object.p1hp.hp -= 10
+            Global_Object.p1hp.current_point -= 10
         elif self.gaogaigar.player == 'p2':
-            Global_Object.p2hp.hp -= 10
+            Global_Object.p2hp.current_point -= 10
 
     def exit(self, e):
         pass
@@ -404,9 +404,9 @@ class Defend:
         self.timer = 0
 
         if self.gaogaigar.player == 'p1':
-            Global_Object.p1hp.hp -= 1
+            Global_Object.p1hp.current_point -= 1
         elif self.gaogaigar.player == 'p2':
-            Global_Object.p2hp.hp -= 1
+            Global_Object.p2hp.current_point -= 1
 
     def exit(self, e):
         pass
