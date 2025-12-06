@@ -1,4 +1,4 @@
-import Game_Framework
+import Game_Framework, Global_Object
 from pico2d import *
 
 def init():
@@ -23,6 +23,17 @@ def resume(): pass
 def finish():
     global lose_image
     del lose_image
+
+    Global_Object.p1hp.current_point = 100
+    Global_Object.p2hp.current_point = 100
+
+    Global_Object.p1.x = 300
+    Global_Object.p1.y = 250
+    Global_Object.p1.statemachine.handle_state_event(('IDLE', Global_Object.p1.IDLE), Global_Object.p1.object_state)
+
+    Global_Object.p2.x = 1300
+    Global_Object.p2.y = 250
+    Global_Object.p2.statemachine.handle_state_event(('IDLE', Global_Object.p2.IDLE), Global_Object.p2.object_state)
 
 def Input_Event():
     pass

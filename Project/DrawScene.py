@@ -1,28 +1,35 @@
-import Game_Framework, Global_Object
+import Game_Framework, Global_Object, PlayScene_world
 from pico2d import *
 
 def init():
-    global win_image, cur_time
+    global time_up_image, draw_image, cur_time
 
-    win_image = load_image("../Sprite/You_Win.png")
+    time_up_image = load_image("../Sprite/Time_Up.png")
+    draw_image = load_image("../Sprite/Draw.png")
     cur_time = 0
 
 def update():
     global cur_time
     cur_time += Game_Framework.frame_time
-    if cur_time >= 3.0:
+    if cur_time >= 5.0:
         Game_Framework.pop_scene()
 
 def draw():
-    win_image.clip_draw(0, 0, 1600, 900, 800, 450)
+    global cur_time
+    clear_canvas()
+    PlayScene_world.render()
+    if cur_time <= 2.0:
+        time_up_image.clip_draw(0, 0, 1600, 900, 800, 450)
+    else:
+        draw_image.clip_draw(0, 0, 1600, 900, 800, 450)
     update_canvas()
 
 def pause(): pass
 def resume(): pass
 
 def finish():
-    global win_image
-    del win_image
+    global draw_image
+    del draw_image
 
     Global_Object.p1hp.current_point = 100
     Global_Object.p2hp.current_point = 100

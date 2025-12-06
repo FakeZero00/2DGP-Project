@@ -6,11 +6,11 @@ from Project.Ground import Ground
 from Project.Bar import Bar
 from Project.Timer import Timer
 from Project.WinPoint import WinPoint
-import PlayScene_world, Game_Framework, Global_Object, WinScene, LoseScene
+import PlayScene_world, Game_Framework, Global_Object, WinScene, LoseScene, DrawScene
 
 #========= 씬 함수 ==========
 def init():
-    global gaogaigar, gundam
+    global gaogaigar, gundam, timer
 
     background = Background(0)
     PlayScene_world.add_object(background, 0)
@@ -56,27 +56,29 @@ def draw():
     PlayScene_world.render()
     update_canvas()
 
-    if Global_Object.p1hp.current_point <= 0:
+    if Global_Object.p1hp.current_point <= 0 and Global_Object.p2.behavior_state == Global_Object.p2.IDLE:
         Global_Object.p2wp.current_point += 1
         Game_Framework.push_scene(LoseScene)
-    elif Global_Object.p2hp.current_point <= 0:
+    elif Global_Object.p2hp.current_point <= 0 and Global_Object.p2.behavior_state == Global_Object.p2.IDLE:
         Global_Object.p1wp.current_point += 1
         Game_Framework.push_scene(WinScene)
+    elif timer.time <= 0 and Global_Object.p2.behavior_state == Global_Object.p2.IDLE and Global_Object.p2.behavior_state == Global_Object.p2.IDLE:
+        if Global_Object.p1hp.current_point > Global_Object.p2hp.current_point:
+            Global_Object.p1wp.current_point += 1
+            Game_Framework.push_scene(WinScene)
+        elif Global_Object.p1hp.current_point < Global_Object.p2hp.current_point:
+            Global_Object.p2wp.current_point += 1
+            Game_Framework.push_scene(LoseScene)
+        else:
+            Game_Framework.push_scene(DrawScene)
 
 def finish(): pass
 def resume(): pass
 def pause(): pass
 
 def resume():
-    Global_Object.p1hp.current_point = 100
-    Global_Object.p2hp.current_point = 100
-
-    Global_Object.p1.x = 300
-    Global_Object.p1.y = 250
-
-
-    Global_Object.p2.x = 1300
-    Global_Object.p2.y = 250
+    global timer
+    timer.time = 60
 
 #====== Input 이벤트 처리 함수 =====
 def Input_Event():
