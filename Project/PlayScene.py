@@ -87,5 +87,6 @@ def Input_Event():
         if event.type == SDL_QUIT: # 창 닫기 버튼
             Game_Framework.quit()
         else:
-            Global_Object.p1.handle_event(event)
-            Global_Object.p2.handle_event(event)
+            if Global_Object.p1hp.current_point > 0 and Global_Object.p2hp.current_point > 0:
+                Global_Object.p1.handle_event(event)
+                Global_Object.p2.handle_event(event)

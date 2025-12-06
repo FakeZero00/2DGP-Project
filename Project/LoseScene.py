@@ -36,4 +36,4 @@ def finish():
     Global_Object.p2.statemachine.handle_state_event(('IDLE', Global_Object.p2.IDLE), Global_Object.p2.object_state)
 
 def Input_Event():
-    pass
+    event_list = get_events()
