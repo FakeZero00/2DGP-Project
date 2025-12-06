@@ -22,7 +22,7 @@ def push_scene(scene):
     stack.append(scene)
     scene.init()
 
-def pop_mode():
+def pop_scene():
     global stack
     if (len(stack) > 0):
         # 스택의 가장 마지막, 즉, 가장 최근의 씬의 종료 함수 실행
