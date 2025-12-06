@@ -5,6 +5,7 @@ from Project.Background import Background
 from Project.Ground import Ground
 from Project.Bar import Bar
 from Project.Timer import Timer
+from Project.WinPoint import WinPoint
 import PlayScene_world, Game_Framework, Global_Object
 
 #========= 씬 함수 ==========
@@ -27,6 +28,11 @@ def init():
     Global_Object.p2pp = Bar(2, 'PP', 0)
     PlayScene_world.add_object(Global_Object.p2pp, 0)
 
+    Global_Object.p1wp = WinPoint(1)
+    PlayScene_world.add_object(Global_Object.p1wp, 0)
+    Global_Object.p2wp = WinPoint(2)
+    PlayScene_world.add_object(Global_Object.p2wp, 0)
+
     timer = Timer(60)
     PlayScene_world.add_object(timer, 0)
 
@@ -43,6 +49,9 @@ def init():
 def update():
     PlayScene_world.update()
     PlayScene_world.handle_collisions()
+
+    if Global_Object.p1hp.current_value <= 0:
+        pass
     print(Global_Object.p1.command_buffer.tokens())
 
 def draw():
