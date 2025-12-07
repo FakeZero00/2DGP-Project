@@ -440,7 +440,7 @@ class Defend:
         elif self.gundam.player == 'p2':
             P2.input_check(e, self.gundam.input_booleans)
 
-        if self.timer >= 0.5:
+        if self.timer >= 0.2:
             self.gundam.statemachine.handle_state_event(('ANIM_END', 0), self.gundam.object_state)
         self.timer += Game_Framework.frame_time
 
@@ -630,29 +630,41 @@ class Gundam:
                 else:
                     self.x = other.object.get_collider('body').get_bb()[2] + 150
 
-
         elif group == 'p1_body:p2_attack':
             if self.player == 'p1':
-                if other.object.behavior_state in [other.object.ATTACK1, other.object.ATTACK2, other.object.ATTACK3, other.object.COMMAND_SKILL] and other.object.frame >= 2:
+                if other.object.behavior_state in [other.object.ATTACK1, other.object.ATTACK2, other.object.ATTACK3] and other.object.frame >= 2:
                     if other.object.behavior_state.attack_state == 'running':
                         if (self.dir[0] == 1 and self.behavior_state in [self.BACK, self.DEFEND]) or (self.dir[0] == -1 and self.behavior_state in [self.RUN, self.DEFEND]):
                             self.statemachine.handle_state_event(('DEFEND', self.DEFEND), self.object_state)
                         else:
                             self.statemachine.handle_state_event(('HIT', self.HIT), self.object_state)
             elif self.player == 'p2':
-                if self.behavior_state in [self.ATTACK1, self.ATTACK2, self.ATTACK3, self.COMMAND_SKILL] and self.frame >= 2:
+                if self.behavior_state in [self.ATTACK1, self.ATTACK2, self.ATTACK3] and self.frame >= 2:
                     if self.behavior_state.attack_state == 'running':
                         self.behavior_state.attack_state = 'hit'
 
         elif group == 'p2_body:p1_attack':
             if self.player == 'p1':
-                if self.behavior_state in [self.ATTACK1, self.ATTACK2, self.ATTACK3, self.COMMAND_SKILL] and self.frame >= 2:
+                if self.behavior_state in [self.ATTACK1, self.ATTACK2, self.ATTACK3] and self.frame >= 2:
                     if self.behavior_state.attack_state == 'running':
                         self.behavior_state.attack_state = 'hit'
             elif self.player == 'p2':
-                if other.object.behavior_state in [other.object.ATTACK1, other.object.ATTACK2, other.object.ATTACK3, other.object.COMMAND_SKILL] and other.object.frame >= 2:
+                if other.object.behavior_state in [other.object.ATTACK1, other.object.ATTACK2, other.object.ATTACK3] and other.object.frame >= 2:
                     if other.object.behavior_state.attack_state == 'running':
                         if (self.dir[0] == 1 and self.behavior_state in [self.BACK, self.DEFEND]) or (self.dir[0] == -1 and self.behavior_state in [self.RUN, self.DEFEND]):
                             self.statemachine.handle_state_event(('DEFEND', self.DEFEND), self.object_state)
                         else:
                             self.statemachine.handle_state_event(('HIT', self.HIT), self.object_state)
+
+        elif group == 'p1_body:broken_magnum':
+            if (self.dir[0] == 1 and self.behavior_state in [self.BACK, self.DEFEND]) or (self.dir[0] == -1 and self.behavior_state in [self.RUN, self.DEFEND]):
+                self.statemachine.handle_state_event(('DEFEND', self.DEFEND), self.object_state)
+            else:
+                self.statemachine.handle_state_event(('HIT', self.HIT), self.object_state)
+
+        elif group == 'p2_body:broken_magnum':
+            if other.object.count < 3 and other.object.state == 'launch':
+                if (self.dir[0] == 1 and self.behavior_state in [self.BACK, self.DEFEND]) or (self.dir[0] == -1 and self.behavior_state in [self.RUN, self.DEFEND]):
+                    self.statemachine.handle_state_event(('DEFEND', self.DEFEND), self.object_state)
+                else:
+                    self.statemachine.handle_state_event(('HIT', self.HIT), self.object_state)

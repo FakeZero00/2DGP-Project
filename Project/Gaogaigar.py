@@ -2,9 +2,10 @@ from pico2d import *
 from Project.CommandRecognizer import CommandBuffer, CommandRecognizer
 from Project.State_Machine import StateMachine
 from Project.Collider import Collider
+from Project.Broken_Magnum import Broken_Magnum
 import Project.P1_Event_Function as P1
 import Project.P2_Event_Function as P2
-import Game_Framework, Global_Object
+import Game_Framework, Global_Object, PlayScene_world
 
 #커맨드 목록
 LeftCommandList = [
@@ -259,7 +260,7 @@ class Hit:
         elif self.gaogaigar.player == 'p2':
             P2.input_check(e, self.gaogaigar.input_booleans)
 
-        if self.timer >= 0.2:
+        if self.timer >= 0.5:
             self.gaogaigar.statemachine.handle_state_event(('ANIM_END', 0), self.gaogaigar.object_state)
         self.timer += Game_Framework.frame_time
 
@@ -388,8 +389,17 @@ class Command_skill: # Test
             P2.input_check(e, self.gaogaigar.input_booleans)
 
         self.gaogaigar.frame = self.gaogaigar.frame + 10 * ACTION_PER_TIME * Game_Framework.frame_time
-        if int(self.gaogaigar.frame) > 100:
+        if int(self.gaogaigar.frame) > 7:
             self.gaogaigar.statemachine.handle_state_event(('ANIM_END', 0), self.gaogaigar.object_state)
+        elif int(self.gaogaigar.frame) == 5 and self.attack_state == 'running':
+            broken_magnum = Broken_Magnum(self.gaogaigar.x, self.gaogaigar.y, self.gaogaigar)
+            PlayScene_world.add_object(broken_magnum, 1)
+            if self.gaogaigar.player == 'p1':
+                PlayScene_world.add_collision_pairs('p2_body:broken_magnum', None, broken_magnum.get_collider('broken_magnum'))
+            elif self.gaogaigar.player == 'p2':
+                PlayScene_world.add_collision_pairs('p1_body:broken_magnum', None, broken_magnum.get_collider('broken_magnum'))
+            self.attack_state = 'launched'
+
 
     def draw(self):
         self.gaogaigar.image.clip_composite_draw(min(int(self.gaogaigar.frame), 5) * 800, 800 * 2, 800, 800, 0, self.gaogaigar.dir[1], self.gaogaigar.x, self.gaogaigar.y, 450, 450)
@@ -622,24 +632,24 @@ class Gaogaigar:
 
         elif group == 'p1_body:p2_attack':
             if self.player == 'p1':
-                if other.object.behavior_state in [other.object.ATTACK1, other.object.ATTACK2, other.object.ATTACK3, other.object.COMMAND_SKILL] and other.object.frame >= 2:
+                if other.object.behavior_state in [other.object.ATTACK1, other.object.ATTACK2, other.object.ATTACK3] and other.object.frame >= 2:
                     if other.object.behavior_state.attack_state == 'running':
                         if (self.dir[0] == 1 and self.behavior_state in [self.BACK, self.DEFEND]) or (self.dir[0] == -1 and self.behavior_state in [self.RUN, self.DEFEND]):
                             self.statemachine.handle_state_event(('DEFEND', self.DEFEND), self.object_state)
                         else:
                             self.statemachine.handle_state_event(('HIT', self.HIT), self.object_state)
             elif self.player == 'p2':
-                if self.behavior_state in [self.ATTACK1, self.ATTACK2, self.ATTACK3, self.COMMAND_SKILL] and self.frame >= 2:
+                if self.behavior_state in [self.ATTACK1, self.ATTACK2, self.ATTACK3] and self.frame >= 2:
                     if self.behavior_state.attack_state == 'running':
                         self.behavior_state.attack_state = 'hit'
 
         elif group == 'p2_body:p1_attack':
             if self.player == 'p1':
-                if self.behavior_state in [self.ATTACK1, self.ATTACK2, self.ATTACK3, self.COMMAND_SKILL] and self.frame >= 2:
+                if self.behavior_state in [self.ATTACK1, self.ATTACK2, self.ATTACK3] and self.frame >= 2:
                     if self.behavior_state.attack_state == 'running':
                         self.behavior_state.attack_state = 'hit'
             elif self.player == 'p2':
-                if other.object.behavior_state in [other.object.ATTACK1, other.object.ATTACK2, other.object.ATTACK3, other.object.COMMAND_SKILL] and other.object.frame >= 2:
+                if other.object.behavior_state in [other.object.ATTACK1, other.object.ATTACK2, other.object.ATTACK3] and other.object.frame >= 2:
                     if other.object.behavior_state.attack_state == 'running':
                         if (self.dir[0] == 1 and self.behavior_state in [self.BACK, self.DEFEND]) or (self.dir[0] == -1 and self.behavior_state in [self.RUN, self.DEFEND]):
                             self.statemachine.handle_state_event(('DEFEND', self.DEFEND), self.object_state)
