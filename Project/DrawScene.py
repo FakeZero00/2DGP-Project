@@ -34,6 +34,9 @@ def finish():
     Global_Object.p1hp.current_point = 100
     Global_Object.p2hp.current_point = 100
 
+    Global_Object.p1pp.current_point = 0
+    Global_Object.p2pp.current_point = 0
+
     Global_Object.p1.x = 300
     Global_Object.p1.y = 250
     Global_Object.p1.statemachine.handle_state_event(('IDLE', Global_Object.p1.IDLE), Global_Object.p1.object_state)
