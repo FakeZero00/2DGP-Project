@@ -6,7 +6,7 @@ from Project.Ground import Ground
 from Project.Bar import Bar
 from Project.Timer import Timer
 from Project.WinPoint import WinPoint
-import PlayScene_world, Game_Framework, Global_Object, WinScene, LoseScene, DrawScene
+import PlayScene_world, Game_Framework, Global_Object, WinScene, LoseScene, DrawScene, WinnerScene
 
 #========= 씬 함수 ==========
 def init():
@@ -59,7 +59,7 @@ def draw():
     if Global_Object.p1hp.current_point <= 0 and Global_Object.p2.behavior_state == Global_Object.p2.IDLE:
         Global_Object.p2wp.current_point += 1
         Game_Framework.push_scene(LoseScene)
-    elif Global_Object.p2hp.current_point <= 0 and Global_Object.p2.behavior_state == Global_Object.p2.IDLE:
+    elif Global_Object.p2hp.current_point <= 0 and Global_Object.p1.behavior_state == Global_Object.p1.IDLE:
         Global_Object.p1wp.current_point += 1
         Game_Framework.push_scene(WinScene)
     elif timer.time <= 0 and Global_Object.p2.behavior_state == Global_Object.p2.IDLE and Global_Object.p2.behavior_state == Global_Object.p2.IDLE:
@@ -73,12 +73,15 @@ def draw():
             Game_Framework.push_scene(DrawScene)
 
 def finish(): pass
-def resume(): pass
-def pause(): pass
 
 def resume():
     global timer
     timer.time = 60
+
+    if Global_Object.p1wp.current_point == 2 or Global_Object.p2wp.current_point == 2:
+        Game_Framework.change_scene(WinnerScene)
+
+def pause(): pass
 
 #====== Input 이벤트 처리 함수 =====
 def Input_Event():
