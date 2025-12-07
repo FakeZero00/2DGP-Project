@@ -44,11 +44,14 @@ class Broken_Magnum:
 
     def handle_collision(self, group, other):
         if group == 'p1_body:broken_magnum':
-            self.x = other.get_bb()[0] - 60
-            self.count += 1
-            if self.count >= 3:
-                PlayScene_world.remove_collision_object(self)
-                PlayScene_world.remove_object(self)
+            self.x = other.get_bb()[0] - 70
+            if self.state == 'launch':
+                self.state = 'hit'
+                self.timer = 0.0
+                self.count += 1
+                if self.count >= 3:
+                    PlayScene_world.remove_collision_object(self)
+                    PlayScene_world.remove_object(self)
 
         elif group == 'p2_body:broken_magnum':
             self.x = other.get_bb()[0] - 70

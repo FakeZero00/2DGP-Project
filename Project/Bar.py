@@ -11,7 +11,7 @@ class Bar:
         self.current_point = init_point
 
     def update(self):
-        pass
+        self.current_point = clamp(0, self.current_point, self.Max)
 
     def draw(self):
         if self.bar_type == 'HP':
