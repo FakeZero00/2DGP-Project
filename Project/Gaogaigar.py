@@ -642,12 +642,14 @@ class Gaogaigar:
                 if self.behavior_state in [self.ATTACK1, self.ATTACK2, self.ATTACK3] and self.frame >= 2:
                     if self.behavior_state.attack_state == 'running':
                         self.behavior_state.attack_state = 'hit'
+                        #Global_Object.p2pp.current_point += 5
 
         elif group == 'p2_body:p1_attack':
             if self.player == 'p1':
                 if self.behavior_state in [self.ATTACK1, self.ATTACK2, self.ATTACK3] and self.frame >= 2:
                     if self.behavior_state.attack_state == 'running':
                         self.behavior_state.attack_state = 'hit'
+                        #Global_Object.p1pp.current_point += 15
             elif self.player == 'p2':
                 if other.object.behavior_state in [other.object.ATTACK1, other.object.ATTACK2, other.object.ATTACK3] and other.object.frame >= 2:
                     if other.object.behavior_state.attack_state == 'running':
@@ -655,3 +657,15 @@ class Gaogaigar:
                             self.statemachine.handle_state_event(('DEFEND', self.DEFEND), self.object_state)
                         else:
                             self.statemachine.handle_state_event(('HIT', self.HIT), self.object_state)
+
+        elif group == 'p1_body:beam':
+            if (self.dir[0] == 1 and self.behavior_state in [self.BACK, self.DEFEND]) or (self.dir[0] == -1 and self.behavior_state in [self.RUN, self.DEFEND]):
+                self.statemachine.handle_state_event(('DEFEND', self.DEFEND), self.object_state)
+            else:
+                self.statemachine.handle_state_event(('HIT', self.HIT), self.object_state)
+
+        elif group == 'p2_body:beam':
+            if (self.dir[0] == 1 and self.behavior_state in [self.BACK, self.DEFEND]) or (self.dir[0] == -1 and self.behavior_state in [self.RUN, self.DEFEND]):
+                self.statemachine.handle_state_event(('DEFEND', self.DEFEND), self.object_state)
+            else:
+                self.statemachine.handle_state_event(('HIT', self.HIT), self.object_state)

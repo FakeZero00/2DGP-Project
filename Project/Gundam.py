@@ -2,9 +2,10 @@ from pico2d import *
 from Project.CommandRecognizer import CommandBuffer, CommandRecognizer
 from Project.State_Machine import StateMachine
 from Project.Collider import Collider
+from Project.Beam import Beam
 import Project.P1_Event_Function as P1
 import Project.P2_Event_Function as P2
-import Game_Framework, Global_Object
+import Game_Framework, Global_Object, PlayScene_world
 
 #커맨드 목록
 LeftCommandList = [
@@ -408,14 +409,19 @@ class Command_skill: # Test
             P2.input_check(e, self.gundam.input_booleans)
 
         self.gundam.frame = self.gundam.frame + 10 * ACTION_PER_TIME * Game_Framework.frame_time
-        if int(self.gundam.frame) > 100:
+        if int(self.gundam.frame) > 6:
             self.gundam.statemachine.handle_state_event(('ANIM_END', 0), self.gundam.object_state)
+        elif int(self.gundam.frame) == 2 and self.attack_state == 'running':
+            beam = Beam(self.gundam.x + 100 * self.gundam.dir[0], self.gundam.y + 50, self.gundam)
+            PlayScene_world.add_object(beam, 1)
+            if self.gundam.player == 'p1':
+                PlayScene_world.add_collision_pairs('p2_body:beam', None, beam.get_collider('beam'))
+            elif self.gundam.player == 'p2':
+                PlayScene_world.add_collision_pairs('p1_body:beam', None, beam.get_collider('beam'))
+            self.attack_state = 'launched'
 
     def draw(self):
-        if int(self.gundam.frame) == 3 or int(self.gundam.frame) >= 4:
-            self.gundam.image.clip_composite_draw(min(int(self.gundam.frame), 4) * 850, 800 * 2, 800, 800, 0, self.gundam.dir[1], self.gundam.x + 70 * self.gundam.dir[0], self.gundam.y, 450, 450)
-        else:
-            self.gundam.image.clip_composite_draw(min(int(self.gundam.frame), 4) * 800, 800 * 2, 800, 800, 0, self.gundam.dir[1], self.gundam.x, self.gundam.y, 450, 450)
+        self.gundam.image.clip_composite_draw(min(int(self.gundam.frame), 5) * 800, 800 * 5, 800, 800, 0, self.gundam.dir[1], self.gundam.x + 60 * self.gundam.dir[0], self.gundam.y + 10, 530, 530)
 
 class Defend:
     def __init__(self, gundam):
@@ -657,10 +663,11 @@ class Gundam:
                             self.statemachine.handle_state_event(('HIT', self.HIT), self.object_state)
 
         elif group == 'p1_body:broken_magnum':
-            if (self.dir[0] == 1 and self.behavior_state in [self.BACK, self.DEFEND]) or (self.dir[0] == -1 and self.behavior_state in [self.RUN, self.DEFEND]):
-                self.statemachine.handle_state_event(('DEFEND', self.DEFEND), self.object_state)
-            else:
-                self.statemachine.handle_state_event(('HIT', self.HIT), self.object_state)
+            if other.object.count < 3 and other.object.state == 'launch':
+                if (self.dir[0] == 1 and self.behavior_state in [self.BACK, self.DEFEND]) or (self.dir[0] == -1 and self.behavior_state in [self.RUN, self.DEFEND]):
+                    self.statemachine.handle_state_event(('DEFEND', self.DEFEND), self.object_state)
+                else:
+                    self.statemachine.handle_state_event(('HIT', self.HIT), self.object_state)
 
         elif group == 'p2_body:broken_magnum':
             if other.object.count < 3 and other.object.state == 'launch':
