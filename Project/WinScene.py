@@ -1,4 +1,4 @@
-import Game_Framework, Global_Object
+import Game_Framework, Global_Object, PlayScene_world
 from pico2d import *
 
 def init():
@@ -34,6 +34,11 @@ def finish():
     Global_Object.p2.x = 1300
     Global_Object.p2.y = 250
     Global_Object.p2.statemachine.handle_state_event(('IDLE', Global_Object.p2.IDLE), Global_Object.p2.object_state)
+
+    for obj in PlayScene_world.world[1]:
+        if obj != Global_Object.p1 and obj != Global_Object.p2:
+            PlayScene_world.remove_collision_object(obj)
+            PlayScene_world.remove_object(obj)
 
 def Input_Event():
     event_list = get_events()
