@@ -47,12 +47,12 @@ def init():
     PlayScene_world.add_collision_pairs('p2_body:p1_attack', Global_Object.p2.get_collider('body'), Global_Object.p1.get_collider('attack'))
 
     if type(Global_Object.p1) == Gaogaigar:
-        pass
+        PlayScene_world.add_collision_pairs('p1_body:beam', Global_Object.p1.get_collider('body'), None)
     elif type(Global_Object.p1) == Gundam:
         PlayScene_world.add_collision_pairs('p1_body:broken_magnum', Global_Object.p1.get_collider('body'), None)
 
     if type(Global_Object.p2) == Gaogaigar:
-        pass
+        PlayScene_world.add_collision_pairs('p2_body:beam', Global_Object.p2.get_collider('body'), None)
     elif type(Global_Object.p2) == Gundam:
         PlayScene_world.add_collision_pairs('p2_body:broken_magnum', Global_Object.p2.get_collider('body'), None)
 
