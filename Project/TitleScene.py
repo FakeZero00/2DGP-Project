@@ -1,4 +1,4 @@
-import Game_Framework, TitleScene_world, SelectScene
+import Game_Framework, TitleScene_world, SelectScene, Global_Object
 from pico2d import *
 from Button import Button
 
@@ -8,6 +8,9 @@ VIDEO_PER_TIME = 1.0 / TIME_PER_VIDEO
 def init():
     global background_image, title_image, start_button, exit_button
 
+    Global_Object.Background_Music = load_music('../Sound/Gong.wav')
+    Global_Object.Background_Music.set_volume(10)
+    Global_Object.Background_Music.repeat_play()
     background_image = load_image("../Sprite/Title_Background.png")
     title_image = load_image("../Sprite/Title.png")
 
