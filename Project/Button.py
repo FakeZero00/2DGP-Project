@@ -3,7 +3,9 @@ from sdl2 import *
 
 ButtonDict = {
     'Start_Button.png' : 0,
-    'Exit_Button.png' : 1
+    'Exit_Button.png' : 1,
+    'Gaogaigar.jpg' : 2,
+    'Gundam.jpg' : 3
 }
 
 class Button:
@@ -20,7 +22,10 @@ class Button:
         pass
 
     def draw(self):
-        self.image.clip_draw(self.state * self.width, 0, self.width, self.height, self.x, self.y, self.width, self.height)
+        if self.id == 2:
+            self.image.clip_draw(self.state * self.width, 0, self.width, self.height, self.x, self.y, self.width // 2 , self.height // 2)
+        else:
+            self.image.clip_draw(self.state * self.width, 0, self.width, self.height, self.x, self.y, self.width, self.height)
 
     def handle_event(self, event):
         if self.id == 0:  # Start Button
@@ -35,6 +40,18 @@ class Button:
                     self.state = 0
                 elif event.key == SDLK_RIGHT:
                     self.state = 1
+        if self.id == 2:
+            if event.type == SDL_KEYDOWN:
+                if event.key == SDLK_LEFT:
+                    self.state = 0
+                elif event.key == SDLK_RIGHT:
+                    self.state = 1
+        elif self.id == 3:
+            if event.type == SDL_KEYDOWN:
+                if event.key == SDLK_LEFT:
+                    self.state = 1
+                elif event.key == SDLK_RIGHT:
+                    self.state = 0
 
     def handle_collision(self, group, other):
         pass

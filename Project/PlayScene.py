@@ -36,10 +36,7 @@ def init():
     timer = Timer(60)
     PlayScene_world.add_object(timer, 0)
 
-    Global_Object.p1 = Gaogaigar('p1')
     PlayScene_world.add_object(Global_Object.p1)
-
-    Global_Object.p2 = Gundam('p2')
     PlayScene_world.add_object(Global_Object.p2)
 
     PlayScene_world.add_collision_pairs('p1_body:p2_body', Global_Object.p1.get_collider('body'), Global_Object.p2.get_collider('body'))

@@ -1,4 +1,4 @@
-import Game_Framework, TitleScene_world, PlayScene
+import Game_Framework, TitleScene_world, SelectScene
 from pico2d import *
 from Button import Button
 
@@ -41,7 +41,7 @@ def Input_Event():
             Game_Framework.quit()
         elif event.type == SDL_KEYDOWN:
             if event.key == SDLK_RETURN:
-                if start_button.state == 1: Game_Framework.change_scene(PlayScene)
+                if start_button.state == 1: Game_Framework.change_scene(SelectScene)
                 elif exit_button.state == 1: Game_Framework.quit()
             else:
                 start_button.handle_event(event)
