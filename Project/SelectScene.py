@@ -10,6 +10,10 @@ VIDEO_PER_TIME = 1.0 / TIME_PER_VIDEO
 def init():
     global background_image, banner_image, gaogaigar_button, gundam_button
 
+    Global_Object.Background_Music = load_music('../Sound/Select_Background_Music.wav')
+    Global_Object.Background_Music.set_volume(10)
+    Global_Object.Background_Music.repeat_play()
+
     background_image = load_image("../Sprite/Title_Background.png")
     banner_image = load_image("../Sprite/Select_Your_Character.png")
 
@@ -49,6 +53,7 @@ def Input_Event():
                 elif gundam_button.state == 0:
                     Global_Object.p1 = Gundam('p1', 300, 250)
                     Global_Object.p2 = Gaogaigar('p2', 1300, 250)
+                Global_Object.Button_Enter_sfx.play()
                 Game_Framework.change_scene(PlayScene)
             else:
                 gaogaigar_button.handle_event(event)

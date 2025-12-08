@@ -8,9 +8,14 @@ VIDEO_PER_TIME = 1.0 / TIME_PER_VIDEO
 def init():
     global background_image, title_image, start_button, exit_button
 
+    if Global_Object.Button_Enter_sfx is None:
+        Global_Object.Button_Enter_sfx = load_wav('../Sound/Button_Enter.wav')
+        Global_Object.Button_Enter_sfx.set_volume(10)
+
     Global_Object.Background_Music = load_music('../Sound/Gong.wav')
     Global_Object.Background_Music.set_volume(10)
     Global_Object.Background_Music.repeat_play()
+
     background_image = load_image("../Sprite/Title_Background.png")
     title_image = load_image("../Sprite/Title.png")
 
@@ -44,6 +49,7 @@ def Input_Event():
             Game_Framework.quit()
         elif event.type == SDL_KEYDOWN:
             if event.key == SDLK_RETURN:
+                Global_Object.Button_Enter_sfx.play()
                 if start_button.state == 1: Game_Framework.change_scene(SelectScene)
                 elif exit_button.state == 1: Game_Framework.quit()
             else:

@@ -9,6 +9,8 @@ ButtonDict = {
 }
 
 class Button:
+    select_sfx = None
+
     def __init__(self, image, width, height, x, y, init_state = 0):
         self.id = ButtonDict[image]
         self.image = load_image('../Sprite/' + image)
@@ -17,6 +19,10 @@ class Button:
         self.x = x
         self.y = y
         self.state = init_state
+
+        if Button.select_sfx is None:
+            Button.select_sfx = load_wav('../Sound/Button_Select.wav')
+            Button.select_sfx.set_volume(10)
 
     def update(self):
         pass
@@ -28,6 +34,9 @@ class Button:
             self.image.clip_draw(self.state * self.width, 0, self.width, self.height, self.x, self.y, self.width, self.height)
 
     def handle_event(self, event):
+        if event.type == SDL_KEYDOWN:
+            if event.key in [SDLK_LEFT, SDLK_RIGHT]:
+                Button.select_sfx.play()
         if self.id == 0:  # Start Button
             if event.type == SDL_KEYDOWN:
                 if event.key == SDLK_LEFT:

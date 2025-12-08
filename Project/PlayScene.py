@@ -12,6 +12,10 @@ import PlayScene_world, Game_Framework, Global_Object, WinScene, LoseScene, Draw
 def init():
     global gaogaigar, gundam, timer
 
+    Global_Object.Background_Music = load_music('../Sound/Gallant_Char.wav')
+    Global_Object.Background_Music.set_volume(10)
+    Global_Object.Background_Music.repeat_play()
+
     background = Background(0)
     PlayScene_world.add_object(background, 0)
 
