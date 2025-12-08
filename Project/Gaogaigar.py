@@ -540,12 +540,12 @@ class Gaogaigar:
         self.P2rules = {
             self.IDLE: {P2.right_down: self.RUN, P2.left_down: self.BACK, P2.right_up: self.BACK, P2.left_up: self.RUN,
                         P2.down_down: self.CROUCH, P2.up_down: self.JUMP, P2.up_up: self.IDLE,
-                        cmd_is('COMMAND_SKILL'): self.COMMAND_SKILL, P2.attack_down: self.ATTACK1},
+                        cmd_is('COMMAND_SKILL'): self.COMMAND_SKILL, P2.attack_down: self.ATTACK1, P2.finisher_down: self.FINISHER},
             self.RUN: {P2.right_up: self.IDLE, P2.left_down: self.IDLE, P2.right_down: self.IDLE,
                        P2.down_down: self.CROUCH_RIGHTDOWN, P2.up_down: self.JUMP_RIGHTUP,
-                       P2.attack_down: self.ATTACK1},
+                       P2.attack_down: self.ATTACK1, P2.finisher_down: self.FINISHER},
             self.BACK: {P2.left_up: self.IDLE, P2.right_down: self.IDLE, P2.down_down: self.CROUCH_LEFTDOWN,
-                        P2.up_down: self.JUMP_LEFTUP, P2.attack_down: self.ATTACK1},
+                        P2.up_down: self.JUMP_LEFTUP, P2.attack_down: self.ATTACK1, P2.finisher_down: self.FINISHER},
             self.CROUCH: {P2.down_up: self.IDLE, P2.right_down: self.CROUCH_RIGHTDOWN,
                           P2.left_down: self.CROUCH_LEFTDOWN},
             self.CROUCH_RIGHTDOWN: {P2.down_up: self.RUN, P2.right_up: self.CROUCH},
@@ -566,7 +566,9 @@ class Gaogaigar:
             self.COMMAND_SKILL: {P2.anim_end('BACK'): self.BACK, P2.anim_end('RUN'): self.RUN,
                                  P2.anim_end('CROUCH'): self.CROUCH, P2.anim_end('IDLE'): self.IDLE},
             self.DEFEND: {P2.anim_end('BACK'): self.BACK, P2.anim_end('RUN'): self.RUN,
-                       P2.anim_end('CROUCH'): self.CROUCH, P2.anim_end('IDLE'): self.IDLE}
+                       P2.anim_end('CROUCH'): self.CROUCH, P2.anim_end('IDLE'): self.IDLE},
+            self.FINISHER: {P2.anim_end('BACK'): self.BACK, P2.anim_end('RUN'): self.RUN,
+                          P2.anim_end('CROUCH'): self.CROUCH, P2.anim_end('IDLE'): self.IDLE}
         }
         if self.player == 'p1':
             self.statemachine = StateMachine(self.IDLE, self.P1rules)

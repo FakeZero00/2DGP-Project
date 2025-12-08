@@ -27,7 +27,7 @@ def draw():
         if type(Global_Object.p1) == Gaogaigar:
             Gaogaigar_image.clip_draw(0, 0, 853, 1200, 800, 450, 568, 800)
         elif type(Global_Object.p1) == Gundam:
-            Gundam_image.clip_draw(0, 0, 423, 600, 800, 450, 740, 800)
+            Gundam_image.clip_draw(0, 0, 423, 600, 800, 450, 550, 800)
     elif Global_Object.p2wp.current_point == 2:
         if type(Global_Object.p2) == Gaogaigar:
             Gaogaigar_image.clip_draw(0, 0, 853, 1200, 800, 450, 568, 800)

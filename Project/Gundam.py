@@ -5,7 +5,7 @@ from Project.Collider import Collider
 from Project.Beam import Beam
 import Project.P1_Event_Function as P1
 import Project.P2_Event_Function as P2
-import Game_Framework, Global_Object, PlayScene_world
+import Game_Framework, Global_Object, PlayScene_world, Newtype
 
 #커맨드 목록
 LeftCommandList = [
@@ -423,6 +423,31 @@ class Command_skill: # Test
     def draw(self):
         self.gundam.image.clip_composite_draw(min(int(self.gundam.frame), 5) * 800, 800 * 5, 800, 800, 0, self.gundam.dir[1], self.gundam.x + 60 * self.gundam.dir[0], self.gundam.y + 10, 530, 530)
 
+class Finisher:
+    def __init__(self, gundam):
+        self.gundam = gundam
+
+    def enter(self, e):
+        global TIME_PER_ACTION, ACTION_PER_TIME, RUN_SPEED_PPS, ATTACK_MOVE_SPEED_PPS
+
+        if (self.gundam.player == 'p1' and Global_Object.p1pp.current_point == 100) or (self.gundam.player == 'p2' and Global_Object.p2pp.current_point == 100):
+            self.gundam.Newtype_mode = True
+            TIME_PER_ACTION = 0.4
+            ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+
+            RUN_SPEED_PPS = 2000
+            ATTACK_MOVE_SPEED_PPS = 400
+            Game_Framework.push_scene(Newtype)
+
+    def exit(self, e):
+        pass
+
+    def do(self, e):
+        self.gundam.statemachine.handle_state_event(('ANIM_END', 0), self.gundam.object_state)
+
+    def draw(self):
+        self.gundam.image.clip_composite_draw(0, 0, 700, 700, 0, self.gundam.dir[1], self.gundam.x, self.gundam.y - 30, 400, 400)
+
 class Defend:
     def __init__(self, gundam):
         self.gundam = gundam
@@ -464,6 +489,7 @@ class Gundam:
         self.cooltime_bool = True
         self.jump_bool = False
         self.jump_frame = 0
+        self.Newtype_mode = False
         #점프 높이 테이블 (프레임별 y 오프셋)
         self.jump_table = [0, 20, 50, 90, 140, 200, 270, 300, 330, 350, 380, 400, 400, 400, 400, 400, 400, 380, 350, 330, 300, 270, 200, 140, 90, 50, 20, 0]
         self.other = None
@@ -504,14 +530,15 @@ class Gundam:
         self.ATTACK2 = Attack2(self)
         self.ATTACK3 = Attack3(self)
         self.COMMAND_SKILL = Command_skill(self)
+        self.FINISHER = Finisher(self)
         self.DEFEND = Defend(self)
 
         self.P1rules = {
             self.IDLE: {P1.right_down: self.RUN, P1.left_down: self.BACK, P1.right_up: self.BACK, P1.left_up: self.RUN, P1.down_down: self.CROUCH, P1.up_down: self.JUMP, P1.up_up: self.IDLE,
-                        cmd_is('COMMAND_SKILL'): self.COMMAND_SKILL, P1.attack_down: self.ATTACK1},
+                        cmd_is('COMMAND_SKILL'): self.COMMAND_SKILL, P1.attack_down: self.ATTACK1, P1.finisher_down: self.FINISHER},
             self.RUN: {P1.right_up: self.IDLE, P1.left_down: self.IDLE, P1.right_down: self.IDLE, P1.down_down: self.CROUCH_RIGHTDOWN, P1.up_down: self.JUMP_RIGHTUP,
-                       P1.attack_down: self.ATTACK1},
-            self.BACK: {P1.left_up: self.IDLE, P1.right_down: self.IDLE, P1.down_down: self.CROUCH_LEFTDOWN, P1.up_down: self.JUMP_LEFTUP, P1.attack_down: self.ATTACK1},
+                       P1.attack_down: self.ATTACK1, P1.finisher_down: self.FINISHER},
+            self.BACK: {P1.left_up: self.IDLE, P1.right_down: self.IDLE, P1.down_down: self.CROUCH_LEFTDOWN, P1.up_down: self.JUMP_LEFTUP, P1.attack_down: self.ATTACK1, P1.finisher_down: self.FINISHER},
             self.CROUCH: {P1.down_up: self.IDLE, P1.right_down: self.CROUCH_RIGHTDOWN, P1.left_down: self.CROUCH_LEFTDOWN},
             self.CROUCH_RIGHTDOWN: {P1.down_up: self.RUN, P1.right_up: self.CROUCH},
             self.CROUCH_LEFTDOWN: {P1.down_up: self.BACK, P1.left_up: self.CROUCH},
@@ -525,17 +552,18 @@ class Gundam:
                            P1.attack_down: self.ATTACK3},
             self.ATTACK3: {P1.anim_end('BACK'): self.BACK, P1.anim_end('RUN'): self.RUN, P1.anim_end('CROUCH'): self.CROUCH, P1.anim_end('IDLE'): self.IDLE},
             self.COMMAND_SKILL: {P1.anim_end('BACK'): self.BACK, P1.anim_end('RUN'): self.RUN, P1.anim_end('CROUCH'): self.CROUCH, P1.anim_end('IDLE'): self.IDLE},
-            self.DEFEND: {P1.anim_end('BACK'): self.BACK, P1.anim_end('RUN'): self.RUN, P1.anim_end('CROUCH'): self.CROUCH, P1.anim_end('IDLE'): self.IDLE}
+            self.DEFEND: {P1.anim_end('BACK'): self.BACK, P1.anim_end('RUN'): self.RUN, P1.anim_end('CROUCH'): self.CROUCH, P1.anim_end('IDLE'): self.IDLE},
+            self.FINISHER: {P1.anim_end('BACK'): self.BACK, P1.anim_end('RUN'): self.RUN, P1.anim_end('CROUCH'): self.CROUCH, P1.anim_end('IDLE'): self.IDLE}
         }
         self.P2rules = {
             self.IDLE: {P2.right_down: self.RUN, P2.left_down: self.BACK, P2.right_up: self.BACK, P2.left_up: self.RUN,
                         P2.down_down: self.CROUCH, P2.up_down: self.JUMP, P2.up_up: self.IDLE,
-                        cmd_is('COMMAND_SKILL'): self.COMMAND_SKILL, P2.attack_down: self.ATTACK1},
+                        cmd_is('COMMAND_SKILL'): self.COMMAND_SKILL, P2.attack_down: self.ATTACK1, P2.finisher_down: self.FINISHER},
             self.RUN: {P2.right_up: self.IDLE, P2.left_down: self.IDLE, P2.right_down: self.IDLE,
                        P2.down_down: self.CROUCH_RIGHTDOWN, P2.up_down: self.JUMP_RIGHTUP,
-                       P2.attack_down: self.ATTACK1},
+                       P2.attack_down: self.ATTACK1, P2.finisher_down: self.FINISHER},
             self.BACK: {P2.left_up: self.IDLE, P2.right_down: self.IDLE, P2.down_down: self.CROUCH_LEFTDOWN,
-                        P2.up_down: self.JUMP_LEFTUP, P2.attack_down: self.ATTACK1},
+                        P2.up_down: self.JUMP_LEFTUP, P2.attack_down: self.ATTACK1, P2.finisher_down: self.FINISHER},
             self.CROUCH: {P2.down_up: self.IDLE, P2.right_down: self.CROUCH_RIGHTDOWN,
                           P2.left_down: self.CROUCH_LEFTDOWN},
             self.CROUCH_RIGHTDOWN: {P2.down_up: self.RUN, P2.right_up: self.CROUCH},
@@ -553,7 +581,9 @@ class Gundam:
             self.ATTACK3: {P2.anim_end('BACK'): self.BACK, P2.anim_end('RUN'): self.RUN,
                            P2.anim_end('CROUCH'): self.CROUCH, P2.anim_end('IDLE'): self.IDLE},
             self.COMMAND_SKILL: {P2.anim_end('BACK'): self.BACK, P2.anim_end('RUN'): self.RUN, P2.anim_end('CROUCH'): self.CROUCH, P2.anim_end('IDLE'): self.IDLE},
-            self.DEFEND: {P2.anim_end('BACK'): self.BACK, P2.anim_end('RUN'): self.RUN, P2.anim_end('CROUCH'): self.CROUCH, P2.anim_end('IDLE'): self.IDLE}
+            self.DEFEND: {P2.anim_end('BACK'): self.BACK, P2.anim_end('RUN'): self.RUN, P2.anim_end('CROUCH'): self.CROUCH, P2.anim_end('IDLE'): self.IDLE},
+            self.FINISHER: {P2.anim_end('BACK'): self.BACK, P2.anim_end('RUN'): self.RUN,
+                          P2.anim_end('CROUCH'): self.CROUCH, P2.anim_end('IDLE'): self.IDLE}
         }
         if self.player == 'p1':
             self.statemachine = StateMachine(self.IDLE, self.P1rules)
@@ -592,6 +622,7 @@ class Gundam:
                 collider.y = self.y - 225
 
         #점프 프레임 테이블 적용
+        global TIME_PER_ACTION, ACTION_PER_TIME
         if self.jump_bool:
             self.jump_frame += 20 * ACTION_PER_TIME * Game_Framework.frame_time
             if int(self.jump_frame) < len(self.jump_table):
@@ -612,6 +643,33 @@ class Gundam:
             self.command_buffer.clear_last_n(used) # 매칭된 커맨드만큼 버퍼에서 제거
             print(f'커맨드 인식: {action}')
             self.statemachine.handle_state_event(('CMD', action), self.object_state)
+
+
+        # 필살기 발동중일 시 게이지 깎기
+        global RUN_SPEED_PPS, ATTACK_MOVE_SPEED_PPS
+        if self.Newtype_mode:
+            if self.player == 'p1':
+                Global_Object.p1pp.current_point -= 20 * Game_Framework.frame_time
+                if Global_Object.p1pp.current_point <= 0:
+                    TIME_PER_ACTION = 0.8
+                    ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+                    RUN_SPEED_PPS = 1000
+                    ATTACK_MOVE_SPEED_PPS = 200
+                    self.Newtype_mode = False
+            elif self.player == 'p2':
+                Global_Object.p2pp.current_point -= 20 * Game_Framework.frame_time
+                if Global_Object.p2pp.current_point <= 0:
+                    TIME_PER_ACTION = 0.8
+                    ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+                    RUN_SPEED_PPS = 1000
+                    ATTACK_MOVE_SPEED_PPS = 200
+                    self.Newtype_mode = False
+        else:
+            TIME_PER_ACTION = 0.8
+            ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+            RUN_SPEED_PPS = 1000
+            ATTACK_MOVE_SPEED_PPS = 200
+
 
 
     def draw(self):

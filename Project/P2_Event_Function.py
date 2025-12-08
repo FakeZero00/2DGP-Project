@@ -129,3 +129,11 @@ def attack_down(e, object_state):
 def attack_up(e, object_state):
     if(e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_KP_4):
         return True
+
+def finisher_down(e, object_state):
+    if (e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_KP_5):
+        return True
+
+def finisher_up(e, object_state):
+    if (e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_KP_5):
+        return True

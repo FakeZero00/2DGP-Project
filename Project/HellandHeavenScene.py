@@ -3,7 +3,7 @@ from Project.Gundam import Gundam
 from pico2d import *
 
 MOVE_SPEED_PPS = 200
-MOVE_SPEED_PPS2 = 1000
+MOVE_SPEED_PPS2 = 2000
 
 def init():
     global background_image, Gaogaigar_image, Gaogaigar_sprite, Gundam_image, GS_Ride_image, cur_time, frame, sfx, position, position2
