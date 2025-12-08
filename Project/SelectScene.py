@@ -43,7 +43,7 @@ def Input_Event():
             Game_Framework.quit()
         elif event.type == SDL_KEYDOWN:
             if event.key == SDLK_RETURN:
-                if gaogaigar_button == 0:
+                if gaogaigar_button.state == 0:
                     Global_Object.p1 = Gaogaigar('p1')
                     Global_Object.p2 = Gundam('p2')
                 elif gundam_button.state == 0:
