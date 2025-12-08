@@ -5,7 +5,7 @@ from Project.Collider import Collider
 from Project.Broken_Magnum import Broken_Magnum
 import Project.P1_Event_Function as P1
 import Project.P2_Event_Function as P2
-import Game_Framework, Global_Object, PlayScene_world
+import Game_Framework, Global_Object, PlayScene_world, HellandHeavenScene
 
 #커맨드 목록
 LeftCommandList = [
@@ -400,9 +400,25 @@ class Command_skill: # Test
                 PlayScene_world.add_collision_pairs('p1_body:broken_magnum', None, broken_magnum.get_collider('broken_magnum'))
             self.attack_state = 'launched'
 
-
     def draw(self):
         self.gaogaigar.image.clip_composite_draw(min(int(self.gaogaigar.frame), 5) * 800, 800 * 2, 800, 800, 0, self.gaogaigar.dir[1], self.gaogaigar.x, self.gaogaigar.y, 450, 450)
+
+class Finisher: # Test
+    def __init__(self, gaogaigar):
+        self.gaogaigar = gaogaigar
+
+    def enter(self, e):
+
+        Game_Framework.push_scene(HellandHeavenScene)
+
+    def exit(self, e):
+        pass
+
+    def do(self, e):
+        self.gaogaigar.statemachine.handle_state_event(('ANIM_END', 0), self.gaogaigar.object_state)
+
+    def draw(self):
+        self.gaogaigar.image.clip_composite_draw(0, 0, 800, 800, 0, self.gaogaigar.dir[1], self.gaogaigar.x, self.gaogaigar.y, 450, 450)
 
 class Defend:
     def __init__(self, gaogaigar):
@@ -485,17 +501,18 @@ class Gaogaigar:
         self.ATTACK2 = Attack2(self)
         self.ATTACK3 = Attack3(self)
         self.COMMAND_SKILL = Command_skill(self)
+        self.FINISHER = Finisher(self)
         self.DEFEND = Defend(self)
 
         self.P1rules = {
             self.IDLE: {P1.right_down: self.RUN, P1.left_down: self.BACK, P1.right_up: self.BACK, P1.left_up: self.RUN,
                         P1.down_down: self.CROUCH, P1.up_down: self.JUMP, P1.up_up: self.IDLE,
-                        cmd_is('COMMAND_SKILL'): self.COMMAND_SKILL, P1.attack_down: self.ATTACK1},
+                        cmd_is('COMMAND_SKILL'): self.COMMAND_SKILL, P1.attack_down: self.ATTACK1, P1.finisher_down: self.FINISHER},
             self.RUN: {P1.right_up: self.IDLE, P1.left_down: self.IDLE, P1.right_down: self.IDLE,
                        P1.down_down: self.CROUCH_RIGHTDOWN, P1.up_down: self.JUMP_RIGHTUP,
-                       P1.attack_down: self.ATTACK1},
+                       P1.attack_down: self.ATTACK1, P1.finisher_down: self.FINISHER},
             self.BACK: {P1.left_up: self.IDLE, P1.right_down: self.IDLE, P1.down_down: self.CROUCH_LEFTDOWN,
-                        P1.up_down: self.JUMP_LEFTUP, P1.attack_down: self.ATTACK1},
+                        P1.up_down: self.JUMP_LEFTUP, P1.attack_down: self.ATTACK1, P1.finisher_down: self.FINISHER},
             self.CROUCH: {P1.down_up: self.IDLE, P1.right_down: self.CROUCH_RIGHTDOWN,
                           P1.left_down: self.CROUCH_LEFTDOWN},
             self.CROUCH_RIGHTDOWN: {P1.down_up: self.RUN, P1.right_up: self.CROUCH},
@@ -516,7 +533,9 @@ class Gaogaigar:
             self.COMMAND_SKILL: {P1.anim_end('BACK'): self.BACK, P1.anim_end('RUN'): self.RUN,
                                  P1.anim_end('CROUCH'): self.CROUCH, P1.anim_end('IDLE'): self.IDLE},
             self.DEFEND: {P1.anim_end('BACK'): self.BACK, P1.anim_end('RUN'): self.RUN,
-                       P1.anim_end('CROUCH'): self.CROUCH, P1.anim_end('IDLE'): self.IDLE}
+                       P1.anim_end('CROUCH'): self.CROUCH, P1.anim_end('IDLE'): self.IDLE},
+            self.FINISHER: {P1.anim_end('BACK'): self.BACK, P1.anim_end('RUN'): self.RUN,
+                          P1.anim_end('CROUCH'): self.CROUCH, P1.anim_end('IDLE'): self.IDLE}
         }
         self.P2rules = {
             self.IDLE: {P2.right_down: self.RUN, P2.left_down: self.BACK, P2.right_up: self.BACK, P2.left_up: self.RUN,
