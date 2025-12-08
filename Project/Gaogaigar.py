@@ -408,8 +408,8 @@ class Finisher: # Test
         self.gaogaigar = gaogaigar
 
     def enter(self, e):
-
-        Game_Framework.push_scene(HellandHeavenScene)
+        if (self.gaogaigar.player == 'p1' and Global_Object.p1pp.current_point == 100) or (self.gaogaigar.player == 'p2' and Global_Object.p2pp.current_point == 100):
+            Game_Framework.push_scene(HellandHeavenScene)
 
     def exit(self, e):
         pass
