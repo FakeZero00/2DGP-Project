@@ -12,7 +12,7 @@ import PlayScene_world, Game_Framework, Global_Object, WinScene, LoseScene, Draw
 
 #========= 씬 함수 ==========
 def init():
-    global timer, ai
+    global ai
 
     Global_Object.Background_Music = load_music('../Sound/Gallant_Char.wav')
     Global_Object.Background_Music.set_volume(10)
