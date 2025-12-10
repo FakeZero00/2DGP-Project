@@ -590,6 +590,7 @@ class Gundam:
         if self.player == 'p2':
             self.statemachine = StateMachine(self.IDLE, self.P2rules)
         self.behavior_state = self.statemachine.cur_state
+        self.collider_state = None
 
     def update(self):
         #객체 상태 업데이트
@@ -686,15 +687,17 @@ class Gundam:
 
     def handle_collision(self, group, other):
         if group == 'p1_body:p2_body':
+            self.collider_state = group
             if not self.behavior_state == self.IDLE:
                 self.x -= RUN_SPEED_PPS * Game_Framework.frame_time * self.dir[0]
-            if self.get_collider('body').get_bb()[1] >= other.get_bb()[3] - 20:
+            if self.get_collider('body').get_bb()[1] <= other.get_bb()[3] - 100 and self.jump_bool:
                 if self.get_collider('body').x + self.get_collider('body').width // 2 <= other.x + other.width // 2:
                     self.x = other.object.get_collider('body').get_bb()[0] - 150
                 else:
                     self.x = other.object.get_collider('body').get_bb()[2] + 150
 
         elif group == 'p1_body:p2_attack':
+            self.collider_state = group
             if self.player == 'p1':
                 if other.object.behavior_state in [other.object.ATTACK1, other.object.ATTACK2, other.object.ATTACK3] and other.object.frame >= 2:
                     if other.object.behavior_state.attack_state == 'running':
@@ -709,6 +712,7 @@ class Gundam:
                         Global_Object.p2pp.current_point += 15
 
         elif group == 'p2_body:p1_attack':
+            self.collider_state = group
             if self.player == 'p1':
                 if self.behavior_state in [self.ATTACK1, self.ATTACK2, self.ATTACK3] and self.frame >= 2:
                     if self.behavior_state.attack_state == 'running':
@@ -723,6 +727,7 @@ class Gundam:
                             self.statemachine.handle_state_event(('HIT', self.HIT), self.object_state)
 
         elif group == 'p1_body:broken_magnum':
+            self.collider_state = None
             if other.object.count < 3 and other.object.state == 'launch':
                 if (self.dir[0] == 1 and self.behavior_state in [self.BACK, self.DEFEND]) or (self.dir[0] == -1 and self.behavior_state in [self.RUN, self.DEFEND]):
                     self.statemachine.handle_state_event(('DEFEND', self.DEFEND), self.object_state)
@@ -730,8 +735,14 @@ class Gundam:
                     self.statemachine.handle_state_event(('HIT', self.HIT), self.object_state)
 
         elif group == 'p2_body:broken_magnum':
+            self.collider_state = None
             if other.object.count < 3 and other.object.state == 'launch':
                 if (self.dir[0] == 1 and self.behavior_state in [self.BACK, self.DEFEND]) or (self.dir[0] == -1 and self.behavior_state in [self.RUN, self.DEFEND]):
                     self.statemachine.handle_state_event(('DEFEND', self.DEFEND), self.object_state)
                 else:
                     self.statemachine.handle_state_event(('HIT', self.HIT), self.object_state)
+
+        else: self.collider_state = None
+
+    def update_no_collision(self):
+        self.collider_state = None
