@@ -1,15 +1,15 @@
 import Game_Framework, Global_Object, PlayScene_world, TitleScene
-from Project.Gaogaigar import Gaogaigar
-from Project.Gundam import Gundam
+from Gaogaigar import Gaogaigar
+from Gundam import Gundam
 from pico2d import *
 
 def init():
     global background_image, Gaogaigar_image, Gundam_image, win_text, cur_time
 
-    background_image = load_image("../Sprite/Title_Background.png")
-    Gaogaigar_image = load_image("../Sprite/Gaogaigar.jpg")
-    Gundam_image = load_image("../Sprite/Gundam.jpg")
-    win_text = load_image("../Sprite/Winner.png")
+    background_image = load_image("Sprite/Title_Background.png")
+    Gaogaigar_image = load_image("Sprite/Gaogaigar.jpg")
+    Gundam_image = load_image("Sprite/Gundam.jpg")
+    win_text = load_image("Sprite/Winner.png")
     cur_time = 0
 
 def update():

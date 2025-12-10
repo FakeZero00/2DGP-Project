@@ -2,9 +2,9 @@ from pico2d import *
 
 class Bar:
     def __init__(self, player, bar_type, init_point):
-        self.background = load_image('../Sprite/Hp_bar_Background.png')
-        self.hpbar = load_image('../Sprite/Hp_bar.png')
-        self.ppbar = load_image('../Sprite/Power_bar.png')
+        self.background = load_image('Sprite/Hp_bar_Background.png')
+        self.hpbar = load_image('Sprite/Hp_bar.png')
+        self.ppbar = load_image('Sprite/Power_bar.png')
         self.player = player
         self.bar_type = bar_type
         self.Max = 100

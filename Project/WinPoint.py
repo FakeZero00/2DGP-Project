@@ -2,8 +2,8 @@ from pico2d import *
 
 class WinPoint:
     def __init__(self, player):
-        self.blank = load_image('../Sprite/WinPoint_Blank.png')
-        self.fill = load_image('../Sprite/WinPoint_Fill.png')
+        self.blank = load_image('Sprite/WinPoint_Blank.png')
+        self.fill = load_image('Sprite/WinPoint_Fill.png')
         self.player = player
         self.current_point = 0
 

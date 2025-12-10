@@ -15,7 +15,7 @@ class Button:
 
     def __init__(self, image, width, height, x, y, init_state = 0):
         self.id = ButtonDict[image]
-        self.image = load_image('../Sprite/' + image)
+        self.image = load_image('Sprite/' + image)
         self.width = width
         self.height = height
         self.x = x
@@ -23,7 +23,7 @@ class Button:
         self.state = init_state
 
         if Button.select_sfx is None:
-            Button.select_sfx = load_wav('../Sound/Button_Select.wav')
+            Button.select_sfx = load_wav('Sound/Button_Select.wav')
             Button.select_sfx.set_volume(10)
 
     def update(self):

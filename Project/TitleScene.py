@@ -9,15 +9,15 @@ def init():
     global background_image, title_image, start_button, training_button, exit_button
 
     if Global_Object.Button_Enter_sfx is None:
-        Global_Object.Button_Enter_sfx = load_wav('../Sound/Button_Enter.wav')
+        Global_Object.Button_Enter_sfx = load_wav('Sound/Button_Enter.wav')
         Global_Object.Button_Enter_sfx.set_volume(10)
 
-    Global_Object.Background_Music = load_music('../Sound/Gong.wav')
+    Global_Object.Background_Music = load_music('Sound/Gong.wav')
     Global_Object.Background_Music.set_volume(10)
     Global_Object.Background_Music.repeat_play()
 
-    background_image = load_image("../Sprite/Title_Background.png")
-    title_image = load_image("../Sprite/Title.png")
+    background_image = load_image("Sprite/Title_Background.png")
+    title_image = load_image("Sprite/Title.png")
 
     start_button = Button('Start_Button.png', 300, 100, 400, 200, 1)
     TitleScene_world.add_object(start_button)

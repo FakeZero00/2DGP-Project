@@ -4,7 +4,7 @@ from pico2d import *
 def init():
     global win_image, cur_time
 
-    win_image = load_image("../Sprite/You_Win.png")
+    win_image = load_image("Sprite/You_Win.png")
     cur_time = 0
 
 def update():

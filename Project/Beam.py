@@ -1,5 +1,5 @@
 from pico2d import *
-from Project.Collider import Collider
+from Collider import Collider
 import Game_Framework, PlayScene_world
 
 TIME_PER_ACTION = 0.3
@@ -9,7 +9,7 @@ RUN_SPEED_PPS = 1500
 
 class Beam:
     def __init__(self, x, y, parent_object):
-        self.image = load_image('../Sprite/Beam.png')
+        self.image = load_image('Sprite/Beam.png')
         self.x = x
         self.y = y
         self.parent_object = parent_object

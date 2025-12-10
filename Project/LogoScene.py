@@ -4,7 +4,7 @@ from pico2d import *
 def init():
     global image, logo_start_time
 
-    image = load_image("../Sprite/Sponsor_Logo.png")
+    image = load_image("Sprite/Sponsor_Logo.png")
     logo_start_time = get_time()
 
 def update():

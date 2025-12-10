@@ -3,7 +3,7 @@ import Game_Framework
 
 class Timer:
     def __init__(self, init_time):
-        self.image = load_image('../Sprite/numbers.png')
+        self.image = load_image('Sprite/numbers.png')
         self.time = init_time
 
     def update(self):

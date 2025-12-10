@@ -1,5 +1,5 @@
 import Game_Framework, Global_Object
-from Project.Gundam import Gundam
+from Gundam import Gundam
 from pico2d import *
 
 MOVE_SPEED_PPS = 200
@@ -8,15 +8,15 @@ MOVE_SPEED_PPS2 = 2000
 def init():
     global background_image, Gaogaigar_image, Gaogaigar_sprite, Gundam_image, GS_Ride_image, cur_time, frame, sfx, position, position2
 
-    sfx = load_wav('../Sound/Hell&Heaven.wav')
+    sfx = load_wav('Sound/Hell&Heaven.wav')
     sfx.set_volume(50)
     sfx.play()
 
-    background_image = load_image("../Sprite/Hell_and_Heaven_Background.png")
-    Gaogaigar_image = load_image("../Sprite/Hell&Heaven.png")
-    Gaogaigar_sprite = load_image("../Sprite/Gaogaigar_Sprite.png")
-    Gundam_image = load_image("../Sprite/Gundam_Sprite.png")
-    GS_Ride_image = load_image("../Sprite/GS_Ride.jpg")
+    background_image = load_image("Sprite/Hell_and_Heaven_Background.png")
+    Gaogaigar_image = load_image("Sprite/Hell&Heaven.png")
+    Gaogaigar_sprite = load_image("Sprite/Gaogaigar_Sprite.png")
+    Gundam_image = load_image("Sprite/Gundam_Sprite.png")
+    GS_Ride_image = load_image("Sprite/GS_Ride.jpg")
     cur_time = 0
     frame = 0
     position = 1000

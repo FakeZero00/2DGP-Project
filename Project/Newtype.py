@@ -4,11 +4,11 @@ from pico2d import *
 def init():
     global image, sfx, cur_time
 
-    sfx = load_wav('../Sound/Newtype_Flash.wav')
+    sfx = load_wav('Sound/Newtype_Flash.wav')
     sfx.set_volume(50)
     sfx.play()
 
-    image = load_image("../Sprite/Newtype.png")
+    image = load_image("Sprite/Newtype.png")
 
     cur_time = 0
 

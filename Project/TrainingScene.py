@@ -1,19 +1,18 @@
 from pico2d import *
 from sdl2 import *
-from Project.Gaogaigar import Gaogaigar
-from Project.Gundam import Gundam
-from Project.Background import Background
-from Project.Ground import Ground
-from Project.Bar import Bar
-from Project.Timer import Timer
-from Project.WinPoint import WinPoint
-from Project.Bot_AI import Bot_AI
+from Gaogaigar import Gaogaigar
+from Gundam import Gundam
+from Background import Background
+from Ground import Ground
+from Bar import Bar
+from Timer import Timer
+from WinPoint import WinPoint
 import PlayScene_world, Game_Framework, Global_Object, WinScene, LoseScene, DrawScene, WinnerScene, CountScene
 
 #========= 씬 함수 ==========
 def init():
 
-    Global_Object.Background_Music = load_music('../Sound/Gallant_Char.wav')
+    Global_Object.Background_Music = load_music('Sound/Gallant_Char.wav')
     Global_Object.Background_Music.set_volume(10)
     Global_Object.Background_Music.repeat_play()
 

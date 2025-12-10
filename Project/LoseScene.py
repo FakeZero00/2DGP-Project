@@ -4,7 +4,7 @@ from pico2d import *
 def init():
     global lose_image, cur_time
 
-    lose_image = load_image("../Sprite/You_Lose.png")
+    lose_image = load_image("Sprite/You_Lose.png")
     cur_time = 0
 
 def update():

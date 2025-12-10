@@ -4,7 +4,7 @@ from pico2d import *
 def init():
     global numbers, cur_time
 
-    numbers = load_image("../Sprite/Numbers.png")
+    numbers = load_image("Sprite/Numbers.png")
     cur_time = 4.0
 
 def update():

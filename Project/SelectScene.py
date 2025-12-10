@@ -1,8 +1,8 @@
 import Game_Framework, SelectScene_world, PlayScene, TrainingScene, Global_Object
 from pico2d import *
 from Button import Button
-from Project.Gaogaigar import Gaogaigar
-from Project.Gundam import Gundam
+from Gaogaigar import Gaogaigar
+from Gundam import Gundam
 
 TIME_PER_VIDEO = 5.0
 VIDEO_PER_TIME = 1.0 / TIME_PER_VIDEO
@@ -10,12 +10,12 @@ VIDEO_PER_TIME = 1.0 / TIME_PER_VIDEO
 def init():
     global background_image, banner_image, gaogaigar_button, gundam_button
 
-    Global_Object.Background_Music = load_music('../Sound/Select_Background_Music.wav')
+    Global_Object.Background_Music = load_music('Sound/Select_Background_Music.wav')
     Global_Object.Background_Music.set_volume(10)
     Global_Object.Background_Music.repeat_play()
 
-    background_image = load_image("../Sprite/Title_Background.png")
-    banner_image = load_image("../Sprite/Select_Your_Character.png")
+    background_image = load_image("Sprite/Title_Background.png")
+    banner_image = load_image("Sprite/Select_Your_Character.png")
 
     gaogaigar_button = Button('Gaogaigar.jpg', 853, 1200, 500, 400, 0)
     SelectScene_world.add_object(gaogaigar_button)

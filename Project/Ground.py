@@ -3,7 +3,7 @@ from pico2d import *
 class Ground:
     def __init__(self, number):
         if number == 0:
-            self.image = load_image('../Sprite/Stone_Ground.png')
+            self.image = load_image('Sprite/Stone_Ground.png')
 
     def update(self):
         pass

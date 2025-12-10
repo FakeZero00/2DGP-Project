@@ -4,8 +4,8 @@ from pico2d import *
 def init():
     global time_up_image, draw_image, cur_time
 
-    time_up_image = load_image("../Sprite/Time_Up.png")
-    draw_image = load_image("../Sprite/Draw.png")
+    time_up_image = load_image("Sprite/Time_Up.png")
+    draw_image = load_image("Sprite/Draw.png")
     cur_time = 0
 
 def update():

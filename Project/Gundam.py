@@ -1,10 +1,10 @@
 from pico2d import *
-from Project.CommandRecognizer import CommandBuffer, CommandRecognizer
-from Project.State_Machine import StateMachine
-from Project.Collider import Collider
-from Project.Beam import Beam
-import Project.P1_Event_Function as P1
-import Project.P2_Event_Function as P2
+from CommandRecognizer import CommandBuffer, CommandRecognizer
+from State_Machine import StateMachine
+from Collider import Collider
+from Beam import Beam
+import P1_Event_Function as P1
+import P2_Event_Function as P2
 import Game_Framework, Global_Object, PlayScene_world, Newtype
 
 #커맨드 목록
@@ -481,7 +481,7 @@ class Defend:
 # 건담 클래스 본체
 class Gundam:
     def __init__(self, player, x = 1300, y = 250):
-        self.image = load_image('../Sprite/Gundam_Sprite.png')
+        self.image = load_image('Sprite/Gundam_Sprite.png')
         self.x, self.y = x, y
         self.dir = [-1, 'h']
         self.frame = 0
