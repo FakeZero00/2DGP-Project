@@ -66,7 +66,7 @@ class Bot_AI:
         if self.type == SDL_KEYDOWN:
             self.type = SDL_KEYUP
         self.idle = True
-        self.idle_timer = 0.5
+        self.idle_timer = 1.0
         return BehaviorTree.SUCCESS
 
     def is_other_being_attack(self):

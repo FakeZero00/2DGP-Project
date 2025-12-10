@@ -8,7 +8,7 @@ from Project.Bar import Bar
 from Project.Timer import Timer
 from Project.WinPoint import WinPoint
 from Project.Bot_AI import Bot_AI
-import PlayScene_world, Game_Framework, Global_Object, WinScene, LoseScene, DrawScene, WinnerScene
+import PlayScene_world, Game_Framework, Global_Object, WinScene, LoseScene, DrawScene, WinnerScene, CountScene
 
 #========= 씬 함수 ==========
 def init():
@@ -79,6 +79,9 @@ def draw():
     clear_canvas()
     PlayScene_world.render()
     update_canvas()
+
+    if Global_Object.Global_Start:
+        Game_Framework.push_scene(CountScene)
 
     if Global_Object.p1hp.current_point <= 0 and Global_Object.p2.behavior_state == Global_Object.p2.IDLE:
         Global_Object.p2wp.current_point += 1

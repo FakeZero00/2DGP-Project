@@ -43,5 +43,7 @@ def finish():
             PlayScene_world.remove_collision_object(obj)
             PlayScene_world.remove_object(obj)
 
+    Global_Object.Global_Start = True
+
 def Input_Event():
     event_list = get_events()
