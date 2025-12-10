@@ -65,6 +65,7 @@ def update():
     PlayScene_world.update()
     PlayScene_world.handle_collisions()
     ai.update()
+    Global_Object.p2.handle_event(ai)
     #print(Global_Object.p1.command_buffer.tokens())
 
 
@@ -110,5 +111,5 @@ def Input_Event():
         else:
             if Global_Object.p1hp.current_point > 0 and Global_Object.p2hp.current_point > 0:
                 Global_Object.p1.handle_event(event)
-                Global_Object.p2.handle_event(ai)
+                #Global_Object.p2.handle_event(event)
                 pass
