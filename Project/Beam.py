@@ -21,6 +21,8 @@ class Beam:
         self.colliders = {}
         self.colliders['beam'] = Collider(self.x - 100, self.y - 10, 200, 30, self)
 
+        self.collider_state = None
+
     def update(self):
         self.x = self.x + RUN_SPEED_PPS * Game_Framework.frame_time * self.dir
         self.colliders['beam'].x = self.x - 100
@@ -43,3 +45,6 @@ class Beam:
         elif group == 'p2_body:beam':
             PlayScene_world.remove_collision_object(self)
             PlayScene_world.remove_object(self)
+
+    def update_no_collision(self):
+        self.collider_state = None

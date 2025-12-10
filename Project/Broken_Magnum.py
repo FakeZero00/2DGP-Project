@@ -22,6 +22,7 @@ class Broken_Magnum:
 
         self.colliders = {}
         self.colliders['broken_magnum'] = Collider(self.x - 50, self.y - 40, 120, 80, self)
+        self.collider_state = None
 
     def update(self):
         if self.state == 'hit':
@@ -68,3 +69,6 @@ class Broken_Magnum:
                 if self.count >= 3:
                     PlayScene_world.remove_collision_object(self)
                     PlayScene_world.remove_object(self)
+
+    def update_no_collision(self):
+        self.collider_state = None
