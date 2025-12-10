@@ -11,3 +11,4 @@ p2wp = None
 Background_Music = None
 Button_Enter_sfx = None
 Global_Start = True
+Global_Timer = None

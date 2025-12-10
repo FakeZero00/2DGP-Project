@@ -39,8 +39,8 @@ def init():
     Global_Object.p2wp = WinPoint(2)
     PlayScene_world.add_object(Global_Object.p2wp, 0)
 
-    timer = Timer(60)
-    PlayScene_world.add_object(timer, 0)
+    Global_Object.Global_Timer = Timer(60)
+    PlayScene_world.add_object(Global_Object.Global_Timer, 0)
 
     PlayScene_world.add_object(Global_Object.p1)
     PlayScene_world.add_object(Global_Object.p2)
@@ -89,7 +89,7 @@ def draw():
     elif Global_Object.p2hp.current_point <= 0 and Global_Object.p1.behavior_state == Global_Object.p1.IDLE:
         Global_Object.p1wp.current_point += 1
         Game_Framework.push_scene(WinScene)
-    elif timer.time <= 0 and Global_Object.p2.behavior_state == Global_Object.p2.IDLE and Global_Object.p2.behavior_state == Global_Object.p2.IDLE:
+    elif Global_Object.Global_Timer.time <= 0 and Global_Object.p2.behavior_state == Global_Object.p2.IDLE and Global_Object.p2.behavior_state == Global_Object.p2.IDLE:
         if Global_Object.p1hp.current_point > Global_Object.p2hp.current_point:
             Global_Object.p1wp.current_point += 1
             Game_Framework.push_scene(WinScene)
@@ -102,9 +102,6 @@ def draw():
 def finish(): pass
 
 def resume():
-    global timer
-    timer.time = 60
-
     if Global_Object.p1wp.current_point == 2 or Global_Object.p2wp.current_point == 2:
         Game_Framework.change_scene(WinnerScene)
 
