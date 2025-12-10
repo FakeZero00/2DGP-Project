@@ -1,4 +1,5 @@
 from pico2d import *
+from sdl2 import *
 from Project.Gaogaigar import Gaogaigar
 from Project.Gundam import Gundam
 from Project.Background import Background
@@ -6,11 +7,12 @@ from Project.Ground import Ground
 from Project.Bar import Bar
 from Project.Timer import Timer
 from Project.WinPoint import WinPoint
+from Project.Bot_AI import Bot_AI
 import PlayScene_world, Game_Framework, Global_Object, WinScene, LoseScene, DrawScene, WinnerScene
 
 #========= 씬 함수 ==========
 def init():
-    global gaogaigar, gundam, timer
+    global timer, ai
 
     Global_Object.Background_Music = load_music('../Sound/Gallant_Char.wav')
     Global_Object.Background_Music.set_volume(10)
@@ -57,10 +59,15 @@ def init():
     elif type(Global_Object.p2) == Gundam:
         PlayScene_world.add_collision_pairs('p2_body:broken_magnum', Global_Object.p2.get_collider('body'), None)
 
+    ai = Bot_AI(Global_Object.p2)
+
 def update():
     PlayScene_world.update()
     PlayScene_world.handle_collisions()
-    print(Global_Object.p1.command_buffer.tokens())
+    ai.update()
+    #print(Global_Object.p1.command_buffer.tokens())
+
+
 
 def draw():
     clear_canvas()
@@ -103,4 +110,5 @@ def Input_Event():
         else:
             if Global_Object.p1hp.current_point > 0 and Global_Object.p2hp.current_point > 0:
                 Global_Object.p1.handle_event(event)
-                Global_Object.p2.handle_event(event)
+                Global_Object.p2.handle_event(ai)
+                pass
