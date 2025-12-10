@@ -13,3 +13,4 @@ Button_Enter_sfx = None
 Global_Start = True
 Global_Timer = None
 Current_mode = None
+Current_mode_number = 0

@@ -1,4 +1,4 @@
-import Game_Framework, SelectScene_world, PlayScene, Global_Object
+import Game_Framework, SelectScene_world, PlayScene, TrainingScene, Global_Object
 from pico2d import *
 from Button import Button
 from Project.Gaogaigar import Gaogaigar
@@ -54,7 +54,10 @@ def Input_Event():
                     Global_Object.p1 = Gundam('p1', 300, 250)
                     Global_Object.p2 = Gaogaigar('p2', 1300, 250)
                 Global_Object.Button_Enter_sfx.play()
-                Game_Framework.change_scene(PlayScene)
+                if Global_Object.Current_mode == 'Play':
+                    Game_Framework.change_scene(PlayScene)
+                elif Global_Object.Current_mode == 'Training':
+                    Game_Framework.change_scene(TrainingScene)
             else:
                 gaogaigar_button.handle_event(event)
                 gundam_button.handle_event(event)

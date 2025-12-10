@@ -1,11 +1,13 @@
 from pico2d import *
 from sdl2 import *
+import Global_Object
 
 ButtonDict = {
     'Start_Button.png' : 0,
     'Exit_Button.png' : 1,
     'Gaogaigar.jpg' : 2,
-    'Gundam.jpg' : 3
+    'Gundam.jpg' : 3,
+    'Training_Button.png' : 4
 }
 
 class Button:
@@ -38,17 +40,15 @@ class Button:
             if event.key in [SDLK_LEFT, SDLK_RIGHT]:
                 Button.select_sfx.play()
         if self.id == 0:  # Start Button
-            if event.type == SDL_KEYDOWN:
-                if event.key == SDLK_LEFT:
-                    self.state = 1
-                elif event.key == SDLK_RIGHT:
-                    self.state = 0
+            if Global_Object.Current_mode_number == 0:
+                self.state = 1
+            else:
+                self.state = 0
         elif self.id == 1:
-            if event.type == SDL_KEYDOWN:
-                if event.key == SDLK_LEFT:
-                    self.state = 0
-                elif event.key == SDLK_RIGHT:
-                    self.state = 1
+            if Global_Object.Current_mode_number == 2:
+                self.state = 1
+            else:
+                self.state = 0
         if self.id == 2:
             if event.type == SDL_KEYDOWN:
                 if event.key == SDLK_LEFT:
@@ -61,6 +61,11 @@ class Button:
                     self.state = 1
                 elif event.key == SDLK_RIGHT:
                     self.state = 0
+        elif self.id == 4:
+            if Global_Object.Current_mode_number == 1:
+                self.state = 1
+            else:
+                self.state = 0
 
     def handle_collision(self, group, other):
         pass
