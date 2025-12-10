@@ -64,8 +64,13 @@ def init():
 def update():
     PlayScene_world.update()
     PlayScene_world.handle_collisions()
-    ai.update()
-    Global_Object.p2.handle_event(ai)
+    if Global_Object.p1hp.current_point > 0 and Global_Object.p2hp.current_point > 0:
+        ai.update()
+        Global_Object.p2.handle_event(ai)
+    else:
+        ai.type = None
+        ai.key = None
+        Global_Object.p2.statemachine.handle_state_event(('IDLE', Global_Object.p2.IDLE), Global_Object.p2.object_state)
     #print(Global_Object.p1.command_buffer.tokens())
 
 
