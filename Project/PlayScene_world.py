@@ -48,6 +48,9 @@ def handle_collisions():
                 if a in all_colliders and b in all_colliders and collide(a, b):
                     a.handle_collision(group, b)
                     b.handle_collision(group, a)
+                else:
+                    a.update_no_collision()
+                    b.update_no_collision()
 
 def update():
     for layer in world:

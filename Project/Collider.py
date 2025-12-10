@@ -15,3 +15,6 @@ class Collider:
 
     def handle_collision(self, group, other):
         self.object.handle_collision(group, other)
+
+    def update_no_collision(self):
+        self.object.update_no_collision()
